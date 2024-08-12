@@ -35,3 +35,32 @@ public:
         return result;
     }
 };
+
+
+// use C code and another solution : 一次兩個字串都處理，這樣就不用處理較長字串的問題
+#include<string.h>
+#include<assert.h>
+#include<stdlib.h>
+char * mergeAlternately(char * word1, char * word2){
+    int len1 = strlen(word1) ; 
+    int len2 = strlen(word2) ; 
+
+    char* result = (char*) malloc( sizeof(char) * (len1 + len2 + 5) ) ;
+    assert( result != NULL ) ;
+    int cursor = 0 ;
+    int ptr = 0 ;
+    int max = (len1 > len2)? len1 : len2 ;
+    while ( cursor < max) {
+        if ( cursor < len1 ) {
+            result[ptr] = word1[cursor] ;
+            ++ptr ;
+        }
+        if ( cursor < len2 ) {
+            result[ptr] = word2[cursor] ;
+            ++ptr ;
+        }
+        ++cursor ;
+    }
+    result[ptr] = '\0' ;
+    return result ;
+}
