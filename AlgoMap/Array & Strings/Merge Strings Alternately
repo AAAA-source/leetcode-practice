@@ -3,6 +3,10 @@
 
 append 用法：string.append( 參考的string , 開始的地方（0-based）, 要加入的長度) ; 
 
+Time Complexity : O(A + B) for traverse two words
+Space Complexity : O(A + B) create the new string
+
+
 class Solution {
 public:
     string mergeAlternately(string word1, string word2) {
