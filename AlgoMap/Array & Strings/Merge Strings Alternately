@@ -1,0 +1,33 @@
+想法：用兩個變數紀錄目前各字串的指針，分別加入result字串直到一方結束
+剩餘的一方用append加入result 末尾
+
+append 用法：string.append( 參考的string , 開始的地方（0-based）, 要加入的長度) ; 
+
+class Solution {
+public:
+    string mergeAlternately(string word1, string word2) {
+        string result;
+        int cursor1 = 0, cursor2 = 0;
+        bool now = false;
+        while (cursor1 < word1.size() && cursor2 < word2.size()) {
+            if (!now) {
+                // word 1 turn
+                result += word1[cursor1];
+                ++cursor1;
+                now = true;
+            } else {
+                // word 2 turn
+                result += word2[cursor2];
+                ++cursor2;
+                now = false ;
+            }
+        }
+
+        if (cursor1 < word1.size())
+            result.append(word1, cursor1, word1.size() - cursor1);
+        if (cursor2 < word2.size())
+            result.append(word2, cursor2, word2.size() - cursor2);
+
+        return result;
+    }
+};
