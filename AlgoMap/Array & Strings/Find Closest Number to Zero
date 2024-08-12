@@ -1,0 +1,18 @@
+想法：只要用變數紀錄一個最靠近0的數值，不斷更新即可
+
+Time Complexity : O(n) for traverse the array
+Space Complexity : O(1) just variables 
+
+class Solution {
+public:
+    int findClosestNumber(vector<int>& nums) {
+        int now = 100001 ;
+        for( auto &i : nums ) {
+            if ( abs(i) < abs(now) || (abs(i) == abs(now) && i > now)  ) {
+                now = i ;
+            }
+        }  
+
+        return now ;
+    }
+};
