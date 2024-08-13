@@ -1,0 +1,46 @@
+想法：窮舉所有可能，但要跳過相同的大小的元素
+所以先把vector sort 過，再從小到大開始 DFS 
+
+技巧：透過 reference的方法避免多餘的 vector copy 動作，有效減少時間
+
+Time Complexity：O(2^n) brute force time 
+Space Complexity : O(2^n) for recurrence
+
+
+
+void DFS( vector<int> &candidate ,int index , vector<int> &already_choose , int target ,
+ int now_sum , vector<vector<int>> &answer)
+{
+    if ( now_sum == target )  {
+        answer.push_back(already_choose) ;    
+        return ;
+    }
+    else if ( now_sum > target )
+        return ;
+
+    // now_sum < target 
+    for(decltype(candidate.size()) i = index ; i != candidate.size() ; ++i ) {
+        if ( i == index || candidate[i] != candidate[i - 1] ) {
+            already_choose.push_back(candidate[i]) ; 
+            DFS( candidate , i + 1 , already_choose , 
+            target , now_sum + candidate[i] , answer ) ;
+            
+            already_choose.pop_back() ;
+        }
+    }
+
+    return ;
+}
+
+
+
+class Solution {
+public:
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        vector<vector<int> > answer ; 
+        vector<int> store ;
+        std::sort( candidates.begin() , candidates.end() ) ;
+        DFS(candidates , 0 , store , target , 0 , answer) ; 
+        return answer ;
+    }
+};
