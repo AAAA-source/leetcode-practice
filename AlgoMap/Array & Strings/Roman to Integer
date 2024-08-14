@@ -1,0 +1,31 @@
+想法：用 hash table 存取資料，把每個字母對應的數值都加入
+並創造另一個hash table來存取特殊情況（兩字母需同時看）
+一般而言，前一個字母代表的數字要比後一個大（不小於）；反之，如果小於的話代表是特殊情況，需要special_symbols 處理
+
+class Solution {
+public:
+    int romanToInt(string s) {
+        int count = 0 ;
+        decltype(s.size()) cursor = 0 ;
+        unordered_map<char , int> symbols 
+        = { {'I' , 1} , {'V' , 5} , {'X' , 10} , {'L' , 50} , 
+            {'C' , 100} , {'D' , 500} , {'M' , 1000} 
+         } ;
+
+        unordered_map<char , int> special_symbols 
+        = { {'V' , 4} , {'X' , 9} , {'L' , 40} , 
+            {'C' , 90} , {'D' , 400} , {'M' , 900} 
+         } ;
+
+        while ( cursor != s.size() ) {
+            if ( cursor + 1 == s.size() || symbols[s[cursor + 1]] <= symbols[ s[cursor] ]  )
+                count += symbols[ s[cursor] ] ;
+            else {
+                count += special_symbols[ s[cursor + 1] ] ;
+                cursor++ ;
+            }
+            cursor++ ;
+        }
+        return count ;
+    }
+};
