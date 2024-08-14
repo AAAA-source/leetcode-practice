@@ -71,3 +71,5 @@ public:
 
 Time Complexity : O(n) 
 Space Complexity : O(1)
+
+// remove special symbols vector , use symbols[ next letter ] - symbols[now letter] to replace
