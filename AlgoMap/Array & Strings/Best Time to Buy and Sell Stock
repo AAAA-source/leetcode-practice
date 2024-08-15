@@ -23,3 +23,22 @@ public:
         return max_profit; 
     }
 };
+
+// another is record when should we buy the stock(minimum) instead of recording when we should sell(maxium)
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int max_profit = 0 ;
+        int now = prices[0] ;
+        int len = prices.size() ;
+
+        for(int i = 1 ; i < len ; i++) {
+            if ( prices[i] < now )
+                now = prices[i] ; 
+            if ( prices[i] - now > max_profit )
+                max_profit = prices[i] - now ;
+        }
+
+        return max_profit; 
+    }
+};
