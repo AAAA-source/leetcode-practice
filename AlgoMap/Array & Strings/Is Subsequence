@@ -4,6 +4,10 @@ proove OPT: when there is a solution for s , we assume first letter is at the i-
 then for any 0 <= j <= i ,if j-th letter same as i-th letter.there is also a solution
 so , we cna always "first meet first match " by greedy strategy 
 
+Time Complexity : O(n) for traverse t string
+Space Complexity : O(1) for variables 
+
+
 class Solution {
 public:
     bool isSubsequence(string s, string t) {
