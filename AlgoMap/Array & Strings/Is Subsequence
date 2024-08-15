@@ -19,3 +19,17 @@ public:
         return s_cursor == s.size() ;
     }
 };
+
+// use variables replace the string.size() 
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        int s_cursor = 0 ;
+        int t_len = t.size() , s_len = s.size() ;
+        for( int i = 0 ; s_cursor != s_len && i != t_len ; ++i ) {
+            if ( t[i] == s[s_cursor] )
+                ++s_cursor ;
+        }
+        return s_cursor == s_len ;
+    }
+};
