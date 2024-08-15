@@ -33,3 +33,33 @@ public:
         return success ;
     }
 };
+
+// 進一步剪枝
+class Solution {
+public:
+    bool lemonadeChange(vector<int>& bills) {
+        int count5 = 0 , count10 = 0 ;
+        bool success = true ;
+        for( decltype(bills.size()) i = 0 ; success && i != bills.size() ; ++i ) {
+            if ( bills[i] == 5  )
+                count5++ ; 
+            else if ( bills[i] == 10 ) {
+                if ( count5 > 0 )
+                    count5-- ;
+                else  
+                    success = false ;
+                count10++ ;
+            }
+            else {
+                if ( count5 > 0 && count10 > 0 ) 
+                    count5-- , count10-- ;
+                else if ( count5 >= 3 )
+                    count5 -= 3 ; 
+                else 
+                    success = false ;
+            }
+        }
+
+        return success ;
+    }
+};
