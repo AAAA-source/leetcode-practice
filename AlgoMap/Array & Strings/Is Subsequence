@@ -1,0 +1,17 @@
+想法：運用greedy 思想，只要有match 的就match ，並繼續尋找下一個字母
+
+proove OPT: when there is a solution for s , we assume first letter is at the i-th , 
+then for any 0 <= j <= i ,if j-th letter same as i-th letter.there is also a solution
+so , we cna always "first meet first match " by greedy strategy 
+
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        int s_cursor = 0 ;
+        for( int i = 0 ; s_cursor != s.size() && i != t.size() ; ++i ) {
+            if ( t[i] == s[s_cursor] )
+                ++s_cursor ;
+        }
+        return s_cursor == s.size() ;
+    }
+};
