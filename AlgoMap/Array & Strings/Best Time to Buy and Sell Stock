@@ -2,6 +2,9 @@
 反之，若前一個比較大，就更新目前的最高數值
 如此可判斷所有OPT賣法中最好的那個
 
+證明：我們只要紀錄該天之後的最高數值，並減去該天的數值，就是該天可能賣出的最高profit 
+如果該天往後一路下跌，則該天沒有賣出的可能
+
 Time Complexity : O(n) for traverse array
 Space Complexity : O(1) for variables 
 
