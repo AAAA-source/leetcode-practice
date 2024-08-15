@@ -1,0 +1,22 @@
+想法：此題要從後往前看，去紀錄目前的最高數值；當前一個元素比現在的最高數值小的時候，就可以更新最大差額（也可能不更新）
+反之，若前一個比較大，就更新目前的最高數值
+如此可判斷所有OPT賣法中最好的那個
+
+Time Complexity : O(n) for traverse array
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int max_profit = 0 ;
+        int now = prices[prices.size() - 1] ;
+        for( int i = prices.size() - 2 ; i >= 0 ; i-- ) {
+            if ( prices[i] > now )
+                now = prices[i] ; 
+            else if ( now - prices[i] > max_profit )
+                max_profit = now - prices[i] ; 
+        }
+
+        return max_profit; 
+    }
+};
