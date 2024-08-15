@@ -1,0 +1,34 @@
+想法：只要考慮 10 需找 5 ， 20 可以找 10 + 5 或是 5 + 5 + 5 即可
+
+注意：不可將所有5 , 10 的數量紀錄下來再運算，需逐步運算（否則中間元素可能會被後面的元素彌補，這樣是不合邏輯的）
+
+Time Complexity : O(n) for traverse array
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    bool lemonadeChange(vector<int>& bills) {
+        int count5 = 0 , count10 = 0 ;
+        bool success = true ;
+        for( auto&i : bills ) {
+            if ( i == 5  )
+                count5++ ; 
+            else if ( i == 10 ) {
+                if ( count5 > 0 )
+                    count5-- ;
+                else  
+                    success = false ;
+                count10++ ;
+            }
+            else {
+                if ( count5 > 0 && count10 > 0 ) 
+                    count5-- , count10-- ;
+                else if ( count5 >= 3 )
+                    count5 -= 3 ; 
+                else 
+                    success = false ;
+            }
+        } 
+        return success ;
+    }
+};
