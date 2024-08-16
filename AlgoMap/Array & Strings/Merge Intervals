@@ -27,3 +27,36 @@ public:
         return result ;
     }
 };
+
+// use my_compare to sort 
+技巧：在solution中建立 static function 再呼叫（如果是non-static functino 是無法使用的 ）
+
+class Solution {
+public:
+    static bool my_compare(vector<int>&a , vector<int>&b)
+    {
+        return a[0] < b[0] ;
+    }
+
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        sort( intervals.begin() , intervals.end() 
+        , my_compare ) ; 
+        vector< vector<int> > result ; 
+        int start = intervals[0][0] ; 
+        int end = intervals[0][1] ; 
+
+        int len = intervals.size() ;
+        for(int i = 1 ; i < len  ; i++) {
+            if ( intervals[i][0] <= end ) {
+                end = max(end , intervals[i][1]) ;
+            }
+            else {
+                result.push_back( {start , end} ) ;
+                start = intervals[i][0] ; 
+                end = intervals[i][1] ;
+            }
+        }
+        result.push_back( {start , end} ) ; 
+        return result ;
+    }
+};
