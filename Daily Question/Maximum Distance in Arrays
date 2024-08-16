@@ -1,0 +1,26 @@
+想法：因為都是 sorted arrays ，所以只要考慮第一個及最後一個元素即可
+用max_value_everseen,min_value_everseen紀錄已經看過的最大數值
+
+技巧：每次都要更新max_distance,max_value_everseen,min_value_everseen，不能只紀錄最大最小值，否則可能會有兩者同時出現在同一個array 的情況
+
+fact:實際上abs() 並不需要，因為如果 max_value_everseen 小於 array[i][0] ，那麼arrays[i][arrays[i].size() - 1]肯定大於min_value_everseen
+所以一個會是負值而另一個是正值，不會產生問題；此處只是為了可讀性而添加
+
+class Solution {
+public:
+    int maxDistance(vector<vector<int>>& arrays) {
+        int max_distance = 0 ; 
+        int max_value_everseen = arrays[0][ arrays[0].size() - 1 ] ;
+        int min_value_everseen = arrays[0][0] ; 
+
+        for( decltype(arrays.size()) i = 1 ; i < arrays.size() ; ++i ) {
+            max_distance = max( max_distance , 
+            max( abs(max_value_everseen - arrays[i][0]) , 
+            abs(arrays[i][arrays[i].size() - 1] - min_value_everseen) ) ) ;
+
+            max_value_everseen = max( max_value_everseen ,arrays[i][arrays[i].size() - 1] ) ;
+            min_value_everseen = min (min_value_everseen , arrays[i][0]) ;
+        }
+        return max_distance ;
+    }
+};
