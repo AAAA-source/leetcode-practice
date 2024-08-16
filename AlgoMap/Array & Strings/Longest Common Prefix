@@ -4,6 +4,37 @@
 二版：可以在所有字串中找到字典序最小的跟最大的比較
 證明：因為其餘字串都被包含在兩者之間，如果兩者前 k 個字元相等，其餘字串也必相等；同時，若有不相等的情形，也必然會出現在最小跟最大者之間
 
+Time Complexity: O(s) for looking all thr characters
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        int min = strs[0].size() ; 
+        for(int i = 1 ; i < strs.size() ; i++) {
+            if ( strs[i].size() < min )
+                min = strs[i].size() ;
+        }
+
+        int cursor = 0 ;
+        bool success = true ;
+        string result ;
+        while ( success && cursor < min) {
+            for(int i = 1 ; success && i < strs.size() ; i++) {
+                if ( strs[i][cursor] != strs[0][cursor] )
+                    success = false ;
+            }
+            if ( success ) {
+                result += strs[0][cursor] ;
+                cursor++ ;
+            }
+        }
+
+        return result ;
+    }
+};
+
+// compare min , max instead of all the other strings
 class Solution {
 public:
     string longestCommonPrefix(vector<string>& strs) {
