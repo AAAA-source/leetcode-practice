@@ -6,6 +6,10 @@
 fact:實際上abs() 並不需要，因為如果 max_value_everseen 小於 array[i][0] ，那麼arrays[i][arrays[i].size() - 1]肯定大於min_value_everseen
 所以一個會是負值而另一個是正值，不會產生問題；此處只是為了可讀性而添加
 
+Time Complexity = O(n) for traverse all arrays
+Space Complexity = O(1) for variables 
+
+
 class Solution {
 public:
     int maxDistance(vector<vector<int>>& arrays) {
