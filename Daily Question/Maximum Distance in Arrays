@@ -28,3 +28,24 @@ public:
         return max_distance ;
     }
 };
+
+// 用 .back() 取用最後一個元素 and .front() 取用第一個元素 代替原本的array[i] 操作
+class Solution {
+public:
+    int maxDistance(vector<vector<int>>& arrays) {
+        int max_distance = 0 ; 
+        int max_value_everseen = arrays[0].back() ;
+        int min_value_everseen = arrays[0].front() ; 
+
+        int len = arrays.size() ;
+        for( int i = 1 ; i < len ; ++i ) {
+            max_distance = max( max_distance , 
+            max( max_value_everseen - arrays[i].front() , 
+            arrays[i].back() - min_value_everseen)  ) ;
+
+            max_value_everseen = max( max_value_everseen ,arrays[i].back() ) ;
+            min_value_everseen = min (min_value_everseen , arrays[i].front() ) ;
+        }
+        return max_distance ;
+    }
+};
