@@ -34,6 +34,10 @@ public:
     }
 };
 
+In fact , we can use strs[0].substr(0 , cursor) without append the result string
+技巧： string.substr( 開始的字元（0-based） , 子字串長度 )
+
+
 // compare min , max instead of all the other strings
 Time Complexity: O(s) for looking all the characters
 Space Complexity : O(1) for variables 
