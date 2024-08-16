@@ -4,7 +4,7 @@
 二版：可以在所有字串中找到字典序最小的跟最大的比較
 證明：因為其餘字串都被包含在兩者之間，如果兩者前 k 個字元相等，其餘字串也必相等；同時，若有不相等的情形，也必然會出現在最小跟最大者之間
 
-Time Complexity: O(s) for looking all thr characters
+Time Complexity: O(n * min_string_length) for looking the shortest string and compare with others
 Space Complexity : O(1) for variables 
 
 class Solution {
@@ -35,6 +35,9 @@ public:
 };
 
 // compare min , max instead of all the other strings
+Time Complexity: O(s) for looking all the characters
+Space Complexity : O(1) for variables 
+
 class Solution {
 public:
     string longestCommonPrefix(vector<string>& strs) {
