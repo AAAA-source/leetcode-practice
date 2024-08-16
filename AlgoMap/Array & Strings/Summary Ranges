@@ -1,0 +1,46 @@
+想法：看過整個陣列一次，去紀錄現有set的起始跟終點，如果可以使用同一個set，更新last 即可；
+否則須將原本set輸出進result，同時更新start , last 
+需注意最後一個set並不會在迴圈裡面被輸出，所以要在迴圈外處理一次
+
+技巧：使用to_string(int number) 把數字轉換成字串
+
+class Solution {
+public:
+    vector<string> summaryRanges(vector<int>& nums) {
+        if ( nums.empty() ){
+            vector<string> nothing ;
+            return nothing ;
+        }
+
+        int last = nums[0] ; 
+        int start = nums[0] ; 
+
+        vector<string> result ;
+        for( decltype(nums.size()) i = 1 ; i < nums.size() ; ++i ) {
+            if (last == nums[i] - 1  ) {
+                last = nums[i] ; 
+            }
+            else {
+                if ( start == last ) {
+                    result.push_back( to_string(start) ) ;
+                }
+                else {
+                    string temp = to_string(start) + "->" + to_string(last) ;
+                    result.push_back(temp) ;
+                }
+                start = nums[i] ;
+                last = nums[i] ;
+            }
+        }
+        if ( start == last ) {
+            result.push_back( to_string(start) ) ;
+        }
+        else {
+            string temp = to_string(start) + "->" + to_string(last) ;
+            result.push_back(temp) ;
+        }
+
+
+        return result ;
+    }
+};
