@@ -47,3 +47,26 @@ public:
         return result ;
     }
 };
+
+// another code using while loop
+class Solution {
+public:
+    vector<string> summaryRanges(vector<int>& nums) {
+        vector<string> result ; 
+        int cursor = 0 ; 
+        while ( cursor < nums.size() ) {
+            int start = cursor ;
+            while ( cursor + 1 != nums.size() && nums[cursor] + 1 == nums[cursor + 1] )
+                cursor++ ;
+
+            if ( start == cursor )
+                result.push_back( to_string(nums[start]) ) ;
+            else 
+                result.push_back( to_string(nums[start]) + "->" + to_string(nums[cursor]) ) ;
+            
+            cursor++ ;
+        }
+
+        return result ;
+    }
+};
