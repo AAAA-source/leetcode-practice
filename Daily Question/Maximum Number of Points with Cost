@@ -1,0 +1,84 @@
+想法：此題有兩個dp思想
+1. 建立dp[i][j] 去紀錄該格最大可能的分數，因為下一列取用該格時只需考慮最大分數即可
+2.在同一列中，要找到與該格匹配的最大上一列的分數（考慮位置不同的減少後），所以需要用left , right array 
+left array[i]: 紀錄i-th以前最大的分數，而 left[i + 1] 只要考慮max( left[i] , i-th point in the row ) 即可
+因為所有比i-th之前的元素，再匹配到 i + 1-th 時都會有相同的遞減，故只需考慮left[i]（也就是i-th以前最大的分數）即可
+right array[i]：同理，紀錄i-th以後最大的分數（考慮位置不同的減少）
+因此，dp[i][j] 實際上就是 max( left[i - 1][j] , right[i - 1][j]  ) + points[i][j] 而已
+
+class Solution {
+public:
+    long long maxPoints(vector<vector<int>>& points) {
+        int m = points.size() ;
+        int n = points[0].size() ;
+        vector<vector<long long int>> dp(m , vector<long long int>(n) ) ; 
+        for(int i = 0 ; i < n ; i++) {
+            dp[0][i] = points[0][i] ;
+        }
+
+
+        for(int i = 1 ; i < m ; i++) {
+            vector<long long int> left(n) ;
+            vector<long long int> right(n) ;
+                
+            // use left , right to record left , right max value 
+            left[0] = dp[i - 1][0] ; 
+            for(int k = 1 ; k < n ; k++)
+                left[k] = max(left[k - 1] - 1 , dp[i - 1][k]) ;
+            right[n - 1] = dp[i - 1][n - 1] ; 
+            for(int k = n - 2 ; k >= 0 ; k--) 
+                right[k] = max(right[k + 1] - 1 , dp[i - 1][k]) ;
+
+
+            for(int j = 0 ; j < n ; j++ ) {
+                // calculate dp[i][j] 
+                dp[i][j] = max(left[j] , right[j]) + points[i][j] ;
+            }
+        }
+
+        long long int result = -1 ; 
+        for(int i = 0 ; i < n ; i++) 
+            result = max(result , dp[m - 1][i]) ;
+
+        return result ;
+    }
+};
+
+// because the dp[i][j] actually onlt used the dp[row - 1][j], so we can reduce to dp[j] and update every row 
+class Solution {
+public:
+    long long maxPoints(vector<vector<int>>& points) {
+        int m = points.size() ;
+        int n = points[0].size() ;
+        vector<long long int> dp(n) ; 
+        for(int i = 0 ; i < n ; i++) {
+            dp[i] = points[0][i] ;
+        }
+
+
+        for(int i = 1 ; i < m ; i++) {
+            vector<long long int> left(n) ;
+            vector<long long int> right(n) ;
+                
+            // use left , right to record left , right max value 
+            left[0] = dp[0] ; 
+            for(int k = 1 ; k < n ; k++)
+                left[k] = max(left[k - 1] - 1 , dp[k]) ;
+            right[n - 1] = dp[n - 1] ; 
+            for(int k = n - 2 ; k >= 0 ; k--) 
+                right[k] = max(right[k + 1] - 1 , dp[k]) ;
+
+
+            for(int j = 0 ; j < n ; j++ ) {
+                // calculate dp[j] 
+                dp[j] = max(left[j] , right[j]) + points[i][j] ;
+            }
+        }
+
+        long long int result = -1 ; 
+        for(int i = 0 ; i < n ; i++) 
+            result = max(result , dp[i]) ;
+
+        return result ;
+    }
+};
