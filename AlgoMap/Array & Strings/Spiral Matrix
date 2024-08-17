@@ -1,0 +1,90 @@
+想法：用一個direction pair 去代表要前進的方向，並使用一個visited array去紀錄是否已經走過
+
+Time Complexity : O(m * n) for traverse array
+Space Complexity : O(m * n) for result array and visited array
+
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        int m = matrix.size() , n = matrix[0].size() ;
+        vector<pair<int , int>> direction = { {0 , 1} , {1 , 0} , {0 , -1} , {-1 , 0} } ; 
+        int now_i = 0 , now_j = 0 ;
+        int cursor = 0 ; 
+        vector<vector<bool>> visited(m , vector<bool>(n , 0) ) ;
+        vector<int> result ; 
+        while ( 1 ) {
+            if ( now_i < 0 || now_i >= m || now_j < 0 || now_j >= n ||visited[now_i][now_j] )
+                break ;
+            visited[now_i][now_j] = true ;
+            result.push_back( matrix[now_i][now_j] ) ;
+            int next_i = now_i + direction[cursor].first ;
+            int next_j = now_j + direction[cursor].second ;
+            if ( next_i >=0  && next_i < m && next_j >=0  && next_j < n 
+            && !(visited[next_i][next_j]) )
+            {
+                now_i = next_i ;
+                now_j = next_j ;
+            }
+            else  {
+                //cout << "turn" << endl ;
+                cursor = (cursor + 1) % 4 ;
+                now_i += direction[cursor].first ; 
+                now_j += direction[cursor].second ; 
+            }
+        }
+        return result ;
+    }
+};
+
+技巧：利用「牆壁」的概念取代visited array，有效減少使用空間（碰到牆壁就要轉向）
+注意：第一個top 的牆壁是 0 而非 -1 ，因為一開始就是從第一列開始走的，所以之後就不能碰到第一列了
+
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        int m = matrix.size() , n = matrix[0].size() ;
+        vector<pair<int , int>> direction = { {0 , 1} , {1 , 0} , {0 , -1} , {-1 , 0} } ; 
+        int now_i = 0 , now_j = 0 ;
+        int cursor = 0 ; 
+        int right = n , left = -1 , top = 0 , bottom = m ;
+        vector<int> result ; 
+        while ( 1 ) {
+            if ( now_i < 0 || now_i >= m || now_j < 0 || now_j >= n || result.size() == m*n )
+                break ;
+
+            result.push_back( matrix[now_i][now_j] ) ;
+            int next_i = now_i + direction[cursor].first ;
+            int next_j = now_j + direction[cursor].second ;
+            if ( next_i >=0  && next_i < m && next_j >=0  && next_j < n 
+            && (next_i == now_i || (next_i != top && next_i != bottom)) && 
+             (next_j == now_j || (next_j != left && next_j != right)) )
+            {
+                now_i = next_i ;
+                now_j = next_j ;
+            }
+            else  {
+                //cout << "turn" << endl ;
+                cursor = (cursor + 1) % 4 ;
+                switch( cursor ) {
+                    case 0 : 
+                        top++ ;
+                        break ; 
+                    case 1 : 
+                        right-- ;
+                        break ; 
+                    case 2 : 
+                        bottom-- ;
+                        break ;
+                    case 3 : 
+                        left++ ;
+                        break ;
+                    default : ;
+                }  
+
+                now_i += direction[cursor].first ; 
+                now_j += direction[cursor].second ; 
+            }
+        }
+        return result ;
+    }
+};
