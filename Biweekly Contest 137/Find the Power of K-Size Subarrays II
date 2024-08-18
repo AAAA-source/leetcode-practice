@@ -1,0 +1,52 @@
+Intuition
+because of the time limit , we need to find a effective way to get the result. So , we call the first element "break" the consecutive sequence from former element , the "break point"
+
+Then , We just find the first break point , if the subarray across the break point , the result will be -1 ; otherse , the subarray is consecutive , and the result will be the last element in subarray.
+
+When the subarray start from break point , it means we should find the next break point.
+
+If you fell useful , please upvote!!
+
+Approach
+use variable "index" to record the break point
+and traverse all subarray from i = 0 ... n - k which range is nums[i ...i + k - 1]
+
+Complexity
+Time complexity:O(n) by updating the index
+Space complexity:O(n)
+Code
+class Solution {
+public:
+    vector<int> resultsArray(vector<int>& nums, int k) {
+        int n = nums.size() ; 
+        int index = 1 ; 
+        while ( index < n ) {
+            if ( nums[index] != nums[index - 1] + 1 )
+                break ; 
+            index++ ;
+        }
+
+        vector<int> result ; 
+        for(int i = 0 ; i < n - k + 1 ; i++) {
+            if (i + k - 1 < index)
+                result.push_back(nums[i + k - 1]) ; 
+            else if ( i < index ) 
+                result.push_back(-1) ;
+            else {
+                index++ ;
+                while ( index < n ) {
+                    if ( nums[index] != nums[index - 1] + 1 )
+                        break ;
+                    index++ ;
+                }
+                if (i + k - 1 >= index)
+                    result.push_back(-1) ; 
+                else 
+                    result.push_back( nums[i + k - 1] ) ;
+            }
+
+        }
+
+        return result ;
+    }
+};
