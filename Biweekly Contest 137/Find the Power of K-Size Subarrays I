@@ -1,0 +1,40 @@
+Intuition
+use the brute force to solve the problem
+
+if you feel useful , please upvote!
+
+Approach
+check every subarray by for loop , if any element in subarray unexpected , the record vriable will turn false
+
+Complexity
+Time complexity: O(n^2)
+Space complexity: O(n)
+Code
+
+
+class Solution {
+public:
+    vector<int> resultsArray(vector<int>& nums, int k) {
+        int n = nums.size() ; 
+        vector<int> result ;
+        for(int i = 0 ; i < n - k + 1 ; i++) {
+            vector<int> subarray ; 
+            for(int j = 0 ; j < k ; j++)
+                subarray.push_back( nums[i + j] ) ;
+
+            bool success = true ; 
+            for(int j = 1 ; j < k ; j++) {
+                if ( subarray[j] != subarray[j - 1] + 1 ) {
+                    success = false ;
+                    break ;
+                }
+            }
+            if ( success )  
+                result.push_back( subarray[k - 1] ) ; 
+            else 
+                result.push_back(-1) ;
+        }
+
+        return result ;
+    }
+};
