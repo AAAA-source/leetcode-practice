@@ -1,0 +1,77 @@
+想法：因為數字的範圍只有-1000 - 1000 ，所以先將原始數字乘以10000，之後再取最接近的萬位以上數字就會知道原始數字為何
+意即，matrix[i][j] = 10000 * old + new ，最後提取new number即可
+
+注意：可能會遇到舊數字與新數字不同正負號的問題，所以在判斷old number時要考慮最接近的數字，而非直接除法
+
+Time Complexity:O(n) for traverse array several times 
+Space Complexity : O(1) in-place algorithm!
+
+class Solution {
+public:
+    static int nearby(int n , const int standard) {
+        if (n == 0)
+            return 0 ;
+        int temp = n / standard ; 
+        if ( n > 0 ) {
+            if ( abs(n - temp * standard) < abs(n - (temp + 1) * standard )  )
+                return temp ;
+            else 
+                return temp + 1 ;
+        }
+        else {
+            // n < 0 
+            if ( abs(n - temp * standard) < abs(n - (temp - 1) * standard) )
+                return temp ; 
+            else 
+                return temp - 1; 
+        }
+    }
+
+    void rotate(vector<vector<int>>& matrix) {
+        const int standard = 10000 ; 
+        int n = matrix.size() ;
+        for(int i = 0 ; i < n ; i++)
+            for(int j = 0 ; j < n ; j++)
+                matrix[i][j] *= standard ;
+
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < n ; j++) {
+                matrix[j][n - 1 - i] += nearby(matrix[i][j] , standard) ;
+            }
+        }
+
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < n ; j++) {
+                int old_number = nearby(matrix[i][j] , standard) ;
+                matrix[i][j] -= old_number * standard ;
+            }
+        }
+
+        return ;
+    }
+};
+
+法二：因為位於（i , j） 的數字最後要轉換成(j , n - 1 - i)
+所以先將(i , j)轉置成（j , i），在把每一列的前後交換，從(j , i) 變成 (j , n - 1 - i)
+
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        // matrix[i][j] should become matrix[j][n - 1 - i]
+        
+        int n = matrix.size() ;
+        // first step : (i , j) -> (j , i)
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < i ; j++)
+                swap(matrix[i][j] , matrix[j][i]) ;
+        }
+
+        // second step : (j , i) -> (j , n - 1 - i) 
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < (n + 1) / 2 ; j++)
+                swap( matrix[i][j] , matrix[i][n - 1 - j] ) ;
+        }
+
+        return ;
+    }
+};
