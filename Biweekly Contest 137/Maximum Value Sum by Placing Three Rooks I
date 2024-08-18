@@ -1,0 +1,56 @@
+Intuition
+becase there are only three rooks on the board , that mean we only need to consider the top-3 elements every row.
+
+So we just try every combinarics of the top-3 elements , and get the maxium value
+
+If you feel useful , please upvote!!
+
+Approach
+traverse every and find the top-3 elements , and record the value and position in "candidates" vector.
+
+Next , we just need to try every candidate and find the max_value
+
+Complexity
+Time complexity:O(m) for finding top-3 element , O(m^3) for trying every candidates
+Space complexity:O(m) for storing the candidates
+Code
+class Solution {
+public:
+    long long maximumValueSum(vector<vector<int>>& board) {
+        long long int max_value = -3000000005 ; 
+        int m = board.size() ;
+        int n = board[0].size() ;
+        
+        vector< pair<long long int , pair<int , int> > > candidates ;
+        for(int i = 0 ; i < m ; ++i) {
+            for(int count = 0 ; count < 3 ; ++count) {
+                auto iter = max_element( board[i].begin() , board[i].end()) ;
+                pair<int ,int> location = { i , iter - board[i].begin() } ;
+                pair<long long int , pair<int , int>> temp = {*iter , location} ;
+                candidates.push_back( temp ) ;
+                *iter = INT_MIN ;
+            }
+        }
+
+        int total = candidates.size() ; 
+        for(int i = 0 ; i < total ; ++i) {
+            for(int j = i + 1 ; j < total ; ++j) {
+                for(int k = j + 1 ; k < total ; ++k) {
+                    if ( candidates[i].second.first == candidates[j].second.first || 
+                         candidates[i].second.first == candidates[k].second.first || 
+                         candidates[j].second.first == candidates[k].second.first ||
+                         candidates[i].second.second == candidates[j].second.second || 
+                         candidates[i].second.second == candidates[k].second.second || 
+                         candidates[j].second.second == candidates[k].second.second )
+                         continue ;
+                    max_value = max( max_value , 
+                    candidates[i].first + candidates[j].first + candidates[k].first  ) ;
+
+                }
+            }
+        }
+
+        
+        return max_value ;
+    }
+};
