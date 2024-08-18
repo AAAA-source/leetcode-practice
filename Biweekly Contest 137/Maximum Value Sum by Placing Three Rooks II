@@ -1,0 +1,67 @@
+Intuition
+To optimize from last problem , we can see that the max value actually appear in the bigger candidates , In other words , we can try to "filtrate"
+some candidates , when the candidates over 9 , that means we can have a way to get max value. So , every candidates smaller than the min value of first 9 element is useless , we don't insert in our candidates vector.
+
+After that , we can effective reduce out candidates numbers and get AC
+
+If you feel useful , please upvote!!
+
+Approach
+Same as last problem , but "filtrate" by the min value of first 9 element
+(In fact , we can maintain the top 9 element and only try them , however I thought this way we be easier to explain)
+
+Complexity
+Time complexity: still O(m^3)
+if you only try the top-9 element : O(1) for trying and O(mn) for finding
+Space complexity: O(m) for storing candidates
+Code
+bool my_compare( pair<long long int , pair<int , int> >  a , 
+pair<long long int , pair<int , int> > b )
+{
+    return a.first < b.first ;
+}
+
+class Solution {
+public:
+    long long maximumValueSum(vector<vector<int>>& board) {
+        long long int max_value = -3000000005 ; 
+        int m = board.size() ;
+        int n = board[0].size() ;
+        
+        vector< pair<long long int , pair<int , int> > > candidates ;
+        for(int i = 0 ; i < m ; ++i) {
+            for(int count = 0 ; count < 3 ; ++count) {
+                auto iter = max_element( board[i].begin() , board[i].end()) ;
+                if ( candidates.size() > 9 
+                && *iter <= min_element( candidates.begin() , candidates.end() , my_compare )->first )
+                    break ;
+
+                pair<int ,int> location = { i , iter - board[i].begin() } ;
+                pair<long long int , pair<int , int>> temp = {*iter , location} ;
+                candidates.push_back( temp ) ;
+                *iter = INT_MIN ;
+            }
+        }
+
+        int total = candidates.size() ; 
+        for(int i = 0 ; i < total - 2 ; ++i) {
+            for(int j = i + 1 ; j < total - 1 ; ++j) {
+                for(int k = j + 1 ; k < total ; ++k) {
+                    if ( candidates[i].second.first == candidates[j].second.first || 
+                         candidates[i].second.first == candidates[k].second.first || 
+                         candidates[j].second.first == candidates[k].second.first ||
+                         candidates[i].second.second == candidates[j].second.second || 
+                         candidates[i].second.second == candidates[k].second.second || 
+                         candidates[j].second.second == candidates[k].second.second )
+                         continue ;
+                    max_value = max( max_value , 
+                    candidates[i].first + candidates[j].first + candidates[k].first  ) ;
+
+                }
+            }
+        }
+
+        
+        return max_value ;
+    }
+};
