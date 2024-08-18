@@ -1,0 +1,55 @@
+想法：使用set 去維護已經加入的元素，而每次只要將最小的元素排出，並加入該元素的二倍、三倍、五倍即可
+
+Time Complexity:O(nlogn) for maintain the RB tree 
+Space Complexity : O(n) 
+
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        if ( n == 1)
+            return 1 ; 
+        
+        set<long long int> count ; 
+        count.insert(1) ;
+        long long int temp ; 
+        for(int i = 0 ; i < n ; i++) {
+            temp = *count.begin() ;
+            count.erase(temp) ; 
+            count.insert(temp * 2) ; 
+            count.insert(temp * 3) ; 
+            count.insert(temp * 5) ;
+        }
+
+
+        return (int)temp ;
+    }
+};
+
+
+方法二：使用dp，首先建立dp[0...n-1] 代表第一個...第n個 ugly number 
+而dp[0] = 1 , 用cursor2 , cursor3 , cursor5 紀錄哪一個元素是可以被動作的最小值
+（因為可能dp[1] 是dp[0] 的兩倍，這樣cursor2 就是 1 而不是0）
+注意：有些元素可能剛好是某前面元素的兩倍以及更前面元素的五倍，所以每次cursor的判斷需要分開
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        if ( n == 1)
+            return 1 ; 
+        
+        vector<int> dp(n) ; 
+        dp[0] = 1 ; 
+        int cursor2 = 0 , cursor3 = 0 , cursor5 = 0 ;
+        for(int i = 1 ; i < n ; i++) {
+            dp[i] = min( dp[cursor2] * 2 , min(dp[cursor3] * 3 , dp[cursor5] * 5) ) ; 
+            if ( dp[i] == dp[cursor2] * 2 )
+                cursor2++ ; 
+            if ( dp[i] == dp[cursor3] * 3 )
+                cursor3++ ; 
+            if ( dp[i] == dp[cursor5] * 5 )
+                cursor5++ ; 
+
+            //cout << dp[i] << endl ;
+        }
+        return dp[n - 1] ;
+    }
+};
