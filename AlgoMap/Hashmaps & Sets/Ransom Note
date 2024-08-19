@@ -27,6 +27,10 @@ public:
 
 
 法二：因為題目有規定所有字母必定是拉丁小寫字母，所以可以用陣列取代hash table
+
+Time Complexity : O(n + m) for traversing two strings
+Space Complexity : O(1) for array 
+
 class Solution {
 public:
     bool canConstruct(string ransomNote, string magazine) {
