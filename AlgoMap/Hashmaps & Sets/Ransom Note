@@ -1,0 +1,40 @@
+想法：用hash table 紀錄每個字出現的頻率，再一一比對ransom note 的每個字是否都有對應
+（沒有對應就回傳false , 否則該字母頻率減一）
+
+技巧：在C++ 中可以用 unordered map 實作，把char當作key ，頻率則是value 
+
+class Solution {
+public:
+    bool canConstruct(string ransomNote, string magazine) {
+        unordered_map<char , int> count ;
+        for(auto &i : magazine) {
+            count[i]++ ;
+        }
+
+        for(auto &i : ransomNote) {
+            if ( count[i] == 0 )
+                return false ;
+            else 
+                count[i]-- ;
+        }
+        return true ;
+    }
+};
+
+
+法二：因為題目有規定所有字母必定是拉丁小寫字母，所以可以用陣列取代hash table
+class Solution {
+public:
+    bool canConstruct(string ransomNote, string magazine) {
+        int count[26] = {0} ; 
+        for(auto &i : magazine)
+            count[i - 'a']++ ; 
+        for(auto &i : ransomNote) {
+            if ( count[i - 'a'] == 0 )
+                return false ;
+            else 
+                count[i - 'a']-- ;
+        }
+        return true ;
+    }
+};
