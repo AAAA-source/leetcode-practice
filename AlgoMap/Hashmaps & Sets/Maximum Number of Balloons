@@ -1,0 +1,87 @@
+想法：先紀錄text中每個字母出現的頻率，接著因為"balloon"中有 one a , one b , two l , two o , and one n
+所以只要去記算每個字母可以形成的balloon , 紀錄其中最小值即可
+
+// n is text.length , m is balloon.length()
+Time Complexity : O(n + m) for traversing two strings 
+Space Complexity : O(1) for counting the frequency of letters( a ... z )
+
+class Solution {
+public:
+    int maxNumberOfBalloons(string text) {
+        vector<int> count(26) ; 
+
+        for(auto &i : text)
+            count[i - 'a']++ ; 
+
+        int min_number = INT_MAX ; 
+        min_number = min(min_number , count['a' - 'a']) ; 
+        min_number = min(min_number , count['b' - 'a']) ; 
+        min_number = min(min_number , count['l' - 'a'] / 2 ) ; 
+        min_number = min(min_number , count['o' - 'a'] / 2 ) ; 
+        min_number = min(min_number , count['n' - 'a']) ; 
+
+        return min_number ;
+    }
+};
+
+// general : 如果今天出現很多種字母，上述方法會顯得十分冗長，而改進方法就是text , balloon 都用一個array 去紀錄每個字母的使用量；再計算哪個字母能形成的氣球最少，輸出即可
+
+Time Complexity : O(n + m) for traversing two strings 
+Space Complexity : O(1) for counting the frequency of letters( a ... z )
+
+class Solution {
+public:
+    int maxNumberOfBalloons(string text) {
+        vector<int> count(26) ; 
+
+        for(auto &i : text)
+            count[i - 'a']++ ; 
+
+        string balloon = "balloon" ; 
+        vector<int> word(26) ;
+        for( auto &i : balloon )
+            word[i - 'a']++ ;
+
+        int min_number = INT_MAX ;
+        for(int i = 0 ; i < 26 ; i++) {
+            if ( word[i] == 0 )
+                continue ;
+            else 
+                min_number = min(min_number , count[i] / word[i]) ;
+        }
+
+
+        return min_number ;
+    }
+};
+
+// more feneral : 如果今天可能出現的字母範圍廣泛，就要使用hash table 儲存
+
+技巧：使用range for 遍歷 unordered_map ， i 會是一個 std::pair<const KeyType, ValueType> 
+意即 i.first 為 key , i.second 為 value
+
+Time Complexity : O(n + m) for traversing two strings 
+Space Complexity : O(n + m) for storing two hash tables
+
+class Solution {
+public:
+    int maxNumberOfBalloons(string text) {
+        unordered_map<char , int> count ; 
+
+        for(auto &i : text)
+            count[i]++ ; 
+
+        string balloon = "balloon" ; 
+        unordered_map<char , int> word ;
+        for( auto &i : balloon )
+            word[i]++ ;
+
+        int min_number = INT_MAX ;
+        for(auto &i : word) {
+            min_number = min(min_number , count[i.first] / word[i.first]) ;
+        }
+
+
+        return min_number ;
+    }
+};
