@@ -5,6 +5,9 @@
 注意：此做法實際上犧牲了些許效能，為了更general使其可改版成"所有char" 的形式
 技巧：Ｃ++ 中使用 unordered_map 實作hash table 
 
+Time Complexity : O(n) for traversing two strings that len are n
+Space Complexity : O(n) for storing the frequency in s
+
 class Solution {
 public:
     bool isAnagram(string s, string t) {
@@ -27,6 +30,10 @@ public:
 
 //actually , the problem limited the range of letter in lower latin alphabet , so we can just count every letter frequency from a - z 
 and check the frequency in s is equal in t
+
+Time Complexity : O(n) for traversing two strings that len are n
+Space Complexity : O(1) for storing count[0..25]
+
 
 class Solution {
 public:
