@@ -3,6 +3,10 @@
 
 技巧：在C++ 中可以用 unordered map 實作，把char當作key ，頻率則是value 
 
+// n is ransomNote.length , m is magazine.length()
+Time Complexity : O(n + m) for traversing two strings
+Space Complexity : O(m) for hash table
+
 class Solution {
 public:
     bool canConstruct(string ransomNote, string magazine) {
@@ -12,7 +16,7 @@ public:
         }
 
         for(auto &i : ransomNote) {
-            if ( count[i] == 0 )
+            if ( count[i] == 0 ) // if i isn't in the unordered map , it will be automatic create one , whitch value is 0(default)
                 return false ;
             else 
                 count[i]-- ;
