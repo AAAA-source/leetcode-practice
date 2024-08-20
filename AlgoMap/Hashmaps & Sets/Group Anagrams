@@ -36,3 +36,42 @@ public:
         return result ;
     }
 };
+
+// clean code : use helper function
+class Solution {
+public:
+    string counting_sort(string s) {
+        vector<int> frequency(26) ; 
+        for(auto &j : s)
+                frequency[ j - 'a' ]++ ;
+
+        string sorted_string ; 
+        for( int k = 0 ; k < 26 ; k++ ) {
+            sorted_string.append(frequency[k] , 'a' + k) ;
+        }
+
+        return sorted_string ;
+    }
+
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        vector< vector<string> > result ;
+        int index = 0 ;
+        unordered_map<string , int> result_index; 
+
+        for( auto& i : strs ) {
+            string sorted_string = counting_sort(i) ;
+
+            if ( result_index.find(sorted_string) == result_index.end() ) {
+                // new string
+                result_index[ sorted_string ] = index ;
+                index++ ; 
+                result.push_back( {i} ) ;
+            }
+            else {
+                result[ result_index[sorted_string] ].push_back( i ) ;
+            }
+        }
+        
+        return result ;
+    }
+};
