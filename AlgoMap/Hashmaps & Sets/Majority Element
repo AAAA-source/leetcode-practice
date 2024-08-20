@@ -1,0 +1,51 @@
+法ㄧ：使用hash table紀錄每個數字出現的次數，再找出現最多次者
+
+技巧：在C++中使用unordered_set 實作hash table
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(n) for storing every number
+
+
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        unordered_map<int , int> count ; 
+        for( auto & i : nums ) 
+            count[i]++ ;
+
+        for( auto &j : count ) {
+            if ( j.second > nums.size() / 2 )
+                return j.first ;
+        }
+
+        return 0 ;
+    }
+};
+
+法二：使用 Moore Voting Algorithm 
+適用情形：序列中有元素出現超過一半者
+用candidate , count 紀錄目前候選人、多出其他人多少票；因為有一個數字的出現頻率比其他數字加起來的頻率都高，所以我們把count 定義為 該數字出現頻率 - 不是該數字的出現頻率
+（可以想成該數字與不同數字互相抵銷）
+如果count == 0 時，就把candidate指定成現在的數字，再接著計算
+證明：只要有一個數字出現頻率超過一半，不論任意方式排列，最終 candidate 都是該數字
+
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        int candidate ;
+        int count = 0 ;
+
+        for(auto &i : nums) {
+            if ( count == 0 ) {
+                candidate = i ;
+                count++ ;
+            }
+            else if ( candidate == i )
+                count++ ;
+            else 
+                count-- ;
+        }
+
+        return candidate ;
+    }
+};
