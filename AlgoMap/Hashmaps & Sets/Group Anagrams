@@ -1,0 +1,38 @@
+想法：先把每個字串用counting sort 排成字典序最小的樣子，再比較此字串是否有出現過
+如果有的話，就把原本的字串加入相應的vector裡面
+
+// S means the number of all characters 
+Time Complexity : O( S ) for looking all characters , and counting sort just O(string.length) , so total is O(S)
+Space Complexity : O(S) for storing all strings by vector and part of string also in unordered map for finding same string
+
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        vector< vector<string> > result ;
+        int index = 0 ;
+        unordered_map<string , int> result_index; 
+
+        for( auto& i : strs ) {
+            vector<int> frequency(26) ; 
+            for(auto &j : i)
+                frequency[ j - 'a' ]++ ;
+        
+            string sorted_string ; 
+            for( int k = 0 ; k < 26 ; k++ ) {
+                sorted_string.append(frequency[k] , 'a' + k) ;
+            }
+
+            if ( result_index.find(sorted_string) == result_index.end() ) {
+                // new string
+                result_index[ sorted_string ] = index ;
+                index++ ; 
+                result.push_back( {i} ) ;
+            }
+            else {
+                result[ result_index[sorted_string] ].push_back( i ) ;
+            }
+        }
+        
+        return result ;
+    }
+};
