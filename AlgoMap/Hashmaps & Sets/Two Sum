@@ -1,0 +1,23 @@
+想法：把看過的 x 記錄下來(出現位置)，而每次都可以確認target - x 是否出現過，出現過的話就回傳
+
+技巧：use unordered_map to store the index (key is element value , value is appear index)
+
+Time Complexity : O(n) for hash table insert all element and traverse the array 
+Space Complexity : O(n) for hash table 
+
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int , int> appear ; 
+        int index = 0 ;
+        for(  ; index < nums.size() ; ++index ) {
+            if ( appear.find( target - nums[index] ) == appear.end() )
+                appear[ nums[index] ] = index ; 
+            else 
+                break ;
+        }
+
+        return { appear[target - nums[index]] , index } ;
+    }
+};
