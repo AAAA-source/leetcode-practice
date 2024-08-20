@@ -1,0 +1,127 @@
+想法：紀錄每個數字是否出現過，依序檢查 row , column , sub-box 即可
+
+技巧：用unordered set 紀錄（hash table）
+
+Time Complexity : O(1) for 9 * 9 Sudoku
+Spave COmplexity : O(1) for 9 numbers
+
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        // just check the number have been appeared before 
+        
+        //check row 
+        for(int i = 0 ; i < 9 ; i++) {
+            unordered_set<char> appear   ;
+            for(int j = 0 ; j < 9 ; j++) {
+                if ( board[i][j] == '.' )
+                    continue ; 
+                else if ( appear.find(board[i][j]) != appear.end() ) {
+                    cout << "find wrong at row " << i << endl ;
+                    return false ;
+                }
+                else 
+                    appear.insert(board[i][j]) ;
+            }
+        }
+
+        //check column
+        for(int j = 0 ; j < 9 ; j++) {
+            unordered_set<char> appear   ;
+            for(int i = 0 ; i < 9 ; i++) {
+                if ( board[i][j] == '.' )
+                    continue ; 
+                else if ( appear.find(board[i][j]) != appear.end() ) {
+                    cout << "find wrong at column " << j << endl ;
+                    return false ;
+                }
+                else 
+                    appear.insert(board[i][j]) ;
+            }
+        }
+
+        // check sub-boxes
+        for(int count_i = 0 ; count_i < 3 ; count_i++) {
+            for(int count_j = 0 ; count_j < 3 ; count_j++) {
+                unordered_set<char> appear ; 
+                for(int i = 0 ; i < 3 ; i++) {
+                    for(int j = 0 ; j < 3 ; j++) {
+                        for( auto &i : appear )
+                            cout << i << " " ;
+                        cout << endl ;
+                        cout << "now looking at " << board[count_i * 3 + i][count_j * 3 + j] << endl ;
+                        if ( board[count_i * 3 + i][count_j * 3 + j] == '.' )
+                            continue ;
+                        else if ( appear.find(board[count_i * 3 + i][count_j * 3 + j]) != appear.end() ) {
+                            cout << "duplicate : " << board[count_i * 3 + i][count_j * 3 + j] << endl ;
+                            cout << "find wrong at sub-box " << count_i << " " << count_j << endl ;
+                            return false ;
+                        }
+                        else 
+                            appear.insert( board[count_i * 3 + i][count_j * 3 + j] ) ;
+                    }
+                }
+            }
+        }
+
+        return true ;
+    }
+};
+
+法二：因為只會出現1-9 ，所以可以用bool array 紀錄
+
+Time Complexity : O(1) for 9 * 9 Sudoku
+Spave COmplexity : O(1) for 9 numbers
+
+
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        // just check the number have been appeared before 
+        
+        //check rows
+        for(int i = 0 ; i < 9 ; i++) {
+            bool appear[10] = {0}   ;
+            for(int j = 0 ; j < 9 ; j++) {
+                if ( board[i][j] == '.' )
+                    continue ; 
+                else if ( appear[ board[i][j] - '0' ] ) 
+                    return false ;
+                else 
+                   appear[ board[i][j] - '0' ] = true ;
+            }
+        }
+
+        //check columns
+        for(int j = 0 ; j < 9 ; j++) {
+            bool appear[10] = {0}   ;
+            for(int i = 0 ; i < 9 ; i++) {
+                if ( board[i][j] == '.' )
+                    continue ; 
+                else if ( appear[ board[i][j] - '0' ] ) 
+                    return false ;
+                else 
+                   appear[ board[i][j] - '0' ] = true ;
+            }
+        }
+
+        // check sub-boxes
+        for(int count_i = 0 ; count_i < 3 ; count_i++) {
+            for(int count_j = 0 ; count_j < 3 ; count_j++) {
+                bool appear[10] = {0}   ;
+                for(int i = 0 ; i < 3 ; i++) {
+                    for(int j = 0 ; j < 3 ; j++) {
+                        if ( board[count_i * 3 + i][count_j * 3 + j] == '.' )
+                            continue ;
+                        else if ( appear[board[count_i * 3 + i][count_j * 3 + j] - '0'] ) 
+                            return false ;
+                        else 
+                            appear[board[count_i * 3 + i][count_j * 3 + j] - '0'] = true ;
+                    }
+                }
+            }
+        }
+
+        return true ;
+    }
+};
