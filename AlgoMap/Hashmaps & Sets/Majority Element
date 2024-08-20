@@ -29,6 +29,9 @@ public:
 如果count == 0 時，就把candidate指定成現在的數字，再接著計算
 證明：只要有一個數字出現頻率超過一半，不論任意方式排列，最終 candidate 都是該數字
 
+Time Complexity : O(n) for traversing array
+Space Complexity : O(1) for variables
+
 class Solution {
 public:
     int majorityElement(vector<int>& nums) {
