@@ -1,0 +1,151 @@
+法ㄧ： first using "radix sort" and then check the sequence of numbers
+
+注意：因為數字會有負數出現，所以只能先用大小比較到第31位bit，接著把負數部分單獨排列
+（系統採用二補數，所以正數越小代表負數越負，實際數值也越小）
+也可以先將正數與負數分開radix sort
+
+接著，遍歷array，紀錄目前連續多少數字以及最多連續多少數字即可
+（需考慮元素重複的情況：跳過，不中斷也不算多一個連續數字）
+
+Time Complexity : O(n) for radix sort( 32-bit , so it is O(n) * 32 ) and traversing array
+Space Complexity : O(n) for radix sort storing array 
+
+class Solution {
+public:
+    static vector<int> radix_sort(vector<int> &nums) {
+        for(int i = 0 ; i < 31 ; ++i) {
+            vector< vector<int> > count(2) ; // bit 0 and bit 1  
+            for( auto &j : nums ) {
+                if ( j & (1 << i) )
+                    count[1].push_back(j) ; 
+                else 
+                    count[0].push_back(j) ;
+            }
+
+            int cursor = 0 ;
+            for( auto &i : count[0] ) {
+                nums[cursor] = i ;
+                cursor++ ;
+            }
+            for( auto &i : count[1] ) {
+                nums[cursor] = i ;
+                cursor++ ;
+            }
+        }
+
+        vector<int> negative_number ; 
+        for(int i = 0 ; i < nums.size() ; i++) {
+            if ( nums[i] < 0 )
+                negative_number.push_back(nums[i]) ;
+        }
+
+        vector<int> temporate ; 
+        for( int i = 0 ; i  < negative_number.size() ; i++ ) {
+            temporate.push_back( negative_number[i]); 
+        }
+        for(int i = 0 ; i != nums.size() ; i++) {
+            if ( nums[i] >= 0 ) {
+                temporate.push_back(nums[i]) ;
+            }
+        }
+
+        
+
+        return temporate ;
+    }
+
+    int longestConsecutive(vector<int>& nums) {
+        if ( nums.empty() )
+            return 0 ;
+
+        // radix sort 
+        nums = radix_sort(nums) ;
+
+        int max_length = 1 , count = 1 ;
+        for(int i = 1 ; i != nums.size() ; i++) {
+            if ( nums[i] == nums[i - 1] )
+                continue ; 
+            else if ( nums[i] == nums[i - 1] + 1 ) {
+                count++ ;
+                max_length = max( max_length , count ) ;
+            }
+            else {
+                count = 1 ;
+            }
+        }
+
+        return max_length ;
+    }
+};
+
+法二：用hash table 紀錄哪個數字出現過，接著看過所有hash table的元素
+持續尋找與該元素連續的數字，找到後就移除，繼續尋找附近元素
+
+技巧：因為一個數字只會出現在一個連續序列裡面，所以找到後就移除；避免重複算同樣的序列長度
+
+Time Complexity : O(n) for inserting element to hash table and traversing array
+Space Complexity : O(n) for hash table
+
+
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        unordered_set<int> appear ; 
+        for(auto &i : nums)
+            appear.insert(i) ; 
+
+        int max_length = 0 ;
+        while ( !appear.empty() ) {
+            auto iter = appear.begin() ;
+            int init = *iter ;
+            //cout << "init is " << init << endl ;
+            int count = 0 ; 
+            while ( iter != appear.end() ) {
+                //cout << "find " << *iter << endl ;
+                count++ ;
+                int target = *iter - 1 ; 
+                appear.erase(iter) ;
+                iter = appear.find(target) ;
+            }
+
+            iter = appear.find(init + 1) ;
+            while ( iter != appear.end() ) {
+                //cout << "find " << *iter << endl ;
+                count++ ;
+                int target = *iter + 1 ; 
+                appear.erase(iter) ;
+                iter = appear.find(target) ;
+            }
+
+            max_length = max(max_length , count) ;
+        }
+
+        return max_length ;
+    }
+};
+
+法三：一樣使用hash map ，但不需移除元素；改為只有當該元素是一序列起始點的時候才開始尋找該序列長度（避免重複計算同一序列）
+
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        unordered_set<int> appear ; 
+        for(auto &i : nums)
+            appear.insert(i) ; 
+
+        int max_length = 0 ;
+        for( auto &i : appear ) {
+            if ( appear.find(i - 1) != appear.end() )
+                continue ;
+
+            int target = i ; 
+            while ( appear.find(target) != appear.end() )
+                target++ ;
+            max_length = max(max_length , target - i) ;
+        }
+
+        return max_length ;
+    }
+};
+
+
