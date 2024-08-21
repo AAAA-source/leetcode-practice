@@ -1,0 +1,39 @@
+想法：dp 問題，用dp[start][end]紀錄印出這個區間的字母所需的步數
+1.一開始dp[i][i] 就是印出單個字母，所以是1 
+2. from j = i + 1 ... n - 1 ,先假設單獨印出最後一個字母，所以dp[i][j] = dp[i][j - 1] + 1 
+3.接下來考慮如果中間遇到重複的字母，假設在index =  k 的位置，那麼就拆分成兩種情況：
+  （1）原有的dp[i][j] ：目前的最小值（index = k 處理過）
+  （2）試著讓index = k 不用被重複印出，變成dp[i][k - 1] + dp[k + 1][j - 1]（要注意k + 1 <= j - 1的條件）
+
+技巧：如果i...j之中有許多重複的元素，實際上在每次考慮的時候；其他重複的元素都已經被dp[i][k - 1] , dp[k + 1][j - 1]考慮過了
+所以不用很多子區段的相加
+
+Time Complexity : O(n ^ 3) for for loop i , j , k 
+Space Complexity : O(n ^ 2) for dp array
+
+class Solution {
+public:
+    int strangePrinter(string s) {
+        if ( s.length() == 1 )
+            return 1 ; 
+
+        int n = s.length() ;
+
+        vector<vector<int>> dp(n , vector<int>(n)) ; 
+
+        for(int i = n - 1 ; i >= 0 ; i--) {
+            dp[i][i] = 1 ;
+            // update dp[i][j] from j = i + 1 ... n - 1
+            for(int j = i + 1 ; j < n ; j++) {
+                dp[i][j] = dp[i][j - 1] + 1 ;
+                for(int k = i  ; k < j ; k++) {
+                    if ( s[k] == s[j] )
+                        dp[i][j] = min( dp[i][j] , 
+                        dp[i][k] + ((k + 1 <= j - 1)? dp[k + 1][j - 1] : 0) ) ;
+                }
+            }
+        }
+
+        return dp[0][n - 1] ;
+    }
+};
