@@ -1,0 +1,21 @@
+想法：只要每次將 string 的頭尾對調即可
+
+技巧：使用 two pointers 的方法，用l , r 紀錄目前的頭尾，對調後再更動l , r 的數值直到 l >= r （l == r 不用動，因為是同一個位置）
+
+Time Complexity : O(n) for swaping every element and traversing string
+Space Complexity : O(1) 
+
+class Solution {
+public:
+    void reverseString(vector<char>& s) {
+        int l = 0 ; 
+        int r = s.size() - 1 ; 
+
+        while ( l < r ) {
+            swap<char>( s[l] , s[r] ) ; 
+            l++ , r-- ;
+        }
+
+        return ;
+    }
+};
