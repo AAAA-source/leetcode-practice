@@ -1,0 +1,25 @@
+想法：因為只要找出一組解即可，而且是sorted array , 所以可以用two pointers algorithm
+先判斷目前 nums[l] + nums[r] 的大小，如果比target大的話，就要把r往前，尋找更小的數值
+反之，就要把 l 往後，尋找更大的組合
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        // two pointers algorithm
+        int l = 0 , r = numbers.size() - 1 ;
+
+        while ( l < r ) {
+            if ( numbers[l] + numbers[r] > target )
+                r-- ; 
+            else if ( numbers[l] + numbers[r] < target )
+                l++ ; 
+            else 
+                return {l + 1 , r + 1} ;
+        }
+
+        return {} ;
+    }   
+};
