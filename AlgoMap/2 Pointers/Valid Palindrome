@@ -1,6 +1,9 @@
 想法：先將要看的字元加入test字串中，其中每個大寫字母要先變成小寫
 接著看是不是palindrome即可（檢查 s[i] == s[n - 1 - i] for 0 <= i <= n / 2）
 
+Time Complexity : O(n) for traversing string
+Space Complexity : O(n) for storing another string
+
 class Solution {
 public:
     bool isPalindrome(string s) {
@@ -14,6 +17,36 @@ public:
         for(int i = 0 ;success && i < test.size() / 2 ; i++) {
             if ( test[i] != test[test.size() - 1 - i] )
                 success = false ;
+        }
+
+        return success ; 
+    }
+};
+
+// use two pointers : tracking what characters we are now looking at , and updates to next two characters
+
+Time Complexity : O(n) for traversing the string 
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        int l = 0 , r = s.length() - 1 ;
+
+        bool success = true ;
+        while ( l < r ) {
+            while ( l < s.length() && !isalnum(s[l]) )
+                l++ ; 
+            while ( r >= 0 && !isalnum(s[r]) )
+                r-- ;
+
+            if ( l >= r )
+                break ;
+
+            if ( tolower(s[l]) != tolower(s[r]) )
+                success = false ;   
+            l++ ;
+            r-- ;
         }
 
         return success ; 
