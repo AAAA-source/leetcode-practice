@@ -1,0 +1,31 @@
+想法：要想到使用 two pointers的方法，因為最大值一定會出現在原本陣列的最大或最小值（如果最小值是負數）
+所以用l , r 紀錄目前最大、最小值的index，每次插入後改變index即可
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(n) 
+
+
+class Solution {
+public:
+    vector<int> sortedSquares(vector<int>& nums) {
+        int n = nums.size() ;
+        vector<int> answer(n) ;
+        int cursor = n - 1 ; 
+        int r = n - 1 , l = 0 ; 
+
+        while ( l <= r ) {
+            if ( nums[l] * nums[l] >= nums[r] * nums[r] ) {
+                answer[cursor] = nums[l] * nums[l] ; 
+                cursor-- ;
+                l++ ;
+            }
+            else {
+                answer[cursor] = nums[r] * nums[r] ; 
+                cursor-- ; 
+                r-- ;
+            }
+        }
+
+        return answer ;
+    }
+};
