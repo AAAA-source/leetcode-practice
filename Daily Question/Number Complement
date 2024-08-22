@@ -1,0 +1,41 @@
+想法：先找出最高位的1出現在什麼位置，再從那個 1 往下依序翻轉每個位元
+
+技巧：使用 bit XOR，有 1 即翻轉、 0 則不動
+
+Time Complexity : O(log n) for n have logn bits , because n <= 2^31 , so is O(1)
+Space Complexity : O(1) fot variables 
+
+class Solution {
+public:
+    int findComplement(int num) {
+        bool flag = false ;
+
+        int complement = num ;
+        for(int i = 31 ; i >= 0 ; i-- ) {
+            if ( flag || ( num & (1 << i) ) ) {
+                flag = true ;
+                complement ^= (1 << i) ;
+            }
+        }
+
+        return complement ;
+    }
+};
+
+// simplify code 
+class Solution {
+public:
+    int findComplement(int num) {
+        bool flag = false ;
+
+        int complement = num ;
+        for(int i = 31 ; i >= 0 ; i-- ) {
+            if ( flag || ( num & (1 << i) ) ) {
+                flag = true ;
+                complement ^= (1 << i) ;
+            }
+        }
+
+        return complement ;
+    }
+};
