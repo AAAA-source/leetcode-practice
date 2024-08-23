@@ -1,0 +1,21 @@
+想法：對於比i-length , j-length 大的可能性，就只有小的那方找到比他更高的內部木棍才有可能；所以只要找到內部更高的木棍即可
+
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int max_value = 0 ;
+        int l = 0 , r = height.size() - 1 ; 
+
+        while (l < r) {
+            //cout << l << " " << r << endl ;
+            int min_height = min(height[l] , height[r]) ;
+            max_value = max( max_value , min_height * (r - l) ) ;
+            
+            while ( l < r && min_height >= height[l]  )
+                l++ ;
+            while ( l < r && min_height >= height[r] )
+                r-- ;            
+        }
+        return max_value ;
+    }
+};
