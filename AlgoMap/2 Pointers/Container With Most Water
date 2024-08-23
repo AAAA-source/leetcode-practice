@@ -1,5 +1,8 @@
 想法：對於比i-length , j-length 大的可能性，就只有小的那方找到比他更高的內部木棍才有可能；所以只要找到內部更高的木棍即可
 
+Time Complexity : O(n) for tracking two pointers from 0 ... n - 1 
+Space Complexity : O(1) for variables 
+
 class Solution {
 public:
     int maxArea(vector<int>& height) {
