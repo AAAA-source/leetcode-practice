@@ -1,0 +1,130 @@
+想法：首先如果前、後一開始是單調上升，可以直接跳到有可能接水的區域（l , r 之間一定有水槽出現）
+接著，從 l + 1 開始，找出下一個牆壁在哪裡（與 l 形成水槽），同時計算水槽的容量
+注意：因為有可能右邊的牆壁比左邊的矮，所以要用max_height 紀錄往左邊的最大高度（如果現在已經達到最大高度，代表這個就是左邊的牆壁）
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(n) for max height array
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size() ;
+        if ( n <= 2 )
+            return 0 ;
+
+        int l = 0 ;
+        int r = n - 1 ; 
+        while ( l + 1 < n && height[l] <= height[l + 1] )
+            l++ ; 
+        while ( r - 1 >= 0 && height[r] <= height[r - 1] )
+            r-- ; 
+
+        if ( l >= r )
+            return 0 ; 
+
+        vector<int> max_height(n) ; 
+        max_height[n - 1] = height[n - 1] ; 
+        for(int i = n - 2;  i >= 0 ; i--)
+            max_height[i] = max( max_height[i + 1] , height[i] ) ;
+
+        int sum = 0 ;
+        while ( l < r ) {
+            cout << l << endl ;
+            int next_wall = l + 1 ; 
+            while ( next_wall < r && height[next_wall] < height[l] ) {
+                if ( height[next_wall] == max_height[next_wall] )
+                    break ;
+                sum += ( min(height[l] , max_height[l + 1]) - height[next_wall] ) ;
+                next_wall++ ;
+            }
+            cout << "next wall is " << next_wall << endl ;
+            l = next_wall ;
+            
+        }
+
+        return sum ;
+    }
+};
+
+// 法二：經過觀察後可發現，每一個index的容量取決於左邊（不包含自己）、右邊（不包含自己）的最大高度所決定，如果有一側最大高度小於現在的，代表水會流掉；
+反之，水位可以上升到min( max_left , max_right ) 
+所以我們只需用兩個array 紀錄左、右兩側的最大高度即可，並計算出每格可以裝的水量
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(n) for max height arrays
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size() ;
+        if ( n <= 2 )
+            return 0 ; 
+
+        vector<int> max_left(n) ; 
+        vector<int> max_right(n) ; 
+
+        max_left[0] = height[0] ; 
+        max_right[n - 1] = height[n - 1] ;
+
+        for(int i = 1 ; i < n ; i++)
+            max_left[i] = max( max_left[i - 1] , height[i] ) ;
+        for(int i = n - 2 ; i >= 0 ; i-- )
+            max_right[i] = max( max_right[i + 1] , height[i] ) ;
+
+        int sum = 0 ; 
+        for(int i = 1 ; i < n - 1 ; i++)
+            sum += max(0 , min(max_left[i - 1] , max_right[i + 1]) - height[i] ) ;
+
+        return sum ;
+    }
+};
+
+// 法三：根據法二的思想，我們可以將其優化到O(1) space complexity，透過two pointers 的方法
+同樣是考慮（l , r）內每格的水量，如果 l , r 之中有任一個比原先的最高高度大，都先更新並調整（l , r ）範圍
+所以我們只需考慮 l + 1 , r - 1 的情況，
+因為我們並不知道max left , max right 兩者確切的數值（訪問 l + 1 , r - 1 當下，但是小者必然不可能再增加
+ex. max left , max right ，這樣代表 l + 1 的max left 已經固定，可能的max left 新增只會發生在l + 1 後面
+
+透過此方法，我們每次都可以挑選 l + 1 , r - 1 計算水量並更新，直到內部所有index 做完即完成
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(1) for variables 
+
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size() ;
+        if ( n <= 2 )
+            return 0 ; 
+
+        int l = 0 ; 
+        int r = n - 1; 
+
+        int sum = 0 , maxleft = 0 , maxright = 0 ;
+        while ( l <= r ) {
+            if ( height[l] >= maxleft ) {
+                maxleft = height[l] ;
+                l++ ;
+                continue ; 
+            }
+            if ( height[r] >= maxright ) {
+                maxright = height[r] ;
+                r-- ;
+                continue ;
+            }
+
+            if ( maxleft < maxright ) {
+                sum += maxleft - height[l] ;
+                l++ ;
+            }
+            else {
+                sum += maxright - height[r] ;
+                r-- ;
+            }
+
+        }
+
+        return sum ;
+    }
+};
