@@ -1,0 +1,87 @@
+想法：使用遞迴實作即可
+
+Time Complexity : O(n) for traversing tree
+Space Complexity : O(n) for recurrence 
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    static void DFS( TreeNode* root , vector<int>& result ) {
+        if ( root == nullptr )
+            return ;
+        else {
+            DFS( root->left ,result) ;
+            DFS(root->right , result) ;
+        }
+        result.push_back(root->val) ;
+        return ;
+    }
+
+    vector<int> postorderTraversal(TreeNode* root) {
+        if ( root == nullptr )
+            return {} ;
+
+        vector<int> result ;
+        DFS(root , result) ;
+
+        return result ;
+    }
+};
+
+// use stack instead of recurrence ( 以stack取代遞迴，提升效能並節省空間 )
+
+Time Complexity : O(n)
+Space Complexity : O(n) for the stack 
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        if ( root == nullptr )
+            return {} ;
+        
+        stack<TreeNode*> s ; 
+        vector<int> result ;
+
+        s.push(root) ; 
+
+        while ( !s.empty() ) {
+            TreeNode* temp = s.top() ; 
+            cout << temp->val << endl ;
+            if ( temp->left != nullptr ) {
+                s.push(temp->left) ;
+                temp->left = nullptr ;
+            }
+            else if ( temp->right != nullptr ) {
+                s.push(temp->right) ; 
+                temp->right = nullptr ;
+            }
+            else {
+                result.push_back( temp->val ) ;
+                s.pop() ;
+            }
+        }
+        
+        return result ;
+    }
+};
