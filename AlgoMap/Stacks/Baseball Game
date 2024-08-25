@@ -1,0 +1,77 @@
+想法：使用vector實作即可
+
+技巧：使用 accumulate（begin , end , 初始值）自動加總容器內的數值
+使用switch 省去許多if - else 
+
+Time Complexity : O(n) for looking all operations
+Space Complexity : O(n) for storing all numbers
+
+class Solution {
+public:
+    int calPoints(vector<string>& operations) {
+        vector<int> result ; 
+        for ( auto &op : operations ) {
+            switch ( op[0] ) {
+                case '+' : 
+                    result.push_back( 
+                    result[ result.size() - 1 ] + result[result.size() - 2] ) ;
+                    break ;
+                case 'D' : 
+                    result.push_back( result[result.size() - 1] * 2 ) ;
+                    break ;
+                case 'C' : 
+                    result.pop_back() ;
+                    break ;
+                default : 
+                    result.push_back( stoi(op) ) ;
+            }
+
+        }
+
+
+        return accumulate(result.begin() , result.end() , 0) ;
+    }
+};
+
+// 因為取用的只會是倒數第一、倒數第二的元素，所以可以用stack提升效率
+
+技巧：stack 的用法是 stack.push(number)(插入元素) , stack.pop() (只有刪除，不會返回值) , stack.top() (回傳頂層元素)
+
+
+class Solution {
+public:
+    int calPoints(vector<string>& operations) {
+        stack<int> s ;
+        for ( auto &op : operations ) {
+            switch ( op[0] ) {
+                case '+' : {
+                    int a = s.top() ; 
+                    s.pop() ; 
+                    int b = s.top() ;
+                    s.push(a) ;
+                    s.push( a + b ) ;
+                    break ;
+                }
+                case 'D' : 
+                    s.push( s.top() * 2 ) ;
+                    break ;
+                case 'C' : 
+                    s.pop() ;
+                    break ;
+
+                default : 
+                    s.push( stoi(op) ) ;
+            }
+
+        }
+
+
+        int sum = 0 ;
+        while ( !s.empty() ) {
+            sum +=  s.top() ;
+            s.pop() ;
+        }
+        return sum ;
+    }
+};
+
