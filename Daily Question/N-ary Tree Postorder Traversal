@@ -1,0 +1,97 @@
+想法：直接DFS即可，並依照要求輸出至 result array 
+
+Time Complexity : O(n) for traversing tree
+Space Complexity : O(n) for storing result
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> children;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+    }
+
+    Node(int _val, vector<Node*> _children) {
+        val = _val;
+        children = _children;
+    }
+};
+*/
+
+class Solution {
+public:
+    static void DFS(Node* root , vector<int>& result) {
+        if ( root == nullptr )
+            return ;
+
+        for( auto& i : root->children ) {
+            DFS(i , result) ;
+        }
+        result.push_back( root->val ) ;
+
+        return ;
+    }
+
+    vector<int> postorder(Node* root) {
+        vector<int> result ;
+        DFS(root , result) ;
+
+        return result ;
+    }
+};
+
+// use stack instead recurrsion call , but it will change the tree structure 
+
+Time Complexity : O(n) for traversing tree
+Space Complexity : O(n) for storing result , stack
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> children;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+    }
+
+    Node(int _val, vector<Node*> _children) {
+        val = _val;
+        children = _children;
+    }
+};
+*/
+
+class Solution {
+public:
+    vector<int> postorder(Node* root) {
+        if ( root == nullptr )
+            return {} ; 
+
+        stack<Node*> s ; 
+        s.push(root) ;
+
+        vector<int> result ;
+        while ( !s.empty() ) {
+            Node* now = s.top() ;
+            if ( now->children.empty() ) {
+                result.push_back(now->val) ;
+                s.pop() ;
+            }
+            else {
+                for( int i = now->children.size() - 1 ; i >= 0 ; i-- )
+                    s.push(now->children[i]) ;
+                now->children = {} ;
+            }
+        }
+        return result ;
+    }
+};
