@@ -1,0 +1,46 @@
+想法：經典的dijstra's algorithm ，唯一要注意的是pair< probability , index > 的順序不能用反，因為pair 的比較是先比較first 才是second
+
+技巧：使用priority_queue 快速找到最大元素
+.push( element ) : insert element and maintain 
+.top() : look the biggest element 
+.pop() : remove the biggest element and maintain 
+
+技巧：使用adjacency list 列出與該元素有邊的所有元素
+
+class Solution {
+public:
+    double maxProbability(int n, vector<vector<int>>& edges, vector<double>& succProb, int start_node, int end_node) {
+        vector< vector< pair<int , double> > > adj(n) ; 
+        // first index , second probability
+
+        for( int i = 0 ; i < edges.size() ; i++ ) {
+            adj[ edges[i][0] ].push_back( { edges[i][1] , succProb[i] } ) ;
+            adj[ edges[i][1] ].push_back( { edges[i][0] , succProb[i] } ) ;
+        }
+
+        vector<double> probability(n , 0.0) ;
+        probability[start_node] = 1.0 ;
+        priority_queue< pair<double , int> > max_prob ; 
+        max_prob.push( {1.0 , start_node} ) ;
+
+
+        vector<bool> visited(n , false) ;
+        while ( !max_prob.empty() ) {
+            pair<double , int> now = max_prob.top() ; 
+            max_prob.pop() ;
+
+            if ( visited[now.second] )
+                continue ;
+
+            visited[now.second] = true ;
+            for( auto &j : adj[now.second] ) {
+                if ( probability[j.first] < now.first * j.second ) {
+                    probability[j.first] = now.first * j.second ;
+                    max_prob.push( {probability[j.first] , j.first} ) ;
+                }
+            }
+        }
+        
+        return probability[ end_node ] ;
+    }
+};
