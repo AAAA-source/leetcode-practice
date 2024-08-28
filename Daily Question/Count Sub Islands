@@ -44,3 +44,90 @@ public:
         return count ;
     }
 };
+
+// another wau : use disjoint sets ,
+first assume every '1' is a node , which parent is itself
+then , merge the near '1' to a set , use "cover" array to record if this set be covered by grid1
+last , check every root that if this set is cover , and record by "count" 
+
+class Solution {
+public:
+    static int find_root( vector<int>& parent , int index  ) {
+        if ( parent[index] == index )
+            return index ; 
+        else {
+            parent[index] = find_root( parent , parent[index] ) ;
+            return parent[index] ;
+        }
+    }
+
+    static void Union( int u , int v  , vector<int> &parent , vector<int> &rank 
+     , vector<bool> &cover) {
+        int rootu = find_root( parent , u ) ;
+        int rootv = find_root( parent, v ) ;
+
+        if ( rootu == rootv )
+            return ;
+
+        if ( rank[rootu] > rank[rootv] ) {
+            parent[rootv] = rootu ;
+            cover[rootu] = cover[rootu] && cover[rootv] ;
+        }
+        else if ( rank[rootu] < rank[rootv] ) {
+            parent[rootu] = rootv ;
+            cover[rootv] = cover[rootu] && cover[rootv] ;
+        }
+        else {
+            parent[rootu] = rootv ;
+            rank[rootv]++ ;
+            cover[rootv] = cover[rootu] && cover[rootv] ;
+        }
+
+        return ;
+    }
+
+    int countSubIslands(vector<vector<int>>& grid1, vector<vector<int>>& grid2) {
+        int n = grid1.size() ; 
+        int m = grid1[0].size() ;
+        vector<int> parent(n * m) ;
+        vector<int> rank(n * m , 1) ;
+        vector<bool> cover(n * m , true ) ;
+
+        for( int i = 0 ; i < n ; i++ ) {
+            for(int j = 0 ; j < m ; j++) {
+                if ( grid2[i][j] == 1 ) {
+                    parent[i * m + j] = i * m + j ;
+
+                    if ( grid1[i][j] == 0 )
+                        cover[i * m + j] = false ;
+                }
+            }
+        }
+
+        for( int i = 0 ; i < n ; i++ ) {
+            for(int j = 0 ; j < m ; j++) {
+                if ( grid2[i][j] == 0 )
+                    continue ;
+                
+                // union near sets 
+                if ( i + 1 < n && grid2[i + 1][j] == 1 )
+                    Union( i * m + j , (i + 1) * m + j , parent , rank , cover ) ;
+                if ( j + 1 < m && grid2[i][j + 1] == 1 )
+                    Union(i * m + j , i * m + j + 1 , parent , rank , cover) ;
+            }
+        }
+
+        
+        int count = 0 ;
+        for( int i = 0 ; i < n ; i++ ) {
+            for(int j = 0 ; j < m ; j++) {
+                if ( grid2[i][j] == 0 )
+                    continue ; 
+                if ( parent[i * m + j ] == i * m + j && cover[i * m + j] )
+                    count++ ;
+            }
+        }
+
+        return count ;
+    }
+};
