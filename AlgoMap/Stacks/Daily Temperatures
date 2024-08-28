@@ -1,0 +1,40 @@
+想法：從尾端開始，維護一個單堆棧（Monotonic stack），並在每次看過元素之後新增進單堆棧
+
+Tuition: 如果目前這個元素比堆疊內看到的元素還要大；那麼任何往前的元素只有可能找到目前元素為答案，而非往後的元素
+所以我們只要維護一個index 從小到大、數值也是從小到大的stack 即可
+
+技巧：為了快速找到該數值對應的位置，將 ( temparature , index ) 存入stack 
+
+class Solution {
+public:
+    vector<int> dailyTemperatures(vector<int>& temperatures) {
+        stack< pair<int ,int> > mono_stack ; 
+        vector<int> answer( temperatures.size() ) ; 
+        for(int i = temperatures.size() - 1 ; i >= 0 ; i--) {
+            // temperatures[i]
+            pair<int , int> ans = {-1 , -1} ;
+            bool success = false ;
+            while ( !mono_stack.empty() ) {
+                ans = mono_stack.top() ;
+                //cout << "now check " << ans.first << endl ;
+                if ( ans.first <= temperatures[i] )
+                    mono_stack.pop() ;
+                else {
+                    success = true ;
+                    break ;
+                }
+            }
+
+            if ( success )
+                answer[i] = ans.second - i ;
+            else 
+                answer[i] = 0 ;
+            
+            mono_stack.push( {temperatures[i] , i} ) ;
+
+            //cout << answer[i] << endl ;
+        }
+
+        return answer ;
+    }
+};
