@@ -1,0 +1,40 @@
+想法：用stack 紀錄最後出現的開括號，遇到閉括號就pop stack最上層的元素，如果stack 是空的或是沒有match，回傳false 
+反之，pop 後繼續檢查往後元素。
+注意：有可能開括號較多，導致stack 未清空，所以最後要檢查 stack.empty() 
+
+Time Complexity : O(n) for traversing the string 
+Space Complexity : O(n) for the stack 
+
+class Solution {
+public:
+    static bool close_parentheses(char c) {
+        return (c == ')') || (c == '}') || (c == ']') ;
+    }
+    static char match( char c ) {
+        if ( c == ')' )
+            return '(' ; 
+        else if ( c == ']' )
+            return '[' ; 
+        else 
+            return '{' ;
+    }
+
+    bool isValid(string s) {
+        stack<char> candidates ;
+        bool success = true ; 
+        for( auto &i : s ) {
+            if ( close_parentheses(i) ) {
+                if ( !candidates.empty() && candidates.top() == match(i) ) 
+                    candidates.pop() ; 
+                else {
+                    success = false ; 
+                    break ;
+                }
+            }
+            else 
+                candidates.push(i) ;
+        }
+        
+        return success && candidates.empty() ;
+    }
+};
