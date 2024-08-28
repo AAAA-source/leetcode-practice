@@ -55,3 +55,53 @@ public:
         return operands.top() ;
     }
 };
+
+
+// functional 
+class Solution {
+public:
+    static int operation( char c , stack<int> &operands) {
+        int a = operands.top() ;
+        operands.pop() ; 
+        int b = operands.top() ; 
+        operands.pop() ;
+
+        switch (c) {
+            case '+' : 
+                return b + a ;
+            case '-' : 
+                return b - a ;
+            case '*' : 
+                return b * a ; 
+            case '/' : 
+                return b / a ; 
+
+            default : 
+                return -1 ;
+        }
+        
+    }
+    
+    int evalRPN(vector<string>& tokens) {
+        stack<int> operands ; 
+        for(auto &s : tokens) {
+            if ( s == "+" ) {
+                operands.push( operation('+' , operands) ) ;
+            }
+            else if ( s == "-" ) {
+                operands.push( operation('-' , operands) ) ;
+            }
+            else if ( s == "*" ) {
+                operands.push( operation('*' , operands) ) ;
+            }
+            else if ( s == "/" ) {
+                operands.push( operation('/' , operands) ) ;
+            }
+            else {
+                operands.push( stoi(s) ) ;
+            }
+        }
+
+        return operands.top() ;
+    }
+};
