@@ -3,7 +3,10 @@
 Tuition: 如果目前這個元素比堆疊內看到的元素還要大；那麼任何往前的元素只有可能找到目前元素為答案，而非往後的元素
 所以我們只要維護一個index 從小到大、數值也是從小到大的stack 即可
 
-技巧：為了快速找到該數值對應的位置，將 ( temparature , index ) 存入stack 
+技巧：為了快速找到該數值對應的位置，將 ( temperature , index ) 存入stack 
+
+Time Complexity : O(n) for pushing , poping all elements 
+Space Complexity : O(n) for storing the elements in stack
 
 class Solution {
 public:
@@ -33,6 +36,59 @@ public:
             mono_stack.push( {temperatures[i] , i} ) ;
 
             //cout << answer[i] << endl ;
+        }
+
+        return answer ;
+    }
+};
+
+
+// clean code
+class Solution {
+public:
+    vector<int> dailyTemperatures(vector<int>& temperatures) {
+        stack< pair<int ,int> > mono_stack ; 
+        vector<int> answer( temperatures.size() ) ; 
+        for(int i = temperatures.size() - 1 ; i >= 0 ; i--) {
+            // temperatures[i]
+
+            while ( !mono_stack.empty() && mono_stack.top().first <= temperatures[i] ) 
+                mono_stack.pop() ;
+            
+
+            if ( !mono_stack.empty() )
+                answer[i] = mono_stack.top().second - i ;
+            else 
+                answer[i] = 0 ;
+            
+            mono_stack.push( {temperatures[i] , i} ) ;
+
+            //cout << answer[i] << endl ;
+        }
+
+        return answer ;
+    }
+};
+
+// another way : use stack to record which element doesn't match the warmer temperature 
+When we meet the new temperature , check the top of stack ( the minimum temperature in stack ) and update the stack 
+
+Proof : if the top of stack is warmer than other temperatures in stack , than that element will match the top element 
+So , the stack is monotonic 
+
+
+class Solution {
+public:
+    vector<int> dailyTemperatures(vector<int>& temperatures) {
+        stack< pair<int ,int> > mono_stack ; 
+        vector<int> answer( temperatures.size() ) ; 
+        
+        for(int i = 0 ; i < temperatures.size() ; i++ ) {
+            while ( !mono_stack.empty() && temperatures[i] > mono_stack.top().first ) {
+                answer[mono_stack.top().second] = i - mono_stack.top().second ;
+                mono_stack.pop() ;
+            }
+            mono_stack.push( {temperatures[i] , i} ) ;
         }
 
         return answer ;
