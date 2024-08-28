@@ -1,0 +1,57 @@
+想法：用stack 紀錄需要被運算的數字，如果遇到符號的時候就把最上面（最後出現）的兩個數字做運算
+只需注意減號跟除號的a , b 位置
+
+Time Complexity : O(n) for traversing all strings
+Space Complexity : O(n) for the operands stack 
+
+class Solution {
+public:
+    int evalRPN(vector<string>& tokens) {
+        stack<int> operands ; 
+        int index = 0 ; 
+
+        for(auto &s : tokens) {
+            if ( s == "+" ) {
+                int a = operands.top() ;
+                operands.pop() ; 
+                int b = operands.top() ; 
+                operands.pop() ;
+
+                operands.push(a + b) ;
+                index++ ;
+            }
+            else if ( s == "-" ) {
+                int a = operands.top() ;
+                operands.pop() ; 
+                int b = operands.top() ; 
+                operands.pop() ;
+
+                operands.push(b - a) ;
+                index++ ;
+            }
+            else if ( s == "*" ) {
+                int a = operands.top() ;
+                operands.pop() ; 
+                int b = operands.top() ; 
+                operands.pop() ;
+
+                operands.push(a * b) ;
+                index++ ;
+            }
+            else if ( s == "/" ) {
+                int a = operands.top() ;
+                operands.pop() ; 
+                int b = operands.top() ; 
+                operands.pop() ;
+
+                operands.push(b / a) ;
+                index++ ;
+            }
+            else {
+                operands.push( stoi(s) ) ;
+            }
+        }
+
+        return operands.top() ;
+    }
+};
