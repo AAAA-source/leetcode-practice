@@ -1,0 +1,46 @@
+想法：DFS每座島嶼，並檢查島嶼中每一格是否在grid1 都有對應，否則回傳false 
+看過島嶼之後需把每格都填成0，以免之後重複運算
+要注意 && 的快速判斷，所以先將四種方向DFS做完後再回傳 a && b && c && d 
+
+Time Complexity : O(m * n) for traversing all grids 
+Space Complexity : O(m * n ) for recurrsion 
+
+
+class Solution {
+public:
+    static bool DFS( vector<vector<int>>& grid1, vector<vector<int>>& grid2 , bool flag 
+     , int row , int column ) 
+    {
+        if ( row >= grid2.size() || row < 0 || column >= grid2[0].size() || column < 0)
+            return flag ;
+
+        if ( grid2[row][column] == 0 )
+            return flag ; 
+        
+        if ( grid1[row][column] == 0 )
+            flag = false ;
+
+        grid2[row][column] = 0 ;
+        bool a =  DFS( grid1 , grid2 , flag , row - 1 , column  ) ; 
+        bool b = DFS( grid1 , grid2 , flag , row + 1 , column  ) ; 
+        bool c = DFS( grid1 , grid2 , flag , row , column - 1  ) ; 
+        bool d = DFS( grid1 , grid2 , flag , row , column + 1 ) ;
+
+        return a && b && c && d ; 
+    }
+
+    int countSubIslands(vector<vector<int>>& grid1, vector<vector<int>>& grid2) {
+        int count = 0 ; 
+        for( int i = 0 ; i < grid2.size() ; i++ ) {
+            for( int j = 0 ; j < grid2[0].size() ; j++ ) {
+                if ( grid2[i][j] != 0 )  {
+                    //cout << "start from " << i << " " << j << endl ;
+                    if ( DFS( grid1 , grid2 , true , i ,j ) )
+                        count++ ;
+                }
+            }
+        }
+
+        return count ;
+    }
+};
