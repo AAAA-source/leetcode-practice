@@ -1,0 +1,88 @@
+想法：維護兩個stack ， 一個是正常的stack（支援pop , top）；另一個是monotonic stack ，只有當目前元素比top更小時才會push進去，
+如此可以維持該stack top 永遠是最小的特性，同時也代表著目前出現過的最小值。（支援 getmin）
+當需要pop時，只需檢查monotonic stack 的 top 是不是該元素即可，若是的話就pop掉（同理，push 時如果遇到跟top 一樣小的元素也要push 進去）
+
+Time Complexity : O(n) for looking all elements
+Space Complexity : O(n) for two stacks 
+
+class MinStack {
+    /// here we have used the stack to implement the stack
+public:      stack<pair<int,int>> st;
+    MinStack() {
+        
+    }
+    
+    void push(int val) {
+        int mini;
+        if(st.empty()){
+            mini = val;
+        }
+        else{
+            int puranamin = st.top().second;
+            mini = min(val,puranamin);
+        }
+        st.push({val,mini});
+    }
+    
+    void pop() {
+        st.pop();
+        
+    }
+    
+    int top() {
+       return  st.top().first;
+        
+    }
+    
+    int getMin() {
+        return st.top().second;
+        
+    }
+};
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack* obj = new MinStack();
+ * obj->push(val);
+ * obj->pop();
+ * int param_3 = obj->top();
+ * int param_4 = obj->getMin();
+ */
+
+// another way: use a stack to store pairs (now value , min value) , and always maintain the min value by
+min( stack top's min value , now value )
+
+class MinStack {
+public:
+    stack<pair<int , int>> general ;
+    
+    void push(int val) {
+        if ( general.empty() )
+            general.push( {val , val} ) ;
+        else 
+            general.push( {val , min( val , general.top().second )} ) ;
+        return ;
+    }
+    
+    void pop() {
+        general.pop() ;
+        return ;
+    }
+    
+    int top() {
+        return general.top().first ;
+    }
+    
+    int getMin() {
+        return general.top().second ;
+    }
+};
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack* obj = new MinStack();
+ * obj->push(val);
+ * obj->pop();
+ * int param_3 = obj->top();
+ * int param_4 = obj->getMin();
+ */
