@@ -2,7 +2,7 @@
 如此可以維持該stack top 永遠是最小的特性，同時也代表著目前出現過的最小值。（支援 getmin）
 當需要pop時，只需檢查monotonic stack 的 top 是不是該元素即可，若是的話就pop掉（同理，push 時如果遇到跟top 一樣小的元素也要push 進去）
 
-Time Complexity : O(n) for looking all elements
+Time Complexity : O(1) for each operation
 Space Complexity : O(n) for two stacks 
 
 class MinStack {
