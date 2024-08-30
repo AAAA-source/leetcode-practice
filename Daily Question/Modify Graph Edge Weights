@@ -1,0 +1,86 @@
+想法：分為兩步驟想
+1.一開始先不要把任何 -1 的edges加入graph 中，這時候所有edges都是正的，可以使用Dijkstra's algorithm 
+(1) init_value > target : 初始graph 可能沒辦法到達 destination 或是距離過遠，有機會透過改變-1而達成目標
+(2) init_value == target : 初始graph 已經達成目標，只要把所有-1 edges都改成足夠大的元素，不會造成最短路徑改變即可（例如 2e9）
+(3) init_value < target : 初始graph 已經找到一條比target更短的路，所以不可能達成目標
+
+2. 接著我們依序把所有-1 edges改變後加入 graph
+(1) 還沒有達成目標：把edges設成最小值(1) ，再跑一次Dijkstra看最短路徑的長度是多少，如果最短路徑小於等於target 
+代表這條最短路徑有經過目前的edges，所以把這條edge 調成可以符合target的值即可（只要最短路徑小於等於target , 就一定會經過這條edges , 
+沒有的話就跟還未加入這條edges相同，跑Dijkstra 只會出現比target大的值）
+(2)已經達成目標：把edges調成一個夠大的數值，使得這條edges不會影響最短路徑（例如 2e9）
+
+
+class Solution {
+public:
+    const int INF = 2e9 ;
+
+    long long int Dijkstra( vector<vector<pair<int , int>>>& adjancylist , 
+    int source , int destination , int n ) {
+        vector<long long int> distance(n , INF) ; 
+        distance[source] = 0 ; 
+        vector<bool> visited(n , false) ; 
+
+        priority_queue< pair<long long int , int> , 
+        vector<pair<long long int , int>> ,greater<pair<long long int , int>> > minheap ; 
+        minheap.push( {distance[source] , source} ) ;
+
+        while ( !minheap.empty() ) {
+            auto now = minheap.top() ; 
+            if ( visited[now.second] ) {
+                minheap.pop() ;
+                continue ;
+            }
+
+            visited[now.second] = true ;
+            for( auto &i : adjancylist[now.second] ) {
+                if ( now.first + i.first < distance[i.second] ) {
+                    distance[i.second] = now.first + i.first ;
+                    minheap.push( {distance[i.second] , i.second} ) ;
+                }
+            }
+        }
+
+        return distance[destination] ;
+    }
+
+    vector<vector<int>> modifiedGraphEdges(int n, vector<vector<int>>& edges, int source, int destination, int target) {
+        vector< vector<pair<int , int>> > adjancylist(n) ;
+        for( auto &e : edges ) {
+            if ( e[2] == -1 )
+                continue ; 
+
+            adjancylist[ e[0] ].push_back( {e[2] , e[1]} ) ;
+            adjancylist[ e[1] ].push_back( {e[2] , e[0]} ) ;
+        }
+
+        bool match ;
+        long long int init_value = Dijkstra( adjancylist , source ,destination , n ) ;
+        if ( init_value < target )
+            return {} ; 
+        else if ( init_value == target ) {
+            match = true ;
+        }
+        else 
+            match = false ;
+
+        for( auto &e : edges ) {
+            if ( e[2] != -1 )
+                continue ; 
+
+            e[2] = (match == true)? INF : 1 ; 
+            adjancylist[e[0]].push_back( {e[2] , e[1]} ) ;
+            adjancylist[ e[1] ].push_back( {e[2] , e[0]} ) ;   
+
+            if ( !match ) {
+                long long int result = Dijkstra( adjancylist , source , destination , n ) ; 
+                if ( result <= target ) {
+                    match = true ;
+                    e[2] += target - result ;
+                }
+            }
+        }
+        
+        return (match == true)? edges : vector<vector<int>>{} ;
+    }
+};
