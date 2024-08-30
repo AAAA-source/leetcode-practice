@@ -1,0 +1,59 @@
+想法：透過迴圈紀錄prev , now 兩個指針，每次都把now->next = prev 即可
+注意：需在改掉now->next 之前把原本的node存下來，未來的指針才能移到正確的位置上；同時回傳最後一個prev即是原本list的尾巴（新list 的起點）
+
+Time Complexity : O(n) for traversing list 
+Space Complexity : O(1) for variables 
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode *cursor = head , *last = nullptr ;
+        while ( cursor != nullptr ) {
+            ListNode* nextnode = cursor->next ;
+            cursor->next = last ;
+            last = cursor ;
+            cursor = nextnode ;
+        }
+
+        return last ;
+    }   
+};
+
+// another way : use recurrsion to implementation
+
+Time Complexity : O(n) for traversing the list 
+Space Complexity : O(n) for recurrsion call stack 
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head ) {
+        if ( head == nullptr || head->next == nullptr )
+            return head ;
+        
+        ListNode* node = reverseList( head->next ) ;
+        head->next->next = head ; 
+        head->next = nullptr ;
+
+        return node ;
+    }   
+};
