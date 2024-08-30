@@ -1,0 +1,102 @@
+想法：針對該條linked list 處理，只需檢查目前的node跟前一個node是否一樣即可，如果一樣的話前一個node就連結到後一個node，依序檢查至結尾
+
+Time Complexity : O(n) for traversing the list 
+Space Complexity : O(1) for variables 
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        ListNode* cursor = head ; 
+        while ( cursor != nullptr  ) {
+            ListNode* nextcursor = cursor->next ;
+            while ( nextcursor != nullptr && nextcursor->val == cursor->val ) 
+                nextcursor = nextcursor->next ;
+            cursor->next = nextcursor ;
+            cursor = nextcursor ;
+        }
+
+        return head ;
+    }
+};
+
+// use prev , now cursor to track how to connect them
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if ( head == nullptr )
+            return nullptr ;
+        
+        ListNode* prev = head ;
+        ListNode* now = head->next ; 
+        while ( now != nullptr ) {
+            if ( prev->val != now->val ) {
+                prev->next = now ; 
+                prev = now ;
+            }
+            now = now->next ;
+        }
+        prev->next = nullptr ;
+
+        return head ;
+    }
+};
+
+// another way : move the list to another list which we build and return
+注意：結尾需補連結上nullptr, 否則可能會連結到尾端重複的元素
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (!head)
+            return nullptr ;
+        ListNode* resulthead = nullptr ;
+        ListNode* resulttail ; 
+
+        ListNode* cursor = head ; 
+        while (cursor != nullptr) {
+            if ( resulthead == nullptr ) {
+                resulthead = cursor ;
+                resulttail = cursor ;
+            }
+            else if ( resulttail->val != cursor->val ) {
+                resulttail->next = cursor ;
+                resulttail = cursor ;
+            }
+
+            cursor = cursor->next ;
+        }
+        resulttail->next = nullptr ;
+
+        return resulthead ;
+    }
+};
