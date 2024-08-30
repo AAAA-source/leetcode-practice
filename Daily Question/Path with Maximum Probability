@@ -1,4 +1,4 @@
-想法：經典的dijstra's algorithm ，唯一要注意的是pair< probability , index > 的順序不能用反，因為pair 的比較是先比較first 才是second
+想法：經典的dijkstra's algorithm ，唯一要注意的是pair< probability , index > 的順序不能用反，因為pair 的比較是先比較first 才是second
 
 技巧：使用priority_queue 快速找到最大元素
 .push( element ) : insert element and maintain 
