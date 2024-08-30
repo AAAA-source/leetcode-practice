@@ -10,6 +10,9 @@
 沒有的話就跟還未加入這條edges相同，跑Dijkstra 只會出現比target大的值）
 (2)已經達成目標：把edges調成一個夠大的數值，使得這條edges不會影響最短路徑（例如 2e9）
 
+Time Complexity : O( |E| * (|E| + |V| * log|V|) ) for running Dijkstra |E| times 
+Space Complexity : O( |V| + |E|) for storing nodes and edges
+
 
 class Solution {
 public:
