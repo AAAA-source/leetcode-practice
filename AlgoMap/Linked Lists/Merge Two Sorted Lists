@@ -1,6 +1,7 @@
 想法：新增一條空的linked list，依次把所有list1 , list2 nodes都移到新的list上並回傳
 注意：需要注意當一條list 到結尾時，需要把另外一條未完成的list連接過去
 
+// list1 has a nodes , list2 has b nodes 
 Time Complexity : O(a + b) for traversing all nodes 
 Space Complexity : O(1) for variables (we don't create new list , just moving the nodes) 
 
