@@ -1,0 +1,94 @@
+Intuition
+Because the number range only 1 - 100 , so we can build a list to record the number appear at which row
+Then , we first considered the rows which only have one kind of number , we chosed them and record in "appear" (hash table)
+
+After we pick the number which appear in whoke row , we start brute forces to find the answer . We always considered the biggest valid number
+(that mean this number appeat in some row which has not been visited and this number isn't in "appear" hash table )
+p.s.the number in appear mean these numbers have been choosed before
+
+Approach
+Write a DFS function and keep find the maximun value
+
+Complexity
+Time complexity:O(10!) for brute force
+Space complexity: O(m * n) for storing the rows of all elements appear
+
+Code
+class Solution {
+public:
+    static int DFS( vector< vector<int> >& appear , int value , vector<bool> &visited
+     , int choosed , int n , unordered_set<int>& count) {
+        //cout << "value is " << value << endl ;
+        if ( value <= 0 || choosed >= n  )
+            return 0 ;
+
+        int max_value = 0 ;
+        for( int i = value ; i > 0 ;i--) {
+            if ( appear[i].empty() )
+                continue ; 
+            if ( count.find(i) != count.end() )
+                continue ;
+
+            //cout << "value is not empty " << i << endl ;  
+            bool flag = false ;
+            for( auto &j : appear[i] ) {
+                if ( !visited[j] ) {
+                    flag = true ;
+                    break ;
+                }
+            }
+            if ( !flag )
+                continue ;
+
+            for( int j = 0 ; j < appear[i].size() ; j++ ) {
+                if ( !visited[ appear[i][j] ] ) {
+                    visited[ appear[i][j] ] = true ;
+                    //cout << "choosed " << i << endl ;
+                    max_value = max( max_value , 
+                    i + DFS( appear , i - 1 , visited , choosed + 1 , n , count) ) ;
+
+                    visited[ appear[i][j] ] = false ;
+                } 
+            }
+
+            break ;
+        }
+
+        return max_value ;
+    }
+
+    int maxScore(vector<vector<int>>& grid) {
+        int n = grid.size() ;
+        int m = grid[0].size() ;
+
+        vector< vector<int> > appear( 105 ) ; 
+        for( int i = 0 ; i < n ; i++ ) {
+            for( int j = 0 ; j < m ; j++ ) {
+                appear[ grid[i][j] ].push_back(i) ;
+            }
+        }
+
+        vector<bool> visited(n , false) ;
+        unordered_set<int> count ; 
+        int ans = 0 ;
+        for( int i = 0 ; i < n ; i++ ) {
+            bool same = true ; 
+            for( int j = 1 ; j < m ; j++ ) {
+                if ( grid[i][j] != grid[i][0] ) {
+                    same = false ;
+                    break ;
+                }
+            }
+
+            if ( !same || count.find( grid[i][0]) != count.end() )
+                continue ;
+
+            count.insert( grid[i][0] ) ; 
+            visited[i] = true ;
+            ans += grid[i][0] ;
+        }
+
+        return ans + DFS( appear , 100 , visited , 0 , n , count ) ;
+
+    }
+};
