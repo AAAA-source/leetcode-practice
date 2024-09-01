@@ -1,0 +1,22 @@
+Intuition
+if two grids are the same color , the distance between two grids must to be a even number , so we only check if the distance is even number
+
+In the contest , I figure that there are two way to let the distance become even number
+(1) row distance is even , column distance is even
+(2) row distance is odd , column distance is odd
+
+Complexity
+Time complexity: O(1) for checking
+Space complexity: O(1) for variables
+
+Code
+class Solution {
+public:
+    bool checkTwoChessboards(string coordinate1, string coordinate2) {
+        int row = abs( coordinate1[0] - coordinate2[0] ) ; 
+        int column = abs( coordinate1[1] - coordinate2[1] ) ;
+
+        return ( row % 2 == 1 && column % 2 == 1 ) || 
+                (row % 2 == 0 && column % 2 == 0) ;
+    }
+};
