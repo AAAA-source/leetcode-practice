@@ -1,0 +1,50 @@
+Intuition
+Because the answer ask the k-th smallest distance , so we only care about the 1 , 2 ... k smallest distance
+
+Then , we use a max heap to keep track the k smallest distance ,
+when there is new distance we discover :
+
+the number of distance we ever seen less than k : add the distance
+the number of distance we ever seen >= k : we only add into our candidate when the new distance is smaller than k-th smallest distance
+Finally , after we considered the new distance , we just need to fill the answer array
+
+the number of distance we ever seen less than k : -1
+the number of distance we ever seen >= k : the k-th smallest distance
+
+Approach
+we use a max heap (in C++ , this also cll priority queue) , and always maintain the k elements inside
+
+This way , we can easily (in O(1) time) to find the k-th smallest distance
+, because it is the top of max heap
+
+Complexity
+Time complexity:O(nlogk) for maintaining the heap( take O(logk) ) * n times
+Space complexity:O(n + k ) for the answer array( O(n) ) and the heap ( O(k) )
+
+Code
+class Solution {
+public:
+    vector<int> resultsArray(vector<vector<int>>& queries, int k) {
+        int n = queries.size() ;
+        vector<int> answer(n) ; 
+        priority_queue<int> k_length ; 
+        for( int i = 0 ; i < n ; i++ ) {
+            int distance = abs( queries[i][0] ) + abs( queries[i][1] ) ;
+
+            if ( k_length.size() < k )
+                k_length.push( distance ) ;
+            else if ( k_length.top() > distance ) {
+                k_length.push( distance ) ;
+                k_length.pop() ;
+            }
+            
+
+            if ( k_length.size() >= k )
+                answer[i] = k_length.top() ; 
+            else 
+                answer[i] = -1 ;
+        }
+
+        return answer ;
+    }
+};
