@@ -1,0 +1,42 @@
+想法：先算出循環一次總共需要多少長度的粉筆，接著把 k %= sum , 接著從0開始尋找哪個index 以前的長度會嚴格大於k (也就是答案)
+注意:需要注意integer overflow , 所以要先cast 成long long int
+
+Time Complexity : O(n) for counting prefix sum
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int chalkReplacer(vector<int>& chalk, int k) {
+        long long int sum = 0 ; 
+        for( auto &i : chalk )
+            sum += i ;
+        if ( k >= sum )
+            k %= sum ; 
+        int index = 0 ; 
+        while ( k >= chalk[index] ) {
+            k -= chalk[index] ;
+            index++ ;
+        }
+        
+        return index ;
+    }
+};
+
+// 也可以使用accumulate 函式幫忙
+技巧：accumulate( 開始的位置 , 結束位置的下一個位置 , 初始值 )
+
+class Solution {
+public:
+    int chalkReplacer(vector<int>& chalk, int k) {
+        long long int sum = accumulate( chalk.begin() , chalk.end() , static_cast<long long int>(0) ) ; 
+        if ( k >= sum )
+            k %= sum ; 
+        int index = 0 ; 
+        while ( k >= chalk[index] ) {
+            k -= chalk[index] ;
+            index++ ;
+        }
+        
+        return index ;
+    }
+};
