@@ -1,0 +1,40 @@
+想法：使用fast , slow pointers 的方法，先將fast pointer 往後移n 個位置，接著再一起移動兩個指針，這樣當fast pointer 碰到尾巴的時候；
+slow pointer 會剛好到中間。接著刪除即可
+注意：可能會刪掉頭（第一個元素），所以要確認頭的位置
+
+Time Complexity : O(n) for fast pointer from first to n-th element
+Space Complexity : O(1) for variables 
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode *fast = head , *slow = head ; 
+        while (n--) {
+            fast = fast->next ;
+        }
+
+        ListNode* prev = nullptr ;
+        while ( fast != nullptr ) {
+            fast = fast->next ; 
+            prev = slow ;
+            slow = slow->next ;
+        }
+        
+        if ( prev == nullptr )
+            head = head->next ; 
+        else 
+            prev->next = slow->next ;
+
+        return head ;
+    }
+};
