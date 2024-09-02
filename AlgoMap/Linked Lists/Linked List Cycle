@@ -1,0 +1,59 @@
+想法：使用雙指針的方法，一個快指針每次動兩步；另一個慢指針一次動一步
+這樣如果有cycle兩者必然會相遇；反之則不會相遇
+
+Time Complexity : O(n) for traversing list
+Space Complexity : O(1) for variables
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        ListNode* fast = head ; 
+        ListNode* slow = head ; 
+
+        while ( fast != nullptr && fast->next != nullptr  ) {
+            fast = fast->next->next ;
+            slow = slow->next ;
+            if ( fast == slow )
+                return true ;
+        }
+
+        return false ;
+    }
+};
+
+法二：用hash table記住已經走過的node,如果重複遇到的話就代表有cycle
+Time Complexity : O(n) for traversing list
+Space Complexity : O(n) for hash table
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        unordered_set< ListNode* > appear ; 
+        
+        ListNode* cursor = head ; 
+        while ( cursor != nullptr ) {
+            if ( appear.find(cursor) != appear.end() )
+                return true ;
+            appear.insert( cursor ) ;
+            cursor = cursor->next ;
+        }     
+
+        return false ;
+    }
+};
