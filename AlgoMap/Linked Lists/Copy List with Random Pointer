@@ -1,0 +1,70 @@
+想法：先用一般的方法建立一個沒有random link 的linked list , 並紀錄原本node的位置對應第幾個node , 同時也記錄新的linked list第幾個node在哪個位置
+接著，開始建立random link , 當看到link 的時候，先用「原本node的位置對應第幾個node」找出是第幾個node , 接著再使用「新的linked list第幾個node在哪個位置」
+找到目前新linked list的節點應該連到新list 的哪裡即可
+
+技巧：使用hash table 達成快速查找（ C++ 中使用 unordered map ）
+注意：要新增nullptr 獨立的位置，否則會被當成一般的0使用
+
+fact : 在debug時發現 !cursor 竟然不同於 cursor != nullptr ，以後要注意
+
+Time Complexity : O(n) for traversing the list
+Space Complexity : O(n) for new list and hash tables 
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+    
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+        if ( !head )
+            return nullptr ;
+        unordered_map< Node* , int >  address_to_index ;
+        unordered_map< int , Node* > index_to_newaddress ;
+
+        // insert : null case 
+        address_to_index[nullptr] = -1 ;
+        index_to_newaddress[ -1 ] = nullptr ; 
+
+        Node dummy(0) ; 
+        Node* tail = &dummy ;
+        Node* cursor = head ;
+        int index = 0 ;
+        while ( cursor != nullptr ) {
+            address_to_index[ cursor ] = index ;
+            //cout << cursor << " : " << index << endl ;
+
+            tail->next = new Node(cursor->val) ;
+            tail = tail->next ;
+            index_to_newaddress[ index ] = tail ;
+            //cout << index << " : " <<  index_to_newaddress[ index ] << endl ;
+            cursor = cursor->next ;
+            index++ ;
+        }
+        tail->next = nullptr ;
+
+        cursor = head ; 
+        Node* newcursor = dummy.next ;
+        while ( cursor != nullptr ) {
+            newcursor->random = index_to_newaddress[ address_to_index[cursor->random] ];
+            //cout << newcursor << " random is " << newcursor->random << endl ;
+
+            cursor = cursor->next ;
+            newcursor = newcursor->next ;
+        } 
+
+        return dummy.next ;
+    }
+};
