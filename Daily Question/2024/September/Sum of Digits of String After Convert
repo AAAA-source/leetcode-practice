@@ -1,0 +1,27 @@
+想法：照著做即可，但是因為k >= 1 , 所以我們可以直接做第一次的轉換；省略變換成龐大數字串再進行轉換的時間
+
+Time Complexity : O(n * k) for transforming k times
+Space Complexity : O(n) for the number change to string
+
+class Solution {
+public:
+    int getLucky(string s, int k) {
+        int sum = 0 ;
+        // already transform one time
+        for( auto &c : s ) {
+            int temp =  c - 'a' + 1  ;
+            sum += temp / 10 + temp % 10 ;
+        }
+
+        k-- ; 
+        while ( k-- ) {
+            string news = to_string(sum) ;
+            int newsum = 0 ;
+            for( auto &c : news )
+                newsum += (c - '0') ;
+            sum = newsum ;
+        }        
+        
+        return sum ;
+    }
+};
