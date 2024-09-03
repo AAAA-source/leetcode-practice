@@ -68,3 +68,53 @@ public:
         return dummy.next ;
     }
 };
+
+
+// 法二：合併兩個轉換函式，改為紀錄新node與舊node的對應，這樣在建好新node以後；只要根據每個舊node的連接情況連結對應的新node即可
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+    
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+        if ( head == nullptr )
+            return nullptr ;
+
+        Node* cursor = head ; 
+
+        unordered_map<Node*,Node*> transform ;
+        transform[nullptr] = nullptr ;
+
+        while ( cursor != nullptr  ) {
+            transform[cursor] = new Node( cursor->val ) ;
+            cursor = cursor->next ;
+        }
+
+        cursor = head ; 
+        while ( cursor != nullptr ) {
+            Node* now = transform[cursor] ;
+
+            now->next = transform[ cursor->next ] ; 
+            now->random = transform[ cursor->random ] ;
+
+            cursor = cursor->next ;
+        }
+
+
+        return transform[head] ;
+    }
+};
