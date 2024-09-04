@@ -1,0 +1,23 @@
+想法：實作一個找upper bound的函式，用binary search 做即可
+注意：有可能要加在最末尾的位置，所以初始化r = nums.size() 而非 nums.size() - 1 
+
+Time Complexity : O(logn) for binary search 
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+        int l = 0 , r = nums.size() ; 
+        while ( l < r ) {
+            int m = (l + r) / 2 ; 
+            if ( nums[m] == target )
+                l = r = m ; 
+            else if ( nums[m] > target )
+                r = m  ;
+            else 
+                l = m + 1 ;
+        }
+
+        return r ;
+    }
+};
