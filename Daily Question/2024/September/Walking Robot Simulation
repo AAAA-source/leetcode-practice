@@ -1,0 +1,56 @@
+想法：因為每次動的步數很小；而且指令並不多，所以可以把每次執行一步並更新最大位置；
+需先將所有障礙加入一個appear的hash table中，然後只要下一步碰到障礙的話就停止執行現在的動作。
+最後，每一步都需要更新max distance 的值，輸出即可
+
+技巧：使用C++內建的unordered set去儲存pair的資料，但需要自己寫出關於 pair 的hash function 
+我是使用chatgpt幫我生成hash function ，替代方法有二
+1.使用set 但複雜度會提高
+2.把兩個int 結合成double , string 的方法再用內建的hash function
+
+Time Complexity : O(n) for executing all the operations
+Space Complexity : O(n) for the hash table (storing obstacles)
+
+namespace std {
+    template <typename T1, typename T2>
+    struct hash<std::pair<T1, T2>> {
+        size_t operator()(const std::pair<T1, T2>& p) const {
+            size_t hash1 = std::hash<T1>()(p.first);  
+            size_t hash2 = std::hash<T2>()(p.second); 
+            return hash1 ^ (hash2 << 1); 
+        }
+    };
+}
+
+class Solution {
+public:
+    int robotSim(vector<int>& commands, vector<vector<int>>& obstacles) {
+        unordered_set< pair<int , int> , std::hash<pair<int , int>> > appear ; 
+        for( auto &i : obstacles ) 
+            appear.insert( {i[0] , i[1]} ) ;
+
+        vector < pair<int , int> > direction = { {0,1} , {1,0} , {0,-1} , {-1,0} } ;
+        int now_direction = 0 ;
+        int now_x = 0 , now_y = 0 ; 
+        int max_distance = 0 ;
+        for( auto &i : commands ) {
+            if (i == -1)
+                now_direction = (now_direction + 1) % 4 ;
+            else if ( i == -2 )
+                now_direction = (now_direction + 3) % 4 ;
+            else {
+                while (i--) {
+                    if ( appear.find( {now_x + direction[now_direction].first ,
+                        now_y + direction[now_direction].second} ) == appear.end() ) {
+                        now_x +=  direction[now_direction].first ;
+                        now_y += direction[now_direction].second ;
+                    }
+                    else 
+                        break ;
+                    max_distance = max( max_distance , now_x * now_x + now_y * now_y ) ;
+                }
+            }
+        }
+
+        return max_distance ;
+    }   
+};
