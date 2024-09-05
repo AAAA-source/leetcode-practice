@@ -1,0 +1,31 @@
+想法：只要先算出剩餘骰子總和是多少，接著一次填入即可，因為每面骰子最小值是1
+所以我們可以紀錄一個left 變數來表示還有多少點數要加在未知的骰子上
+注意：需注意兩種邊界情況
+1.left 太大：就算未知骰子全部都是6也填不完
+2.left < 0：代表mean值太小不可能達到
+所以兩種情況都要輸出空陣列
+
+Time Complexity : O(n) for traversing the array
+Space Complexity : O(n) for answer array 
+
+class Solution {
+public:
+    vector<int> missingRolls(vector<int>& rolls, int mean, int n) {
+        int sum = 0 ;
+        for( auto &i : rolls )
+            sum += i ;
+        
+        vector<int> ans(n , 1) ;
+        int left = mean * (n + rolls.size()) - sum - n ;
+        for( int i = 0 ; i < n ; i++ ) {
+            if ( left > 0 ) {
+                ans[i] = min( 6 , 1 + left ) ;
+                left -= ( ans[i] - 1 ) ;
+            }
+        }
+        if ( left == 0 )
+            return ans ;
+        else 
+            return {} ;
+    }
+};
