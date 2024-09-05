@@ -1,0 +1,23 @@
+想法：等於找第一個數字i s.t. i * i >= num  ，所以用 l , r 維護第一個數字i 的範圍
+注意：因為 r 非常大，所以將int 改成 long long int 避免overflow 
+
+Time Complexity : O(logn) for binary search
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    bool isPerfectSquare(int num) {
+        long long int l = 1 , r = num ;
+        while ( l < r ) {
+            long long int m = (l + r + 1) / 2 ;
+            if ( m * m == num )
+                l = r = m ;
+            else if ( m * m > num )
+                r = m - 1 ; 
+            else 
+                l = m + 1 ;
+        }
+
+        return ( r * r == num ) ;
+    }
+};
