@@ -1,5 +1,5 @@
 想法：等於找第一個數字i s.t. i * i >= num  ，所以用 l , r 維護第一個數字i 的範圍
-注意：因為 r 非常大，所以將int 改成 long long int 避免overflow 
+注意：因為 r 非常大，所以將int 改成 long long int 避免overflow (在計算 m , m * m 的時候)
 
 Time Complexity : O(logn) for binary search
 Space Complexity : O(1) for variables
