@@ -1,0 +1,24 @@
+想法：維護第一個bad version出現的位置，所以 l , r 之間要取 floor(（l + r） / 2 ) 即可
+注意：因為l , r 很大，所以如果之間寫成 (l + r) / 2 會在 l + r 時overflow ，可改成 l + (r - l) / 2 
+
+Time Complexity : O(logn) for binary search 
+Space Complexity : O(1) for variables 
+
+// The API isBadVersion is defined for you.
+// bool isBadVersion(int version);
+
+class Solution {
+public:
+    int firstBadVersion(int n) {
+        int l = 1 , r = n ; 
+        while ( l < r ) {
+            int m = l + (r - l) / 2 ;
+            if ( isBadVersion(m) )
+                r = m ; 
+            else 
+                l = m + 1 ;
+        }
+
+        return r ;
+    }
+};
