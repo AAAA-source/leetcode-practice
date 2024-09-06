@@ -1,0 +1,43 @@
+想法：先將陣列出現過的數字放到appear的hash table , 如果之後在linked list出現的話就移除
+注意：tail 不僅代表目前尾端元素，同時在訪問linked list結束後也代表最後一個元素；所以結束後要把 tail->next = nullptr 才可以
+（因為我們並沒有新增linked list而是改變原有 list 的連結，所以要將tail之後的連結打斷）
+
+Time Complexity : O(n) for traversing array and linked list 
+Space Complexity : O(n) for hash table 
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* modifiedList(vector<int>& nums, ListNode* head) {
+        unordered_set<int> appear ; 
+        for( auto &i : nums )
+            appear.insert(i) ; 
+
+        ListNode* newhead = nullptr , *tail = nullptr ;
+        ListNode* cursor = head ; 
+        while ( cursor != nullptr ) {
+            if ( appear.find( cursor->val ) == appear.end() ) {
+                // insert the node 
+                if ( newhead == nullptr )
+                    newhead = cursor ;
+                else 
+                    tail->next = cursor ;
+                tail = cursor ;
+            }
+            
+            cursor = cursor->next ;
+        }
+        tail->next = nullptr ;  //important operation 
+
+        return newhead ;
+    }
+};
