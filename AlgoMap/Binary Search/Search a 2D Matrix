@@ -1,0 +1,68 @@
+想法：把二維陣列想像成一維陣列搜尋即可, index = 0 ... n * m - 1 
+
+Time Complexity : O( log(n * m) ) for binary search 
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int n = matrix[0].size() ;
+        int left = 0 , right = matrix.size() * matrix[0].size() - 1 ;
+
+        while ( left <= right ) {
+            int middle = left + (right - left) / 2 ; 
+            if ( matrix[middle / n][middle % n] == target )
+                return true ; 
+            else if ( matrix[middle / n ][middle % n] > target )
+                right = middle - 1 ; 
+            else 
+                left = middle + 1 ;
+        }
+
+        return false ;
+    }
+};
+
+
+// 想法二：可以先binary search row , 再針對該row 做一次 binary search with column 
+注意：需要小心維護 target row 不要戳出界
+
+
+Time Complexity : O( logn + logm ) for two binary searchs
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int n = matrix.size() ;
+        int m = matrix[0].size() ;
+
+        if ( matrix[0][0] > target || matrix[n - 1][m - 1] < target )
+            return false ;
+
+        /* find the target row which 
+        matrix[row][0] <= target and natrix[row + 1][0] > target */
+        int l_row = 0 , r_row = n - 1 ; 
+        while ( l_row < r_row ) {
+            int m_row = l_row + (r_row - l_row + 1) / 2 ;
+            if ( matrix[m_row][0] > target )
+                r_row = m_row - 1 ;
+            else 
+                l_row = m_row ;
+        }
+
+        int row = r_row ;
+        int l_column = 0 , r_column = m - 1 ; 
+        while ( l_column <= r_column ) {
+            int m_column = l_column + (r_column - l_column) / 2 ;
+            if ( matrix[row][m_column] == target )
+                return true ;
+            else if ( matrix[row][m_column] > target )
+                r_column = m_column - 1 ;
+            else 
+                l_column = m_column + 1 ;
+        }
+
+        return false ;
+    }
+};
