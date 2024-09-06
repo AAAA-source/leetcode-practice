@@ -1,0 +1,59 @@
+想法：直接尋找最小的元素，而每次比較有兩種方法
+1.比較nums[l] , nums[m] 之間的關係，但會發現當nums[l] < nums[m] 時，實際上最小元素可能是l 或是 m + 1 之後的元素，比較難做
+2.比較nums[m] , nums[r] 之間的關係，可發現當nums[m] > nums[r] 時，代表最小元素在這之中（m + 1 ... r），反之就會在 l ... m 之中
+
+Time Complexity : O(logn) for binary search 
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        if ( nums.size() == 1 )
+            return nums[0] ;
+        
+        int l = 0 , r = nums.size() - 1 ; 
+
+        // find the max element 
+
+        while ( l < r ) {
+            int m = (l + r) / 2 ;
+            if ( nums[m] > nums[r] ) 
+                l = m + 1 ;
+            else 
+                r = m ;
+        }
+
+        return nums[ r ] ;
+    }
+};
+
+
+// another way : find out the maximum element , and return the next element 
+this way , we need to check the relation between nums[l] and nums[m] 
+if nums[l] < nums[m] , that mean the max element may appear at m ... r 
+else , it may appear at l ... m - 1 
+
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        if ( nums.size() == 1 )
+            return nums[0] ;
+        
+        int l = 0 , r = nums.size() - 1 ; 
+
+        // find the min element 
+        while ( l < r ) {
+            int m = (l + r + 1) / 2 ;
+            if ( nums[m] >= nums[l] )
+                l = m  ; 
+            else 
+                r = m - 1 ;
+        }
+
+
+
+        return nums[ (r + 1) % nums.size() ] ;
+    }
+};
+
+
