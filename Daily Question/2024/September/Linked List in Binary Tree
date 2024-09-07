@@ -1,0 +1,106 @@
+想法：使用暴力解，對二元樹內的每個節點都當作起始點，進行一次linked list 的比對即可
+
+// n is the number of tree nodes , m is the number of list nodes
+Time Complexity : O(n * m) for traversing the tree at every node
+
+// h is the tree depth , l is the list length
+Space Complexity : O(h + l) for recursion depth , or O(n + m)
+
+// DFS + DFS
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    static bool valid( ListNode* head , TreeNode* root ) {
+        if ( head == nullptr )
+            return true ;
+        if ( root == nullptr || root->val != head->val )
+            return false ; 
+
+        return valid( head->next , root->left ) || valid( head->next , root->right ) ;
+    }
+
+    static bool DFS( ListNode* head , TreeNode* root ) {
+        if ( root == nullptr )
+            return false ;
+        if ( valid(head , root) )
+            return true ;
+        
+        return DFS( head , root->left ) || DFS( head , root->right ) ;
+    }
+
+    bool isSubPath(ListNode* head, TreeNode* root) {
+        return DFS( head , root ) ;
+    }
+};
+
+
+// DFS + BFS
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    static bool valid( ListNode* head , TreeNode* root ) {
+        if ( head == nullptr )
+            return true ;
+        if ( root == nullptr || root->val != head->val )
+            return false ; 
+
+        return valid( head->next , root->left ) || valid( head->next , root->right ) ;
+    }
+
+    bool isSubPath(ListNode* head, TreeNode* root) {
+        queue<TreeNode*> q ; 
+        q.push(root) ;
+
+        bool success = false ;
+        while ( !q.empty() && !success ) {
+            success = valid( head , q.front() ) ;
+            if ( q.front()->left != nullptr )
+                q.push( q.front()->left ) ;
+            if ( q.front()->right != nullptr )
+                q.push( q.front()->right ) ;
+            q.pop() ;
+        }
+
+        return success ;
+    }
+};
