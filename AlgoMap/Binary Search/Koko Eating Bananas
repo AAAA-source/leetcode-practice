@@ -37,3 +37,43 @@ public:
         return r ;
     }
 };
+
+
+
+// another way , we can observe that the answer k s.t. sum / h <= k <= max number
+So , we can set l = sum / h , r = max number 
+
+注意：因為 l , r 都可以很大，所以要使用long long int 避免overflow 
+且需考慮sum / h 是否整除的問題
+
+class Solution {
+public:
+    static bool valid_k( vector<int>& piles , int h , int k ) {
+        int sum = 0 ;
+        for( auto &i : piles ) {
+            sum += ( ( i % k == 0)? i / k : i / k + 1) ;
+        }   
+
+        return sum <= h ;
+    }
+    int minEatingSpeed(vector<int>& piles, int h) {
+        long long int sum = 0 , max = 0 ;
+        for( auto &i : piles ) {
+            sum += i ; 
+            if ( i > max )
+                max = i ;
+        }
+
+        long long int l = ( (sum % h == 0)? sum / h : sum / h + 1 ) , r = max ;
+        while ( l < r ) {
+            long long int m = l + (r - l ) / 2 ;
+
+            if ( valid_k(piles , h , m) )
+                r = m ;
+            else 
+                l = m + 1 ;
+        }
+
+        return r ;
+    }
+};
