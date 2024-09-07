@@ -1,0 +1,34 @@
+想法：由於答案可能是1...10^9，所以linear search 顯然不合時間規範
+而我們可觀察到此題答案具有「單調性」，意味著如果今天測試 k' 是可以吃完所有香蕉的，那麼顯然任何 k'' >= k'都可以
+反之，如果 k' 無法吃完所有香蕉，那麼任何 k'' <= k' 也都不行；所以此題答案具有「單調性」
+
+因為具有單調性，所以我們可以用binary search 去找尋答案，維護最小可能值在l ... r 之間即可
+
+Time Complexity : O(nlogn) for at most O(logn) times checking validity (each time takes O(n) times)
+Space Complexity : O(1) for variables 
+
+
+class Solution {
+public:
+    static bool valid_k( vector<int>& piles , int h , int k ) {
+        int sum = 0 ;
+        for( auto &i : piles ) {
+            sum += ( ( i % k == 0)? i / k : i / k + 1) ;
+        }   
+
+        return sum <= h ;
+    }
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int l = 1 , r = *max_element(piles.begin() , piles.end() ) ;
+        while ( l < r ) {
+            int m = l + (r - l ) / 2 ;
+
+            if ( valid_k(piles , h , m) )
+                r = m ;
+            else 
+                l = m + 1 ;
+        }
+
+        return r ;
+    }
+};
