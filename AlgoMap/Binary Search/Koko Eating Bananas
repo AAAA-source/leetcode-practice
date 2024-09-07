@@ -4,6 +4,10 @@
 
 因為具有單調性，所以我們可以用binary search 去找尋答案，維護最小可能值在l ... r 之間即可
 
+技巧：r 可以設成array 裡面的最大值，而我們使用max_element來幫助我們實現
+max_element( begin location , end location + 1 ) , and return the pointer of max element
+
+
 Time Complexity : O(nlogn) for at most O(logn) times checking validity (each time takes O(n) times)
 Space Complexity : O(1) for variables 
 
