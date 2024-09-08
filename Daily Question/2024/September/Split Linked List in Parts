@@ -1,0 +1,56 @@
+想法：先算出總共長度是多少，再分配給每個parts；而對該part而言，只要把目前的cursor當作這個part的頭，最後結尾的prev->next改為 nullptr即可
+這樣就不用新增節點，但要多紀錄一個prev 變數才能把每個part的尾巴截斷
+
+Time Complexity : O(n) for 2-pass algorithm (traversing linked list two times)
+Space Complexity : O(k) for the answer array 
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    vector<ListNode*> splitListToParts(ListNode* head, int k) {
+        vector<ListNode*> ans(k) ; 
+        int len = 0 ; 
+        ListNode* cursor = head ; 
+        while ( cursor != nullptr ) {
+            ++len ;
+            cursor = cursor->next ;
+        }
+
+        cursor = head ; 
+        for(int i = 0 ; i < k ; i++) {
+            int target_len ; 
+            if ( len % (k - i) == 0 )
+                target_len = len / (k - i) ; 
+            else 
+                target_len = len / (k - i)  + 1 ; 
+            
+            len -= target_len ; 
+
+            if ( target_len == 0 ) {
+                ans[i] = nullptr ; 
+                continue ;
+            }
+
+            ans[i] = cursor ;
+            ListNode* prev = nullptr ;
+            while ( target_len-- ) {
+                prev = cursor ; 
+                cursor = cursor->next ;
+            } 
+            prev->next = nullptr ;
+
+        }
+
+        return ans ;
+    }
+};
