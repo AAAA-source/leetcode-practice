@@ -1,0 +1,107 @@
+想法：用四個牆壁紀錄目前還沒有填的範圍，只要轉向了就變動其中一個牆壁
+
+Time Complexity : O(n * m) for initialize the array and traversing the linked list
+Space Complexity : O(n * m) for the answer array 
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> spiralMatrix(int m, int n, ListNode* head) {
+        int upwall = -1 , downwall = m , leftwall = -1 , rightwall = n ; 
+
+        vector< vector<int> > ans( m , vector<int>(n , -1) ) ;
+        ListNode* cursor = head ; 
+        int now_x = 0 , now_y = 0 ;
+        vector<pair<int , int>> direction = { {1 , 0} , {0 , 1} , {-1 , 0} , {0 , -1} } ;
+        int now_direction = 0 ;
+        while ( cursor != nullptr ) {
+            //cout << "ans[" << now_y << "][" << now_x << "]" << endl  ;
+            ans[now_y][now_x] = cursor->val ;
+            
+            int new_x = now_x + direction[now_direction].first ;
+            int new_y = now_y + direction[now_direction].second ;
+
+            if ( new_y > upwall && new_y < downwall 
+            && new_x > leftwall && new_x < rightwall ) {
+                now_x = new_x ;
+                now_y = new_y ;
+            }
+            else {
+                now_direction = (now_direction + 1) % 4 ;
+                if ( new_x == rightwall )
+                    upwall++ ;
+                else if ( new_x == leftwall )
+                    downwall-- ;
+                else if ( new_y == upwall )
+                    leftwall++ ;
+                else 
+                    rightwall-- ;
+
+                now_x = now_x + direction[now_direction].first ;
+                now_y = now_y + direction[now_direction].second ;
+            }
+            cursor = cursor->next ;
+        }
+
+        return ans ;
+    }
+};
+
+
+// another way : we don't need the walls , we can just check if the ans[new_y][new_x] has been filled , because the list node value
+not equals to -1. So if the ans[new_y][new_x] is -1 , then it hasn't been filled yet
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    static bool valid( int x , int y , int m , int n ) {
+        return ( x >= 0 && x < n && y >= 0 && y < m ) ;
+    }
+
+    vector<vector<int>> spiralMatrix(int m, int n, ListNode* head) {
+        vector< vector<int> > ans( m , vector<int>(n , -1) ) ;
+        ListNode* cursor = head ; 
+        int now_x = 0 , now_y = 0 ;
+        vector<pair<int , int>> direction = { {1 , 0} , {0 , 1} , {-1 , 0} , {0 , -1} } ;
+        int now_direction = 0 ;
+
+        while ( cursor != nullptr ) {
+            ans[now_y][now_x] = cursor->val ;
+            
+            int new_x = now_x + direction[now_direction].first ;
+            int new_y = now_y + direction[now_direction].second ;
+
+            if ( valid(new_x , new_y , m , n) && ans[new_y][new_x] == -1 ) {
+                now_x = new_x ;
+                now_y = new_y ;
+            }
+            else {
+                now_direction = (now_direction + 1) % 4 ;
+
+                now_x = now_x + direction[now_direction].first ;
+                now_y = now_y + direction[now_direction].second ;
+            }
+            cursor = cursor->next ;
+        }
+
+        return ans ;
+    }
+};
