@@ -1,0 +1,44 @@
+Intuition
+we just need to split the original string to year , month , date strings.
+Then , we convert the three strings and get the answer!!
+
+Approach
+the function "convert" hepl us change the decimal number to binary number.
+We can first change the year/month/date strings to decimal number
+(using built-in function)
+
+Then , we look all the bit in the number and got the binary number
+
+Complexity
+Time complexity: there are 3 strings and at most 32 bits we need to see , so it only cost O(1) time
+Space complexity: O(1) for variables
+
+
+Code
+class Solution {
+public:
+    static string convert( int n ) {
+        bool flag = false ; 
+        string result ;
+        for(int i = 31 ; i >= 0 ; i--) {
+            if ( n & (1 << i) ) {
+                flag = true ;
+                result += '1' ; 
+            }
+            else if ( flag )
+                result += '0' ;
+        }
+        return result ;
+    }
+    string convertDateToBinary(string date) {
+        string year = date.substr( 0 , 4 ) ; 
+        string month = date.substr( 5 , 2 ) ; 
+        string day = date.substr(  8 , 2 ) ; 
+
+        int y = stoi(year) ; 
+        int m = stoi(month) ; 
+        int d = stoi(day) ;
+        
+        return convert(y) + "-" + convert(m) + "-" + convert(d) ;
+    }
+};
