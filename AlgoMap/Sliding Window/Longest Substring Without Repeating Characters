@@ -1,0 +1,30 @@
+想法：維護s[l ... r]這個區段沒有重複的符號，而出現過的符號用appear array 來紀錄
+當遇到s[r] 已經出現過的時候，就不斷縮減窗口，直到先前相同於 s[r] 值的元素被排出即可
+
+Time Complexity : O(n) for traversing array 
+Space Complexity : O(1) for appear array and variables 
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        if ( s.empty() )
+            return 0 ;
+
+        vector<bool> appear(128 , false) ; 
+        int l = 0 , r = 0 ;
+        int maxlength = 0 ;
+        while ( r < s.length() ) {
+            if ( appear[ s[r] ] ) {
+                while ( appear[ s[r]  ] ) {
+                    appear[ s[l] ] = false ;
+                    l++ ;
+                }
+            }
+            appear[s[r]] = true ;
+            maxlength = max(maxlength , r - l + 1) ;
+            r++ ;
+        }
+
+        return maxlength ;
+    }
+};
