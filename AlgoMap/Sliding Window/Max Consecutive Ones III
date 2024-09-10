@@ -1,0 +1,35 @@
+想法：維護nums[l ... r]區段之間最多只有 k 個 0 , 而這區段就可以變成全部都是1 
+以sliding window 的方式跑過一遍：
+1.遇到nums[r] == 1 , 不用做動作
+2.遇到nums[r] == 0 但是區段內的 0 還不到 k 個 : 放入區段內，不用更改l
+3.遇到nums[r] == 0 且區段內已經有 k 個 0 : 要先把區段內第一個 0 排出去，才能把現在的 0 加入進來 
+而每次更新區段時，都用 max_length 紀錄最大數值
+
+技巧：用兩個變數 l , r 紀錄sliding window 的邊界
+
+Time Complexity : O(n) for traversing the array
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int longestOnes(vector<int>& nums, int k) {
+        int l = 0 , r = 0 ;
+        int countzero = 0 ;
+        int max_length = 0 ;
+        while ( r < nums.size() ) {
+            if ( nums[r] == 0 && countzero < k ) 
+                countzero++ ; 
+            else if (nums[r] == 0) {
+                // change l-index (change the sliding window)
+                while ( nums[l] == 1 )
+                    l++ ;
+                l++ ;
+            }
+
+            max_length = max( max_length , r - l + 1 ) ;
+            r++ ;
+        }
+
+        return max_length ;
+    }
+};
