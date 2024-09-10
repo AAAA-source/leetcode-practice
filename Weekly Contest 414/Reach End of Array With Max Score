@@ -1,0 +1,32 @@
+Intuition
+Becase the score is counted by (j - i) * nums[i]
+It is easy can see that when we meet a bigger number than now where we stay , we jump on it and do further move will better than don't jump on it
+
+So , the strategy is everytime we meet the bigger number(or the last element) , we jump on it and calculate the score
+
+Approach
+use the "nowindex" variable to store the index where we stay ,and make sure the score won't cause the overflow
+
+Complexity
+Time complexity: O(n) for traversing the array
+Space complexity: O(1) for variables
+
+
+Code
+class Solution {
+public:
+    long long findMaximumScore(vector<int>& nums) {
+        long long int sum = 0 ;
+        
+        int nowindex = 0 ; 
+        int n = nums.size() ;
+        for(int i = 1 ; i < n ; i++) {
+            if ( i == n - 1 || nums[i] > nums[nowindex]) {
+                sum += nums[nowindex] * (static_cast<long long int>(i) - nowindex) ;
+                nowindex = i ;
+            }
+        }
+
+        return sum ;
+    }
+};
