@@ -1,0 +1,47 @@
+想法：照著做即可，兩node之間用算出 gcd 再插入並更改連結
+
+注意：因為插入後原有cursor->next會改變，所以要先提前記下下一個要去哪裡
+
+Time Complexity : O(n) for traversing the list
+Space Complexity : O(n) for allocating new node * (n - 1) times
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* insertGreatestCommonDivisors(ListNode* head) {
+        ListNode* cursor = head ; 
+
+        while ( cursor->next != nullptr ) {
+            // insert new node betweemn cursor and cursor->next 
+            int value = gcd( cursor->val , cursor->next->val ) ;
+
+            ListNode* newNode = new ListNode(value , cursor->next) ; 
+
+            ListNode* nextlocation = cursor->next ;
+            cursor->next = newNode ;
+
+            cursor = nextlocation ;
+        }
+
+        return head;
+    }
+
+private:
+    int gcd(int a , int b) {
+        if ( a < b )
+            return gcd(b , a) ;
+        else if ( a % b == 0 )
+            return b ; 
+        else 
+            return gcd( b , a % b ) ;
+    }   
+};
