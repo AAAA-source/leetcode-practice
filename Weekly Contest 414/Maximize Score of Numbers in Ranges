@@ -1,0 +1,52 @@
+Intuition
+we first sort the array , thus all the points are ascending. then , we can easily figure out the possible answer will appear in [0 ... last element + k - first element location]
+
+Then , we try to proof the "monotonicity" of the answer.that means
+
+when there is a combination such that the score = k can be achieve , all the number k' <= k can be achieve.
+when there is no combination such that the score = k can be achieve , all the number k' >= k can not be achieve.
+So , we can easily use the binary search to find out the answer(the maximum k)
+
+Approach
+we build a finction "valid" help us find out if there is a combination and the score can be k
+By greedy strategy , when i-th point location - (i - 1)-th point location = k , we use that point. otherwise , there is no solution (return false)
+
+Complexity
+Time complexity: every time we check the valid of value k , we need O(n) times , So totally need O(nlogn) time
+Space complexity: O(n) for result array (valid function) and maybe some space needed by std::sort
+
+
+Code
+class Solution {
+public:
+    static bool valid( vector<int>& start, int d ,long long int target) {
+        vector<long long int> result(start.size()) ; 
+        int n = start.size() ;
+        result[0] = start[0] ;
+        for(int i = 1 ; i < n ; i++) {
+            if ( start[i] + d - result[i - 1] < target )
+                return false ;
+            else 
+                result[i] = max( static_cast<long long int>(result[i - 1]) + target , 
+                            static_cast<long long int>(start[i]) ) ;
+        }
+
+        return true ;
+    }
+
+    int maxPossibleScore(vector<int>& start, int d) {
+        sort( start.begin() , start.end() ) ;
+        int n = start.size() ;
+        long long int l = 0 , r = static_cast<long long int> (start[n - 1]) + d - start[0] ;  
+
+        while ( l < r ) {
+            long long int m = l + (r - l + 1) / 2 ;
+            if ( valid(start , d , m) )
+                l = m ; 
+            else 
+                r = m - 1 ;
+        }
+
+        return r ;
+    }
+};
