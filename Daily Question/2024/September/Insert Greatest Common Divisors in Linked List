@@ -45,3 +45,46 @@ private:
             return gcd( b , a % b ) ;
     }   
 };
+
+// another way : use loop instead of recursion on finding gcd
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* insertGreatestCommonDivisors(ListNode* head) {
+        ListNode* cursor = head ; 
+
+        while ( cursor->next != nullptr ) {
+            // insert new node betweemn cursor and cursor->next 
+            int value = gcd( cursor->val , cursor->next->val ) ;
+
+            ListNode* newNode = new ListNode(value , cursor->next) ; 
+            cursor->next = newNode ;
+
+            cursor = cursor->next->next ;
+        }
+
+        return head;
+    }
+
+private:
+    int gcd(int a , int b) {
+        if ( a < b )
+            swap(a , b) ; 
+        
+        while ( a % b != 0 ) {
+            int temp = a ; 
+            a = b ; 
+            b = temp % b ;
+        }
+        return b ;
+    }   
+};
