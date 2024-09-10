@@ -1,0 +1,49 @@
+想法：運用sliding windows 的概念，每次只要看nums[i ... i + k - 1]這個範圍即可；
+維護一個sum 代表這區段的加總，最後再除以k即可得到max average 
+
+技巧：轉移到下一個窗口時，只要把第一個元素去除，再加上最後一個元素即可；
+第一個窗口則需先算出來
+
+Time Complexity : O(n) for traversing the array
+Space Complexity : O(1) forvariables 
+
+class Solution {
+public:
+    double findMaxAverage(vector<int>& nums, int k) {
+        int sum = 0 ; 
+        for(int i = 0 ; i < k ; i++)
+            sum += nums[i] ; 
+        
+        int max_sum = sum ;
+        for(int i = 1 ; i + k - 1 < nums.size() ; i++) {
+            sum -= nums[i - 1] ; 
+            sum += nums[i + k - 1] ; 
+
+            max_sum = max(max_sum , sum) ;
+        }
+
+        return (double) max_sum / k ;
+    }
+};
+
+
+// another implementation : always maintain the max average and now average
+
+class Solution {
+public:
+    double findMaxAverage(vector<int>& nums, int k) {
+        int sum = 0 ; 
+        for(int i = 0 ; i < k ; i++)
+            sum += nums[i] ; 
+        
+        double max_average = (double) sum / k ; 
+        for(int i = 1 ; i + k - 1 < nums.size() ; i++) {
+            sum -= nums[i - 1] ; 
+            sum += nums[i + k - 1] ; 
+
+            max_average = max( max_average , (double) sum / k ) ;
+        }
+
+        return max_average ;
+    }
+};
