@@ -1,0 +1,35 @@
+想法：可以把題目想成是找到一個區段為 s2[ i ... i + s1.length() - 1 ]內出現的所有字母頻率都跟s1相同，就代表這是一個s1的permutation 
+所以我們用一個target array 代表s1中字母的出現頻率；同時用 count array 來表示現在區段內出現的字母頻率
+
+技巧：此題為 fixed length sliding windows 的題目，只要每次新增尾巴元素及刪除第一個元素即可
+
+Time Complexity : O(n) for traversing array ( everytime we check array takes O(26) = O(1) time )
+Space Complexity : O(1) for two arrays ( both array are O(26) = O(1) space )
+
+
+class Solution {
+public:
+    bool checkInclusion(string s1, string s2) {
+        if ( s2.length() < s1.length() )
+            return false ;
+
+        vector<int> target(26) ; 
+        for( auto &i : s1 )
+            target[i - 'a']++ ; 
+
+        vector<int> count(26) ; 
+        // compute the first window 
+        for(int i = 0 ; i < s1.length() ; i++)
+            count[ s2[i] - 'a']++ ;
+        
+        bool success = (count == target) ; 
+        for( int end = s1.length() ;!success && end < s2.length() ; end++ ) {
+            count[ s2[end - s1.length()] - 'a'] -- ;
+            count[ s2[end] - 'a' ]++ ;
+
+            success = (count == target) ;
+        }
+        
+        return success ;
+    }
+};
