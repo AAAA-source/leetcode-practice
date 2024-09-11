@@ -19,3 +19,15 @@ public:
         return count ;
     }
 };
+
+
+// another way : use the built-in function
+
+技巧：__builtin_popcount( number ) 並回傳 bit 為 1 的個數
+
+class Solution {
+public:
+    int minBitFlips(int start, int goal) {
+        return __builtin_popcount( start ^ goal ) ;
+    }
+};
