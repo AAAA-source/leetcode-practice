@@ -3,7 +3,7 @@
 
 技巧：此題為 fixed length sliding windows 的題目，只要每次新增尾巴元素及刪除第一個元素即可
 
-Time Complexity : O(n) for traversing array ( everytime we check array takes O(26) = O(1) time )
+Time Complexity : O( s2.length ) for traversing s2 ( everytime we check array takes O(26) = O(1) time )
 Space Complexity : O(1) for two arrays ( both array are O(26) = O(1) space )
 
 
