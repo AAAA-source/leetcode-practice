@@ -1,0 +1,21 @@
+想法：只要算出兩數字內部多少bit有差別，即是答案
+
+proof : 假設有k個bit不同
+1. k 次 operation 可以使兩者相等
+2.  k - 1 次以下就不行，至少會有一個bit不等
+
+Time Complexity : O(1) for traversing 32 bits 
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int minBitFlips(int start, int goal) {
+        int count = 0 ;
+        for(int i = 0 ; i < 32 ; i++) {
+            if ( ( start & (1 << i) ) != (goal & (1 << i)) )
+                count++ ;
+        }
+
+        return count ;
+    }
+};
