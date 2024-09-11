@@ -1,0 +1,76 @@
+想法：用sliding window 維護nums[l ... r] >= target , 同時 nums[l + 1 ... r] < target（代表 l ... r 是剛好的數值）
+
+Time Complexity : O(n) for traversing the array
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        int l = 0  , r = 0 ;
+        int minlength = INT_MAX ; 
+
+        int sum = 0 ;
+        while ( r < nums.size() ) {
+            sum += nums[r] ;
+            
+            if ( sum >= target ) {
+                while ( sum >= target ) {
+                    cout << sum << endl ;
+                    sum -= nums[l] ;
+                    l++ ;
+                }
+                l-- ;
+                sum += nums[l] ;
+                minlength = min(minlength , r - l + 1) ;
+            }
+            
+            r++ ;
+        }
+
+        return ( minlength == INT_MAX )? 0 : minlength ; 
+    }
+};
+
+
+// another way : use binary search to find the subarray s.t. nums[k ... end] >= target
+證明：因為這個答案具有「單調性」
+1.如果nums[k .. end] >= target : 因為所有元素都是正的，所以nums[k' ... end] >= target for each k' = 0 ... k
+2.如果nums[k ... end] < target : 那麼所有nums[k' ... end] < target for each k' = k + 1 ... end 
+
+技巧：利用前綴和快速知道某一區段內的元素總和
+Sum of nums[l ... r] = prefixsum[r] - prefixsum[l - 1] 
+
+Time Complexity : O(nlogn) for binary search n times(for end = 1 ... n)
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        vector<int> prefixsum( nums.size() + 5 ) ; 
+        int n = nums.size() ; 
+
+        for(int i = 1 ; i <= n ; i++) {
+            prefixsum[i] = prefixsum[i - 1] + nums[i - 1] ;
+        }
+
+        int minlength = INT_MAX ;
+        for( int endindex = 1 ; endindex <= n ; endindex++ ) {
+            if ( prefixsum[endindex] < target )
+                continue ;
+
+            int l = 1 , r = endindex ; 
+            while ( l < r ) {
+                int m = l + (r - l + 1) / 2 ; 
+                if ( prefixsum[endindex] - prefixsum[m - 1] >= target )
+                    l = m ;
+                else 
+                    r = m - 1 ;
+            }
+
+            minlength = min(minlength , endindex - r + 1) ;
+        }
+
+        return (minlength == INT_MAX)? 0 : minlength ;
+    }
+};
+
