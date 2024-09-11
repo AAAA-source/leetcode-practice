@@ -5,6 +5,7 @@ proof : 假設有k個bit不同
 2.  k - 1 次以下就不行，至少會有一個bit不等
 
 Time Complexity : O(1) for traversing 32 bits 
+( or O(loga + logb) when a = start , b = goal )
 Space Complexity : O(1) for variables 
 
 class Solution {
