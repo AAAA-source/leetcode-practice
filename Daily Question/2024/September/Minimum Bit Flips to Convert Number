@@ -32,3 +32,21 @@ public:
         return __builtin_popcount( start ^ goal ) ;
     }
 };
+
+
+// Brian Kernighan's Algorithm
+藉由每次 n & ( n - 1 ) 可以把最右邊的1 消掉，總共 Time Complexity = O( number of 1's bit )
+( n - 1 會把 n 最右邊的1 變成0 , 而在這位 1 右邊所有 0 會變成 1 , 所以 n & (n - 1) 可以把最右邊的 1 變成 0 , 而更右邊的0則不動)
+
+class Solution {
+public:
+    int minBitFlips(int start, int goal) {
+        int n = start ^ goal ;
+        int count = 0 ;
+        while (n > 0) {
+            n &= (n - 1) ; 
+            count++ ;
+        }
+        return count ;
+    }
+};
