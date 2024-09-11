@@ -74,3 +74,37 @@ public:
     }
 };
 
+
+// or using 後綴和：可能較快，因為一旦不符合可以break掉
+
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        vector<int> suffixsum( nums.size() + 5) ; 
+        int n = nums.size() ;
+        suffixsum[0] = nums[0] ;
+        for(int i = n - 1 ; i >= 0 ; i--)
+            suffixsum[i] = suffixsum[i + 1] + nums[i] ;
+
+
+        int minlength = INT_MAX ;
+        for( int start = 0 ; start < n ; start++ ) {
+            if ( suffixsum[start] < target )
+                break ;
+
+            int l = start , r = n - 1 ; 
+            while ( l < r ) {
+                int m = l + (r - l ) / 2 ; 
+                if ( suffixsum[start] - suffixsum[m + 1] >= target )
+                    r = m ;
+                else 
+                    l = m + 1 ;
+            }
+
+            minlength = min ( minlength , r - start + 1 ) ;
+        }
+
+
+        return (minlength == INT_MAX)? 0 : minlength ;
+    }
+};
