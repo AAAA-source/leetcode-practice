@@ -1,0 +1,37 @@
+想法：我們可以把題目想成，維護一個區段s[l ... r] 中，存在一種字母可以使其他字母數量小於等於 k 個，因此這個區段可以全部變成那一種字母
+，故此題可以 sliding window 實踐
+
+Time Complexity : O(n) for traversing string , each time we check the validity ( valid function cost O(26) = O(1) time )
+Space Complexity : O(1) for count array ( O(26) = O(1) ) 
+
+class Solution {
+public:
+    static bool valid( int length , vector<int>& count , int k ) {
+        for(int i = 0 ; i < 26 ; i++){
+            if ( length - count[i] <= k )
+                return true ;
+        }
+        return false ;
+    }
+
+    int characterReplacement(string s, int k) {
+        int l = 0 ; 
+        int r = 0 ;
+        vector<int> count(26) ; 
+
+        int maxlength = 0 ;
+        while ( r < s.length() ) {
+            count[ s[r] - 'A' ]++ ;
+            
+            while ( !valid(r - l + 1 , count , k) ) {
+                count[ s[l] - 'A' ]-- ;
+                l++ ;
+            }
+            maxlength = max( maxlength , r - l + 1  ) ;
+
+            r++ ;
+        }
+
+        return maxlength ;
+    }
+};
