@@ -1,4 +1,4 @@
-想法：可以把題目想成是找到一個區段為 s2[ i ... i + s1.length() - 1 ]內出現的所有字母頻率都跟s1相同，就代表這是一個s1的permutation 
+想法：可以把題目想成是找到一個區段為 s2[ i ... i + s1.length() - 1 ]內出現的所有字母頻率都跟s1相同，就代表這是一個s1的 permutation 
 所以我們用一個target array 代表s1中字母的出現頻率；同時用 count array 來表示現在區段內出現的字母頻率
 
 技巧：此題為 fixed length sliding windows 的題目，只要每次新增尾巴元素及刪除第一個元素即可
