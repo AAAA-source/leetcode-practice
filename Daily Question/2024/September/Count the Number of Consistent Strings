@@ -1,0 +1,61 @@
+想法：使用hash table紀錄哪些字母曾在allowed出現過，接著依序檢查所有words中的字，如果某個字母不曾出現在allowed的話就不加count
+
+技巧：使用C++內建的unordered_set實作hash table
+
+Time Complexity : O(S) for traversing all the characters
+Space Complexity : O( allowed.length ) for hash table 
+
+class Solution {
+public:
+    int countConsistentStrings(string allowed, vector<string>& words) {
+        unordered_set<char> appear ;
+        for( auto &c : allowed )
+            appear.insert( c ) ;
+
+        int count = 0 ;
+        for( auto s : words ) {
+            bool success = true ;
+            for( auto &c : s ) {
+                if ( appear.find(c) == appear.end() ) {
+                    success = false ;
+                    break ;
+                }
+            }
+
+            if ( success ) 
+                count++ ;
+        }
+
+        return count ;
+    }
+};
+
+// another way : 因為字元範圍只有小寫字母，所以我們可以用一個array 紀錄哪些小寫字母出現過（取代原先的hash table）
+
+Time Complexity : O(S) for traversing all the characters
+Space Complexity : O(1) for appear array and variables
+
+class Solution {
+public:
+    int countConsistentStrings(string allowed, vector<string>& words) {
+        vector<bool> appear(26 , false) ;
+        for(auto &c : allowed )
+            appear[c - 'a'] = true ;
+
+        int count = 0 ;
+        for( auto s : words ) {
+            bool success = true ;
+            for( auto &c : s ) {
+                if ( !appear[c - 'a'] ) {
+                    success = false ;
+                    break ;
+                }
+            }
+
+            if ( success ) 
+                count++ ;
+        }
+
+        return count ;
+    }
+};
