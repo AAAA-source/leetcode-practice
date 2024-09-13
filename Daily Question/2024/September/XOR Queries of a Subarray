@@ -1,0 +1,21 @@
+想法：運用XOR的特性， x ^ a ^ a = x 且 XOR 具有交換率，所以此題可以使用prefix array 去解
+定義 arr[i] = arr[0] ^ arr[1] ... ^ arr[i] , 那麼所要求的 XOR arr[left ... r] 就會等於 arr[r] ^ arr[left - 1] 
+
+Time Complexity : O(n + q) for O(n) processing the arr array and O(q) for answer each query
+Space Complexity : O(q) for answer array
+
+class Solution {
+public:
+    vector<int> xorQueries(vector<int>& arr, vector<vector<int>>& queries) {
+        int n = arr.size() ;
+        for( int i = 1 ; i < n ; i++ ) 
+            arr[ i ] = arr[i - 1] ^ arr[i] ;
+
+        vector<int> ans ;
+        for( auto &v : queries ) {
+            ans.push_back( arr[ v[1] ] ^ ((v[0] == 0)? 0 : arr[v[0] - 1]) ) ;
+        }
+
+        return ans ;
+    }
+};
