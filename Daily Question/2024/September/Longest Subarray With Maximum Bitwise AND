@@ -1,0 +1,55 @@
+想法：因為 AND operation 的特性， a & b <= max(a , b) , 所以這題實際上就是在找最大元素連續出現的個數
+只要先找出max element , 再計算最大連續出現個數即可
+
+Time Complexity : O(n) for traversing the array two times 
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int longestSubarray(vector<int>& nums) {
+        int target = *max_element(nums.begin() , nums.end()) ;
+
+        int count = 0 ; 
+        int maxlength = 0 ;
+
+        for( auto &i : nums ) {
+            if ( i == target ) {
+                count++ ;
+                maxlength = max(maxlength , count) ;
+            }
+            else {
+                count = 0 ;
+            }
+        }
+
+        return maxlength ;
+    }
+};
+
+
+// another way : one-pass algorithm
+紀錄目前最大元素 , 目前連續出現數量 , 最大連續出現數量；只需特別判斷現在出現的元素是否是「新」最大元素，是的話就要重置答案及目前連續出現數量為1
+class Solution {
+public:
+    int longestSubarray(vector<int>& nums) {
+        int maxelement = 0 , count = 0 , ans = 0 ;
+        
+        for( auto &i : nums ) {
+            if ( i == maxelement ) {
+                count++ ;
+                ans = max(ans , count) ; 
+            }
+            else if ( i < maxelement ) {
+                count = 0 ;
+            }
+            else {
+                maxelement = i ; 
+                count = 1 ; 
+                ans = 1 ;
+            }
+        }
+
+
+        return ans ;
+    }
+};
