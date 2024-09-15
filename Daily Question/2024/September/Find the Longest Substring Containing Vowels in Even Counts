@@ -1,0 +1,101 @@
+想法：利用bitmask 紀錄這個字母的出現數量是否為偶數，a 代表 1 , e 代表 2 ... ，所以會有一個appear[i] = 0 / 1 / 2 / 4 / 8 / 16 其中之一
+接著要用XOR紀錄這個區間是否合法，所以創造一個prefixXOR 陣列: prefixXOR[i] = prefixXOR[i - 1] ^ appear[i] 
+因為prefixXOR[i] 的範圍會是0 ~ 31 之間，所以我們用一個firstlocation[i] 紀錄每個值第一次出現的位置
+最後，只要現在看到的prefixXOR[i] 之前出現過，就代表從之前出現過的下個位置開始，直到現在位置結束的這個區間，是合法的。
+因此，我們只需用現在的位置 減掉 第一次出現的firstlocation 即可
+
+Time Complexity : O(n) for traversing array 
+Space Complexity : O(n) for arrays
+
+class Solution {
+public:
+    int findTheLongestSubstring(string s) {
+        vector<int> appear( s.length() ) ;
+
+        for(int i = 0 ; i < s.length() ; i++) {
+            switch ( s[i] ) {
+                case 'a' : 
+                    appear[i] = 1 ;
+                    break ;
+                case 'e' : 
+                    appear[i] = 2 ; 
+                    break ; 
+                case 'i' :
+                    appear[i] = 4 ; 
+                    break ; 
+                case 'o' : 
+                    appear[i] = 8 ; 
+                    break ;
+                case 'u' :
+                    appear[i] = 16 ; 
+                    break ;
+                
+                default : 
+                    appear[i] = 0 ;
+            }
+        }
+
+        // compute prefix XOR 
+        for(int i = 1 ; i < s.length () ; i++) {
+            appear[i] = appear[i - 1] ^ appear[i] ;
+        }
+
+        vector<int> firstlocation(32 , -2) ;
+        firstlocation[0] = -1 ;
+        int maxlength = 0 ;
+        for(int i = 0 ; i < s.length() ; i++) {
+            if ( firstlocation[ appear[i] ] == -2 )
+                firstlocation[appear[i]] = i ;
+            else 
+                maxlength = max(maxlength , i - firstlocation[appear[i]]) ;
+        }
+
+        return maxlength ;
+    }
+};
+
+// 改良：用單一變數取代array , 實現 space complexity = O(1) 
+Time Complexity : O(n) for traversing array 
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int findTheLongestSubstring(string s) {
+        int prefixXOR = 0 ;
+        vector<int> firstlocation(32 , -2) ;
+        firstlocation[0] = -1 ;
+        int maxlength = 0 ;
+        for(int i = 0 ; i < s.length() ; i++) {
+            int appear ;
+            switch ( s[i] ) {
+                case 'a' : 
+                    appear = 1 ;
+                    break ;
+                case 'e' : 
+                    appear = 2 ; 
+                    break ; 
+                case 'i' :
+                    appear = 4 ; 
+                    break ; 
+                case 'o' : 
+                    appear = 8 ; 
+                    break ;
+                case 'u' :
+                    appear = 16 ; 
+                    break ;
+                
+                default : 
+                    appear = 0 ;
+            }
+
+            prefixXOR = prefixXOR ^ appear ;
+
+            if ( firstlocation[prefixXOR] == -2)
+                firstlocation[prefixXOR] = i ;
+            else 
+                maxlength = max(maxlength , i - firstlocation[prefixXOR]) ;
+        }
+
+        return maxlength ;
+    }
+};
