@@ -1,0 +1,70 @@
+想法：先把每個時間換成total minutes，接著sort 一遍後，只要紀錄任兩個元素最小間隔即可
+
+注意：要考慮最大元素以及「隔天」的最小元素之間隔，所以要把24 * 60 + times[0] 加入到 times 中
+
+// use std::sort 
+Time Complexity : O(nlogn) for sorting 
+Space Complexity : O(logn) for sorting (on average)
+
+
+class Solution {
+public:
+    int findMinDifference(vector<string>& timePoints) {
+        vector<int> times( timePoints.size() ) ; 
+        for( int i = 0 ; i < timePoints.size() ; i++ ) {
+            int sum = stoi( timePoints[i].substr(0 , 2) ) * 60 + 
+                        stoi(timePoints[i].substr(3, 2)) ;
+            times[i] = sum ; 
+        }
+        sort(times.begin() , times.end()) ; 
+        times.push_back( times[0] + 24 * 60 ) ; 
+
+        int minimum = INT_MAX ;
+        for(int i = 1 ; i < times.size() ; i++) {
+            minimum = min( minimum , times[i] - times[i - 1] ) ;
+        }
+
+        return minimum ;
+    }
+};
+
+// use counting sort 
+Time Complexity : O(n) for counting sort( O(24 * 60n) ) and finding minimum gap ( O(n) )
+Space Complexity : O(n) for counting sort and times array
+
+class Solution {
+public:
+    static void countingsort( vector<int>& times ) {
+        vector<int> count(24 * 60) ;
+        for( auto &i : times )
+            count[i]++ ;
+
+        int index = 0;
+        for(int i = 0 ; i < 24 * 60 ; i++) {
+            while ( count[i]-- ) {
+                times[index] = i ;
+                index++ ;
+            }
+        }
+
+        return ;
+    }
+
+    int findMinDifference(vector<string>& timePoints) {
+        vector<int> times( timePoints.size() ) ; 
+        for( int i = 0 ; i < timePoints.size() ; i++ ) {
+            int sum = stoi( timePoints[i].substr(0 , 2) ) * 60 + 
+                        stoi(timePoints[i].substr(3., 2)) ;
+            times[i] = sum ; 
+        }
+        countingsort(times) ; 
+        times.push_back( times[0] + 24 * 60 ) ; 
+
+        int minimum = INT_MAX ;
+        for(int i = 1 ; i < times.size() ; i++) {
+            minimum = min( minimum , times[i] - times[i - 1] ) ;
+        }
+
+        return minimum ;
+    }
+};
