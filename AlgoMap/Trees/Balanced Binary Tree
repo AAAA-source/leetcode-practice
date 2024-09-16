@@ -1,0 +1,91 @@
+想法：先算出所有點的高度（第一次DFS），再用第二次DFS看是否有左子樹與右子樹高度相差大於一的node , 有的話就回傳false；否則回傳 true 
+
+Time Complexity : O(n) for two times DFS
+Space Complexity : O(h) for recursion depth i.e. the height of tree (h = O(n))
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    static int DFSheight( TreeNode* root ) {
+        if ( root == nullptr)
+            return 0 ;
+
+        root->val = max( DFSheight(root->left) , DFSheight(root->right) ) + 1 ;
+
+        return root->val ;
+    }
+    static bool check (TreeNode* root) {
+        if ( root == nullptr )
+            return true ;
+
+        if ( root->left == nullptr && root->right == nullptr )
+            return true ;
+        else if ( root->left == nullptr && root->right->val == 1 )
+            return true ; 
+        else if ( root->right == nullptr && root->left->val == 1 )
+            return true ;
+        else if ( root->left == nullptr || root->right == nullptr )
+            return false ;
+        else if ( abs(root->left->val - root->right->val) > 1 )
+            return false ;
+        else 
+            return check( root->left ) && check (root->right) ;
+
+    }
+    bool isBalanced(TreeNode* root) {
+        DFSheight(root) ; 
+
+        return check(root) ;
+    }
+};
+
+// another way : 可以只做一次DFS , 每次更新高度時再注意左右子樹的高度相差即可
+
+Time Complexity : O(n) for one time DFS
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    static int DFSheight( TreeNode* root , bool &ans ) {
+        if ( root == nullptr || !ans )
+            return 0 ;
+
+        int a = DFSheight(root->left , ans) ;
+        int b = DFSheight(root->right , ans) ;
+        root->val = max( a , b ) + 1 ;
+        
+        if ( abs(a - b) > 1 )
+            ans = false ;
+
+
+        return root->val ;
+    }
+    
+    bool isBalanced(TreeNode* root) {
+        bool ans = true ;
+        DFSheight(root , ans) ; 
+
+        return ans ;
+    }
+};
+
