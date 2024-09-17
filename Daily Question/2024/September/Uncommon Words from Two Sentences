@@ -1,0 +1,93 @@
+想法：先將含有空白的字串間隔成一個個words , 用hash table 記錄下每個 word 出現的次數
+最後再找出符合條件的word即可
+
+技巧：利用unordered_map(string , int) 可以將 string 當成 key 去查找 int value ；快速記錄字串出現過幾次
+
+注意：要記得將最後一個 word 也加入 unordered_map 中 , 並清空 s 
+
+Time Complexity : O( s1.length + s2.length ) for traversing two strings and find the answer
+Space Complexity : O(s1.length + s2.length) for two hash tables and answer array 
+
+class Solution {
+public:
+    vector<string> uncommonFromSentences(string s1, string s2) {
+        unordered_map<string , int> appear1 , appear2 ;
+
+        string s ;
+        for(int i = 0 ; i < s1.size() ; i++) {
+            if ( s1[i] == ' ' ) {
+                appear1[s]++ ;
+                s = "" ;
+            }
+            else 
+                s += s1[i] ;
+        }
+        appear1[s]++ ;
+        s = "" ;
+
+        for(int i = 0 ; i < s2.size() ; i++) {
+            if ( s2[i] == ' ' ) {
+                appear2[s]++ ;
+                s = "" ;
+            }
+            else 
+                s += s2[i] ;
+        }
+        appear2[s]++ ;
+        s = "" ;
+
+        vector<string> ans ; 
+        for(auto &i : appear1) {
+            if ( i.second == 1 && appear2[i.first] == 0 )
+                ans.push_back(i.first) ;
+        }
+        for(auto &i : appear2) {
+            if ( i.second == 1 && appear1[i.first] == 0 )
+                ans.push_back(i.first) ;
+        }
+        
+
+        return ans ;
+    }
+};
+
+// use std::istringstream （把字串當作輸入流）
+
+初始化： std::istringstream iss (某個字串)  // 不能 iss(字串) , 只支援初始化 
+輸入：
+string word ;
+while ( iss >> word ) {
+    ...
+}
+
+class Solution {
+public:
+    vector<string> uncommonFromSentences(string s1, string s2) {
+        unordered_map<string , int> appear1 , appear2 ;
+
+        istringstream iss(s1) ;
+        string word ;
+        while ( iss >> word ) {
+            appear1[word]++ ;
+        }
+        istringstream iss2(s2) ;
+        while ( iss2 >> word ) {
+            appear2[word]++ ;
+        }
+
+        vector<string> ans ; 
+        for(auto &i : appear1) {
+            if ( i.second == 1 && appear2[i.first] == 0 )
+                ans.push_back(i.first) ;
+        }
+        for(auto &i : appear2) {
+            if ( i.second == 1 && appear1[i.first] == 0 )
+                ans.push_back(i.first) ;
+        }
+        
+
+        return ans ;
+    }
+};
+
+
