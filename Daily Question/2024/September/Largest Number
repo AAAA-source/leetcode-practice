@@ -1,0 +1,79 @@
+想法：這題可以想像成要把每個字串sort 一遍，把最大（最有用）的字串放在結果的前面；而我們要找的就是怎麼樣判斷該字串比較大
+判斷 string a , string b 何者較大的方法就是直接判斷 (a + b) > (b + a)? 
+
+注意：要特別判斷全部都是 0 的情況
+
+Time Complexity : O(n^2) for choose max string n times (each time take O(n) time)
+Space Complexity : O(n) for result string 
+
+class Solution {
+public:
+    bool checkallzero( vector<int>& nums ) {
+        for(auto &i : nums) {
+            if ( i != 0 )
+                return false ;
+        }
+        return true ;
+    }
+
+    bool bigger( string a , string b ) {
+        return (a + b) > (b + a) ;
+    }
+
+    string largestNumber(vector<int>& nums) {
+        if ( checkallzero(nums) )
+            return "0" ;
+
+        string result ;
+        while ( !nums.empty() ) {
+            string temp = to_string( nums[0] ) ;
+            
+            int index = 0 ;
+            for( int i = 1 ; i < nums.size() ; i++ ) {
+                // check nums[1] 
+                string now = to_string( nums[i] ) ;
+                if ( bigger(now , temp) ) {
+                    temp = now ;
+                    index = i  ;
+                }
+            }
+
+            result += temp ;
+            nums.erase( nums.begin() + index ) ;
+        }
+
+
+        
+        return result ;
+    }
+};
+
+
+// another way : first sorted the strings and choose the string by order
+Time Complexity : O(nlogn) for sorting
+Space Complexity : O(n) for the string array and answer
+
+class Solution {
+public:
+    static bool bigger( string& a , string& b ) {
+        return (a + b) > (b + a) ;
+    }
+
+    string largestNumber(vector<int>& nums) {
+        vector<string> stringnum (nums.size()) ; 
+        for(int i = 0 ; i < nums.size() ; i++) {
+            stringnum[i] = to_string(nums[i]) ;
+        }
+
+        sort( stringnum.begin() , stringnum.end() , bigger ) ;
+        if ( stringnum[0] == "0" )
+            return "0" ; 
+        else {
+            string result ; 
+            for( auto &s : stringnum ) 
+                result += s ;
+            return result ;
+        }
+
+    }
+};
