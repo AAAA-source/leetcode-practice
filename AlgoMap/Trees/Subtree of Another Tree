@@ -64,3 +64,39 @@ public:
             isSubtree(root->right , subRoot) ;
     }
 };
+
+法二：運用 hash table 的思維，先將一個樹轉換成一個字串（hash）,只需要比對subtree的字串是否出現在 tree 的字串中即可
+
+技巧：利用內建函式 string.find(目標字元/字串) 快速查找
+如果找到的話，會回傳第一個出現的位置，否則回傳std::string::npos
+
+Time Complexity : O(n + m) for hashing and finding
+Space Complexity : O(n + m) for storing hashing string
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    string tree_to_string( TreeNode* root ) {
+        if (!root)
+            return "null" ; 
+        else 
+            return '#' + to_string(root->val)
+             + tree_to_string(root->left) + ' ' + tree_to_string(root->right) ;
+    }
+    bool isSubtree(TreeNode* root, TreeNode* subRoot) {
+        string rootstring = tree_to_string(root) ; 
+        string subrootstring = tree_to_string(subRoot) ;
+
+        return rootstring.find( subrootstring ) != string::npos ;
+    }
+};
