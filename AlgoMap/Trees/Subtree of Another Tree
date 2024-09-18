@@ -1,6 +1,8 @@
 想法：每個node都當成subroot , 所以每個node都跑一次DFS 確定是否是 subtree 即可
 
-Time Complexity : O(n^2) for n nodes , every nodes run DFS one time
+
+// n is the number of nodes at tree , m is the number of nodes in subtree
+Time Complexity : O(n * m) for n nodes , every nodes run DFS one time ( m = O(n))
 Space Complexity : O(h) for recursion depth (h = the height of tree = O(n))
 
 /**
