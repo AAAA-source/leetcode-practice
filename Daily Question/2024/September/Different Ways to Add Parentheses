@@ -1,0 +1,47 @@
+想法：運用分治法的概念，把每個operator都假設是最後一個運算子，那麼就可以遞迴算出左邊組合共有多少組可能以及右邊組合共有多少種可能
+接著，把兩個運算後就可以得到該長度會有多少種可能數字
+
+Time Complexity : O(n * 2^n)
+Space Complexity : O(2^n) 
+
+class Solution {
+public:
+    int operation( int a , int b , char c ) {
+        if ( c == '+' )
+            return a + b ; 
+        else if ( c == '-' )
+            return a - b ;
+        else 
+            return a * b ;
+    }
+
+    vector<int> diffWaysToCompute(string expression) {
+        // base case : empty string
+        if ( expression.empty() )
+            return {} ;
+
+
+        // base case : only one number
+        if ( expression.length() <= 2 )
+            return {stoi(expression)} ; 
+        
+        // recursive case : iterate all operators
+        vector<int> result ;
+        for(int i = 0 ; i < expression.length() ; i++) {
+            if ( isdigit(expression[i]) )
+                continue ;
+            vector<int> left = diffWaysToCompute( expression.substr(0 , i) ) ;
+            vector<int> right = 
+                diffWaysToCompute(expression.substr(i + 1 )) ;
+
+
+            for( int &j : left ) {
+                for(int &k : right) {
+                    result.push_back( operation(j , k , expression[i]) ) ;
+                }
+            }
+        }
+
+        return result ;
+    }
+};
