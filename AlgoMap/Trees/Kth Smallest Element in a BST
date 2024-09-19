@@ -1,0 +1,74 @@
+想法：用一個max heap 維護 k 個最小元素，最後輸出heap 最大者即可（就是第 k 小的元素）
+
+Time Complexity : O(nlogk) for traversing n nodes and maintain the heap
+Space Complexity : O(h + k) for recursion and heap (h = O(n))
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+    priority_queue<int> appear ;
+    int sz ;
+public:
+    void DFS(TreeNode* root) {
+        if (!root)
+            return ;
+        if (appear.size() < sz || appear.top() > root->val ) {
+            appear.push(root->val) ;
+            if ( appear.size() > sz )
+                appear.pop() ;
+        }
+        DFS(root->left) ; 
+        DFS(root->right) ;
+        return ;
+    }
+    int kthSmallest(TreeNode* root, int k) {
+        sz = k ;
+        DFS(root) ;
+        return appear.top() ;
+    }
+};
+
+// another way 
+因為這是 binary search tree , 所以我們在用inorder traversal 時，會有 left child <= root <= right child 的特性
+所以只要用inorder traversal 的方式DFS 一遍，把看過的第 k 個元素輸出即可
+
+Time Complexity : O(n) for traversing n nodes 
+Space Complexiry : O(h) for recursion (h = O(n))
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+    vector<int> appear ;
+public:
+    void DFS(TreeNode* root) {
+        if (!root)
+            return ;
+        
+        DFS(root->left) ;
+        appear.push_back(root->val) ;
+        DFS(root->right) ;
+        return ;
+    }
+    int kthSmallest(TreeNode* root, int k) {
+        DFS(root) ;
+        return appear[k - 1] ;
+    }
+};
