@@ -1,0 +1,147 @@
+想法：運用 binary search tree 的特性 , 最接近該元素的兩個 nodes 就是predecessor （前一個） 跟 successor (後一個) ；
+也就是左子樹中最大者以及右子樹的最小者
+因此，DFS 一次整棵樹，每個節點找出 predecessor , successor 並更新minvalue 即可
+
+Time Complexity : O(n) 
+Space Complexity : O(h) for recursion depth (h = O(n)) 
+
+the proof of time complexity is complex , so we ignored it 
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+    int minvalue ;
+public:
+    TreeNode* findleft(TreeNode* root) {
+        if ( root->left != nullptr )
+            return findleft(root->left) ;
+        return root ;
+    }
+
+    TreeNode* findright( TreeNode* root ) {
+        if ( root->right != nullptr )
+            return findright(root->right) ;
+        return root ;
+    }
+
+
+    void DFS(TreeNode* root ) {
+        if (!root)
+            return ;
+        
+        if ( root->left != nullptr )
+            minvalue = min(minvalue ,  root->val - findright(root->left)->val ) ;
+        if ( root->right != nullptr ) 
+            minvalue = min( minvalue , findleft(root->right)->val - root->val ) ;
+
+        DFS(root->left ) ;
+        DFS(root->right ) ;
+        return ;
+    }
+
+    int getMinimumDifference(TreeNode* root) {
+        minvalue = INT_MAX ;
+
+        DFS(root) ;
+
+        return minvalue ;
+    }   
+};
+
+// another way : use the vector to store the appear element 
+use inorder traversal to maintain the nondecreasing property
+
+Time Complexity : O(n) 
+Space Complexity : O(n) for array and recursion depth
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+    vector<int> appear ;
+public:
+    void DFS(TreeNode* root ) {
+        if (!root)
+            return ;
+        DFS(root->left ) ;
+        appear.push_back( root->val) ;
+        DFS(root->right ) ;
+        return ;
+    }
+
+    int getMinimumDifference(TreeNode* root) {
+        DFS(root) ;
+        
+        int minvalue = INT_MAX ;
+        for(int i = 1 ; i < appear.size() ; i++) {
+            minvalue = min(minvalue , appear[i] - appear[i - 1]) ;
+        }
+        
+        return minvalue ;
+    }   
+};
+
+// a general way : if the tree is not the binary search tree , because the number range is 0 ... 100000 ,
+so we just maintain the number appear times , and check the nearest elements
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    void DFS(TreeNode* root , vector<int>& appear) {
+        if (!root)
+            return ;
+        appear[root->val]++ ;
+        
+        DFS(root->left , appear) ;
+        DFS(root->right , appear) ;
+        return ;
+    }
+
+    int getMinimumDifference(TreeNode* root) {
+        vector<int> appear(100005) ;
+        DFS(root , appear) ;
+
+        int last = -1 ; 
+        int minvalue = INT_MAX ;
+        for(int i = 0 ; i <= 100000 ; i++) {
+            if ( appear[i] > 1 )
+                minvalue = 0 ; 
+            else if ( appear[i] == 0 )
+                continue ; 
+            else {
+                if (last != -1)
+                    minvalue = min(minvalue , i - last) ;
+                last = i ;
+            }
+        }
+
+        return minvalue ;
+    }   
+};
