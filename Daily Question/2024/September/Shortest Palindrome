@@ -1,0 +1,37 @@
+想法：只要找出字串 s 的最長回文子字串，在回傳 2s - 子字串長度即可 
+
+技巧：利用 KMP 找出最長回文子字串
+
+Time Complexity : O(n) for finding longest palindrome substring
+Space Complexity : O(n) for prefixarray
+
+class Solution {
+public:
+    vector<int> computeprefix(string& s) {
+        vector<int> table(s.length()) ;
+        int length = 0 ;
+
+        for(int i = 1 ; i < s.length() ; i++) {
+            while ( length > 0 && s[i] != s[length] ) {
+                length = table[length - 1] ;
+            }
+            if ( s[i] == s[length] )
+                length++ ;
+            table[i] = length ;
+        }
+        return table ;
+    }
+
+    string shortestPalindrome(string s) {
+        
+        string reverse = string(s.rbegin() , s.rend() ) ; 
+        string combine = s + '#' + reverse ;
+
+        vector<int> prefixtable = computeprefix(combine) ;
+
+        int len = prefixtable.back() ;
+
+        return reverse.substr( 0 , s.length() - len ) + s ;
+    }
+};
+
