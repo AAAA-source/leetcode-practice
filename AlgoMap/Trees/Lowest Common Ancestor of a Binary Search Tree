@@ -1,0 +1,110 @@
+想法：紀錄從 root 到 p 的路徑，以及從root 到 q 的路徑；再比對最後相同者是哪個node即可
+
+Time Complexity : O(h) for finding p , q and comparing two paths (h = O(n))
+Space Complexity : O(h) for two arrays 
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        vector<TreeNode*> path_to_p ;
+        
+        TreeNode* cursor = root ; 
+        while (cursor != p) {
+            path_to_p.push_back(cursor) ;
+            if ( cursor->val < p->val )
+                cursor = cursor->right ;
+            else 
+                cursor = cursor->left ;
+        }
+        path_to_p.push_back(cursor) ;
+
+
+        vector<TreeNode*> path_to_q ;
+        cursor = root ; 
+        while (cursor != q) {
+            path_to_q.push_back(cursor) ;
+            if ( cursor->val < q->val )
+                cursor = cursor->right ;
+            else 
+                cursor = cursor->left ;
+        }
+        path_to_q.push_back(cursor) ;
+
+        int index = 0 ;
+        while ( index < min(path_to_p.size() , path_to_q.size()) ) {
+            if ( path_to_p[index] != path_to_q[index] )
+                break ;
+            index++ ;
+        }
+        return path_to_p[index - 1] ;
+    }
+};
+
+// another way : 從 root 往下找，看在哪個節點開始分岔，該節點即是最近祖先
+
+Time Complexity : O(h) for finding p , q from root to leaf 
+Space Complexity : O(h) for recursion depth (h = O(n))
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if ( p->val > root->val && q->val > root->val )
+            return lowestCommonAncestor(root->right , p , q) ;
+        else if ( p->val < root->val && q->val < root->val )
+            return lowestCommonAncestor(root->left , p , q) ;
+        else 
+            return root ;
+    }   
+};
+
+// 用迴圈代替遞迴
+Time Complexty : O(h) for finding p , q 
+Space Complexity : O(1) for variables
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        TreeNode* cursor = root ;
+
+        while ( cursor != nullptr ) {
+            if ( p->val > cursor->val && q->val > cursor->val )
+                cursor = cursor->right ;
+            else if ( p->val < cursor->val && q->val < cursor->val )
+                cursor = cursor->left ;
+            else 
+                break ;
+        }
+
+        return cursor ;
+    }   
+};
