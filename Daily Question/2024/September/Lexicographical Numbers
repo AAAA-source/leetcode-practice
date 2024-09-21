@@ -1,0 +1,50 @@
+想法：假設現在是 i , 那麼下一個元素可能是 i * 10 或是 i * 10 + 1 ,,, 直到 i * 10 + 9 , 接著是 i + 1 
+所以可用DFS填答案，因為DFS 的深度最多只有 log_10(5 * 10^4) <= 5 , 所以是 O(1) space complexity 
+
+Time Complexity : O(n) for filling n elements 
+Space Complexity : O(1) for recursion  depth and variables
+
+class Solution {
+    vector<int> answer ; 
+public:
+    void DFS( int n , int now ) {
+        if ( now > n )
+            return ;
+        answer.push_back( now ) ;
+        for(int i = 0 ; i < 10 ; i++) {
+            DFS( n , now * 10 + i ) ;
+        }
+        return ;
+    }
+    vector<int> lexicalOrder(int n) {
+       
+        for(int i = 1 ; i <= 9 ; i++)
+            DFS(n , i) ;        
+        
+        return answer ;
+    }
+};
+
+或是使用 iteration 的方法完成DFS
+class Solution {
+public:
+    vector<int> lexicalOrder(int n) {
+        vector<int> answer ; 
+        int number = 1 ; 
+        
+        for(int i = 0 ; i < n ; i++) {
+            answer.push_back(number) ;
+
+            // update number 
+            if ( number * 10 <= n )
+                number *= 10 ;
+            else {
+                while ( number % 10 == 9 || number >= n )
+                    number /= 10 ;
+                number++ ;
+            }
+        }
+        
+        return answer ;
+    }
+};
