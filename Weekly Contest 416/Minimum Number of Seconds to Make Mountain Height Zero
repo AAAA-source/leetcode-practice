@@ -1,0 +1,50 @@
+Intuition
+First , we can observe that it has greedy property in the solution.
+That means , we always choose the min logest time in every workers be this step answer.
+
+So , we can first record two things. one is the workers now working time , second is how long does the workers need to work to finish next unit.
+
+Then , we always find the min value now[i] + next[i] * worktimes[i] by greedy strategy
+
+The key of solution is , only the min value will update to
+(now[i] + (next[i] + 1) * worktimes[i])
+That means we can use minheap to approach the answer
+
+Approach
+use minvalue to record the minimim longest time we need at each step.
+And use priority_queue to store the {value , index} nodes
+
+Complexity
+Time complexity: O(h logn) for n nodes in heap , everytime update we need O(logn) times. In total , we will run h ( h = mountain height) time
+Space complexity: O(n) for heap and arrays
+
+
+Code
+class Solution {
+public:
+    long long minNumberOfSeconds(int mountainHeight, vector<int>& workerTimes) {
+        int n = workerTimes.size() ;
+        vector<long long int> now( n ) ; 
+        vector<long long int> next ( n , 1) ;
+
+        priority_queue< pair<long long int , int> , vector<pair<long long int , int>> , 
+                                    greater<pair<long long int , int>>> minheap ;
+
+        for( int i = 0 ; i < n ; i++ ) {
+            minheap.push( {now[i] + workerTimes[i] * next[i] , i} ) ;
+        }
+
+        long long int maxvalue = 0 ;
+        for( long long int i = 0 ; i < mountainHeight ; i++) {
+            auto res = minheap.top() ;
+            minheap.pop() ;
+
+            maxvalue = max( maxvalue , res.first ) ;
+            now[ res.second ] = res.first ;
+            next[ res.second ]++ ;
+            minheap.push( {now[res.second] + workerTimes[res.second] 
+                * next[res.second] , res.second} ) ;
+        }
+        return maxvalue ;
+    }
+};
