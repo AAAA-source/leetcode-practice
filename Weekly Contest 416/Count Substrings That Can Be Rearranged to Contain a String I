@@ -1,0 +1,51 @@
+Intuition
+We can maintain a substring s[l ... r] that the substring is the shortest substring that is valid which start from l-th character
+
+So , every substring s[l ... r + 1] , s[l ... r + 2] , ... s[l ...n]
+is also the valid substring.
+
+We use sliding windows to find the minimum r value
+and sum up (n - r + 1) if s[l ... r] is a valid answer
+(to avoid s[l ... n] which still unvalid be counted)
+
+Approach
+Because we can rearrange the string , so we only care about the frequency that characters appear. we can use an array to store the frequency from a...z
+
+We first minus all the frequency that in word2. And plus all frequency in s[l ... r] . That means , when frequency[a ...z] is nonnegative , the substring can be rearrange!
+
+Complexity
+Time complexity: O(n + m) for moving l , r from 0 to n(word1.size()) and minus all the frequency in word2 (take O(m) times)
+Space complexity: O(1) for array[26] (O(26) = O(1)) and variables
+
+
+Code
+class Solution {
+public:
+    static bool valid( vector<int> &count ) {
+        for( auto &i : count ) {
+            if ( i < 0 )
+                return false ;
+        }
+        return true ;
+    }
+    long long validSubstringCount(string word1, string word2) {
+        int l = 0 , r = 0 ;
+        long long int count = 0 ; 
+        vector<int> appear(26) ;
+        for( auto &c : word2 )
+            appear[ c - 'a']-- ;
+
+        while ( l < word1.length() ) {
+            while (r < word1.length() && !valid(appear) ) {
+                appear[ word1[r] - 'a']++ ;
+                r++ ;
+            }
+            if ( valid(appear) ) {
+                count += ( word1.length() - r + 1) ;
+            }
+            appear[ word1[l] - 'a']-- ;
+            l++ ;
+        }
+        return count ;
+    }
+};
