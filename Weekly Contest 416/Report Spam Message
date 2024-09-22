@@ -1,0 +1,29 @@
+Intuition
+First , we use the hash table to store the words that appeared in bannedWords.
+Then , we check all the words in message . and use "count" variable to record the banned word appear time.
+
+Approach
+in C++ , we use unordered_set to store the string
+
+Complexity
+Time complexity: O( n + m ) for storing m strings in hash table and find n strings in hash table
+Space complexity: O(m) for the hash table that storing m strings
+
+
+Code
+class Solution {
+public:
+    bool reportSpam(vector<string>& message, vector<string>& bannedWords) {
+        unordered_set<string> appear ; 
+        for( auto &s : bannedWords ) 
+            appear.insert(s) ;
+
+        int count = 0 ;
+        for( auto &s : message ) {
+            if ( appear.find(s) != appear.end() )
+                count++ ;
+        }
+
+        return count >= 2 ;
+    }
+};
