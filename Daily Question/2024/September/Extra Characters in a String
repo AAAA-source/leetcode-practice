@@ -35,6 +35,32 @@ public:
     }
 };
 
+// using hash set to storing the string in dictionary
+Time Complexity : O(n^3 + m) for building hash set and finding all th possible substrings
+Space Complexity : O(n + m * k) for the dp array and hash set
+class Solution {
+public:
+    int minExtraChar(string s, vector<string>& dictionary) {
+
+        unordered_set<string> appear ; 
+        for( auto &i : dictionary )
+            appear.insert(i) ;
+
+        vector<int> dp( s.length() + 5 , INT_MAX) ;
+        dp[s.length()] = 0 ;
+        // dp[i] means the left characters from s[i ... s.length() - 1]
+        for( int i = s.length() - 1 ; i >= 0 ; i-- ) {
+            dp[i] = dp[i + 1] + 1 ;
+            for( int j = i ; j < s.length() ; j++ ) {
+                if ( appear.find( s.substr(i , (j - i + 1)) ) != appear.end() ) 
+                    dp[i] = min( dp[i] , dp[j + 1] ) ;
+            }
+
+        }
+        return dp[0] ;
+    }
+};
+
 // using Trie 
 
 技巧：利用 Trie 存儲出現在字典裡的字串，這樣之後找尋時只要看Trie 有沒有相應的路徑即可
