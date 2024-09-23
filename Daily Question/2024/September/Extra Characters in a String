@@ -1,0 +1,93 @@
+想法：這題可以用 dp 去解，定義 dp[i]是從s[i ... end] 殘留的字元數量；那麼有兩種情況
+1.沒有 match 到字串：dp[i] = dp[i + 1] + 1 
+2. match 到長度 l 的字串：dp[i] = dp[l + 1] 
+
+// n is the length of s , m is the size of dictionary , k is the average length of strings in dictionary
+Time Complexity : O(n * m * k) for O(n) loop from i = n - 1 ... 0 , and checking all strings in dictionary
+Space Complexity : O(n) for the dp array
+
+class Solution {
+public:
+    static bool isprefix( string a , string b ) {
+        // return if b is a prefix
+        if ( a.length() < b.length() )
+            return false ;
+        for(int i = 0 ; i < b.length() ; i++) {
+            if ( a[i] != b[i] )
+                return false ;
+        }
+        return true ;
+    }
+    int minExtraChar(string s, vector<string>& dictionary) {
+        vector<int> dp( s.length() + 5 , INT_MAX) ;
+        dp[s.length()] = 0 ;
+        // dp[i] means the left characters from s[i ... s.length() - 1]
+        for( int i = s.length() - 1 ; i >= 0 ; i-- ) {
+            dp[i] = dp[i + 1] + 1 ;
+            string temp = s.substr(i) ;
+            for( auto &str : dictionary ) {
+                if ( isprefix(temp , str) ) {
+                    dp[i] = min( dp[i] , dp[i + str.length()] ) ;
+                }
+            }
+        }
+        return dp[0] ;
+    }
+};
+
+// using Trie 
+
+技巧：利用 Trie 存儲出現在字典裡的字串，這樣之後找尋時只要看Trie 有沒有相應的路徑即可
+
+Time Complexity : O(n^2 + m * k) for O(m * k) building Trie , and O(n^2) finding all possible path
+Space Complexity : O(n + m * k) for Trie and the dp array
+
+
+#include<string>
+#include<vector>
+class TrieNode {
+public : 
+    vector<TrieNode*> children ;
+    bool is_word ;
+
+
+    TrieNode() : children(26 , nullptr) , is_word(false) {}
+} ;
+
+class Solution {
+public:
+    TrieNode* build( vector<string>& dictionary ) {
+        TrieNode* root = new TrieNode() ;
+
+        for( auto &s : dictionary ) {
+            TrieNode* cursor = root ;
+            for( auto &c : s ) {
+                if ( cursor->children[c - 'a'] == nullptr )
+                    cursor->children[c - 'a'] = new TrieNode() ;
+
+                cursor = cursor->children[c - 'a'] ;
+            }
+            cursor->is_word = true ;
+        }
+        return root ;
+    }
+    int minExtraChar(string s, vector<string>& dictionary) {
+        TrieNode* root = build( dictionary ) ;
+
+        vector<int> dp( s.length() + 5 ) ; 
+        for(int i = s.length() - 1 ; i >= 0 ; i--) {
+            dp[i] = dp[i + 1] + 1 ;
+            
+            TrieNode* cursor = root ;
+            for(int j = i ; j < s.length() ; j++) {
+                if ( cursor->children[ s[j] - 'a'] == nullptr )
+                    break ;
+                cursor = cursor->children[ s[j] - 'a'] ;
+                if ( cursor->is_word )
+                    dp[i] = min(dp[i] , dp[j + 1]) ;
+            }
+        }
+        return dp[0] ;
+    }
+};
+
