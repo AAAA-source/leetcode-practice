@@ -1,0 +1,39 @@
+想法：先計算目前這個數字開頭，到下個數字開頭中間共有多少數字( 例如 1開頭 到 2開頭 )；如果區間內數字比剩餘 k 少，那麼答案必定在下個開頭之後
+反之，一定在這個開頭內，我們可以進而尋找 *10 後的開頭是否符合即可 ( 在1開頭內，尋找10開頭、11開頭... )
+
+Time Complexity : O( (logn)^2 ) for number n , there is O(logn) digits , so we need  O(logn) iteration to find the answer , and everytime we 
+need O(logn) to count the numbers 
+Space Complexity : O(1) for variables
+
+
+
+class Solution {
+public:
+    static int count(int n , long long int now , long long int next) {
+        int sum = 0 ;
+        while ( now <= n ) {
+            sum += min( (long long int) n + 1 , next ) - now ;
+            now *= 10 ;
+            next *= 10 ;
+        }   
+        return sum ;
+    }
+    int findKthNumber(int n, int k) {
+        int cursor = 1 ; 
+        k-- ;
+
+        while ( k > 0 ) {
+            int steps = count(n , cursor , cursor + 1) ;
+
+            if ( steps <= k ) {
+                cursor++ ;
+                k -= steps ;
+            }
+            else {
+                cursor *= 10 ;
+                k-- ;
+            }
+        }
+        return cursor ;
+    }
+};
