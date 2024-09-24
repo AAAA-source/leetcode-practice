@@ -1,0 +1,86 @@
+想法：先將所有出現在arr1 的prefix 放在 hash set 裡，接著檢查所有出現在arr2 的 prefix ，並紀錄最長長度即可
+
+// m is the size of arr1 , M is the maximum element in arr1 ; n is the size of arr2 , N is the maximum element in arr2
+Time Complexity : O( m * logM + n * logN ) for insert all the prefixs in arr1 in the hash set , and check all the prefixs in arr2 
+Space Complexity : O(m * logM) for the hash set 
+
+#include<cmath>
+#include<vector>
+class Solution {
+public:
+    int longestCommonPrefix(vector<int>& arr1, vector<int>& arr2) {
+        unordered_set<int> appear_prefixs ;
+        for( auto& num : arr1 ) {
+            while ( num > 0 ) {
+                appear_prefixs.insert(num) ;
+                num /= 10 ;
+            }
+        }
+
+        int maxlength = 0 ;
+        for( auto& num : arr2 ) {
+            while ( num > 0 ) {
+                if ( appear_prefixs.find(num) != appear_prefixs.end() ) {
+                    maxlength = max( maxlength , static_cast<int>( log10(num) + 1 ) ) ;
+                    break ;
+                } 
+
+                num /= 10 ;
+            }
+        }
+        return maxlength ;
+    }
+};
+
+// another way : use a Trie to record all the prefixs in arr1 , and check the maximum depth does reach from every prefix in arr2 
+
+Time Complexity : O( m * logM + n * logN ) for O(m * logM) building the Trie , and O(n * logN) for visited the Trie 
+Space Complexity : O( m * logM ) for the Trie 
+
+#include<vector>
+class TrieNode {
+public :
+    vector<TrieNode*> children ;
+    TrieNode() : children(10 , nullptr) {} 
+};
+
+class Solution {
+public:
+    int longestCommonPrefix(vector<int>& arr1, vector<int>& arr2) {
+        TrieNode* root = new TrieNode() ;
+
+        for( auto &num : arr1 ) {
+            TrieNode* cursor = root ; 
+            string temp = to_string(num) ;
+            while ( !temp.empty() ) {
+                if ( cursor->children[ temp[0] -'0' ] == nullptr )
+                    cursor->children[temp[0] -'0'] = new TrieNode() ;
+                cursor = cursor->children[temp[0] -'0'] ;
+                if ( temp.length() >= 2 )
+                    temp = temp.substr(1) ;
+                else 
+                    temp = "" ;
+            }
+        }
+
+        int maxdepth = 0 ;
+        for( auto &num : arr2 ) {
+            TrieNode* cursor = root ;
+            int depth = 0 ;
+            string temp = to_string(num) ;
+            while ( !temp.empty() ) {
+                if ( cursor->children[temp[0] -'0'] == nullptr )
+                    break ;
+                cursor = cursor->children[temp[0] -'0'] ; 
+                depth++ ;
+                if ( temp.length() >= 2 )
+                    temp = temp.substr(1) ;
+                else 
+                    temp = "" ;
+            }
+            maxdepth = max( maxdepth , depth ) ;
+        }
+        return maxdepth ;
+    }
+};
+
