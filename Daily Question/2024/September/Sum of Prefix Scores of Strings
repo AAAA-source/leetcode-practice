@@ -1,0 +1,45 @@
+想法：使用 Trie 紀錄所有字串前綴出現的頻率，再把有出現過的前綴加起來即可
+
+// n is the size of words , m is the average length of words
+Time Complexity : O(nm) for inserting and searching prefixs
+Space Complexity : O(nm) for the trie
+
+#include<string>
+#include<vector>
+class TrieNode {
+public:
+    TrieNode* children[26] = {} ;
+    int val = 0 ;
+};
+class Solution {
+public:
+    vector<int> sumPrefixScores(vector<string>& words) {
+        TrieNode* root = new TrieNode() ;
+
+        for ( auto &s : words ) {
+            TrieNode* cursor = root ;
+            for ( auto &c : s ) {
+                if ( cursor->children[c - 'a'] == nullptr ) 
+                    cursor->children[c - 'a'] = new TrieNode() ;
+
+                cursor = cursor->children[c - 'a'] ;
+                ++(cursor->val) ;
+            }
+        }
+
+        int n = words.size() ;
+        vector<int> ans(n) ; 
+        for(int i = 0 ; i < n ; i++) {
+            TrieNode* cursor = root ;
+
+            for ( auto &c : words[i] ) {
+                if ( cursor->children[c - 'a'] == nullptr )
+                    break ;
+                cursor = cursor->children[c - 'a'] ;
+                ans[i] += cursor->val ;
+            }
+
+        }
+        return ans ;
+    }
+};
