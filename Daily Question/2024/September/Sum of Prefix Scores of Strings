@@ -43,3 +43,46 @@ public:
         return ans ;
     }
 };
+
+
+提升靈活性：也可以用 unordered_map 儲存 children 
+
+class TrieNode {
+public:
+    unordered_map<char ,TrieNode*> children ;
+    int val ;
+
+};
+class Solution {
+public:
+    vector<int> sumPrefixScores(vector<string>& words) {
+        TrieNode* root = new TrieNode() ;
+
+        for ( auto &s : words ) {
+            TrieNode* cursor = root ;
+            for ( auto c : s ) {
+                if ( cursor->children[c - 'a'] == nullptr ) 
+                    cursor->children[c - 'a'] = new TrieNode() ;
+
+                cursor = cursor->children[c - 'a'] ;
+                cursor->val  = cursor->val + 1 ;
+            }
+        }
+
+        int n = words.size() ;
+        vector<int> ans(n) ; 
+        for(int i = 0 ; i < n ; i++) {
+            TrieNode* cursor = root ;
+            int sum = 0 ;
+            for ( auto c : words[i] ) {
+                if ( cursor->children[c - 'a'] == nullptr )
+                    break ;
+                cursor = cursor->children[c - 'a'] ;
+                sum += cursor->val ;
+            }
+
+            ans[i] = sum ;
+        }
+        return ans ;
+    }
+};
