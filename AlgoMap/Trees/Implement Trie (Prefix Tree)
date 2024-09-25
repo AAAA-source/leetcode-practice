@@ -1,0 +1,68 @@
+想法：先創建另一個class 紀錄 TrieNode , 接著初始化 Trie 
+每個node中需要存各子孫路徑，以及一個appeared 變數，代表是否有word結束在這個字元
+search : 不僅node必須存在，appeared還得是true (代表真的有這個字)
+startwith : 有存在node即可（代表有字結束在此或是更後面，一定是這個prefix）
+
+// input n characters 
+Time Complexity : O(n) for inserting , O(n) for searching , O(n) for finding prefix
+Space Complexity : O(|S|) for the trie store all the characters
+
+class TrieNode {
+public:
+    vector<TrieNode*> children ;
+    bool appeared ;
+
+    TrieNode() : children(26) , appeared(false) {}
+};
+
+class Trie {
+public:
+    TrieNode* root ;
+    Trie() {
+        root = new TrieNode() ;
+    }
+    
+    void insert(string word) {
+        TrieNode* cursor = root ;
+        for( auto c : word ) {
+            if ( cursor->children[c - 'a'] == nullptr )
+                cursor->children[c - 'a'] = new TrieNode() ;
+            cursor = cursor->children[c - 'a'] ; 
+        }
+        cursor->appeared = true ;
+    }
+    
+    bool search(string word) {
+        TrieNode* cursor = root ;
+        bool success = true ;
+        for( auto c : word ) {
+            if ( cursor->children[c - 'a'] == nullptr ) {
+                success = false ;
+                break ;
+            }
+            cursor = cursor->children[c - 'a'] ; 
+        }
+        return ( success && cursor->appeared == true) ;
+    }
+    
+    bool startsWith(string prefix) {
+        TrieNode* cursor = root ;
+        bool success = true ;
+        for( auto c : prefix ) {
+            if ( cursor->children[c - 'a'] == nullptr ) {
+                success = false ;
+                break ;
+            }
+            cursor = cursor->children[c - 'a'] ; 
+        }
+        return success  ;
+    }
+};
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie* obj = new Trie();
+ * obj->insert(word);
+ * bool param_2 = obj->search(word);
+ * bool param_3 = obj->startsWith(prefix);
+ */
