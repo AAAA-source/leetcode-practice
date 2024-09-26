@@ -1,0 +1,60 @@
+想法：用linked list 紀錄已經在calendar 的事件，維護這個linked list 是 sorted list 的性質，這樣只需找到可以插入的地方即可插入
+
+// for one book operation
+Time Complexity : O(n) for finding the space
+Space Complexity : O(n) for storing calendar 
+
+
+class MyCalendar {
+public:
+    struct listnode {
+        pair<int , int> range ;
+        struct listnode* next ;
+    };
+    typedef struct listnode ListNode ;
+    ListNode* head ;
+    MyCalendar() {
+        head = nullptr ;
+    }
+
+    ListNode* insert( pair<int , int> val , ListNode* prev , ListNode* next ) {
+        ListNode* temp = new ListNode() ;
+        temp->range = val ;
+        temp->next = next ;
+        if ( prev )
+            prev->next = temp ;
+        return (prev)? prev : temp ;
+    }
+    
+    bool book(int start, int end) {
+
+        if ( head == nullptr ) {
+            head =insert({start , end} , nullptr , nullptr) ;
+            return true ;
+        }
+        if ( head->range.first >= end ) {
+            head =insert({start , end} , nullptr , head) ;
+            return true ;
+        }
+        struct listnode* cursor = head ; 
+        while ( cursor != nullptr ) {
+            if ( cursor->next == nullptr && cursor->range.second <= start ) {
+                insert({start , end} , cursor , nullptr) ;
+                return true ;
+            }
+            else if ( cursor->next != nullptr && 
+                cursor->range.second <= start && cursor->next->range.first >= end ) {
+                insert({start , end} , cursor , cursor->next) ;
+                return true ;
+            }
+            cursor = cursor->next ;
+        }
+        return false ;
+    }
+};
+
+/**
+ * Your MyCalendar object will be instantiated and called as such:
+ * MyCalendar* obj = new MyCalendar();
+ * bool param_1 = obj->book(start,end);
+ */
