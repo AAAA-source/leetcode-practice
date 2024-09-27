@@ -1,0 +1,50 @@
+想法：利用map 去紀錄每個start , end 被使用的次數；如果任何一個數值大於2 , 就代表被 triple booking
+證明：如果兩個紀錄 overlap , 那麼兩端至少有一端會overlap , 只要檢查兩端即可代表中間區段是否有triple looking 
+
+技巧： Line Sweep，並且隨時刪除不必要的節點
+
+// assume there are n bookings 
+Time Complexity : O(nlogn) for traversing all map
+Space Complexity : O(n) for the map
+
+class MyCalendarTwo {
+public:
+    map<int , int> bookingcount ;
+    MyCalendarTwo() {}
+    
+    bool book(int start, int end) {
+        bookingcount[start]++ ;
+        bookingcount[end]-- ;
+
+        int sum = 0 ;
+        bool success = true ;
+        for( auto p : bookingcount ) {
+            sum += p.second ;
+            if ( sum > 2 ) {
+                success = false ;
+                break ;
+            }
+        }
+
+        if (!success) {
+            bookingcount[start]-- ;
+            bookingcount[end]++ ;
+            return false ;
+
+            if ( bookingcount[start] == 0 )
+                bookingcount.erase(start) ;
+            if ( bookingcount[end] == 0 )
+                bookingcount.erase(end) ;
+
+        }
+        else 
+            return true ;
+
+    }
+};
+
+/**
+ * Your MyCalendarTwo object will be instantiated and called as such:
+ * MyCalendarTwo* obj = new MyCalendarTwo();
+ * bool param_1 = obj->book(start,end);
+ */
