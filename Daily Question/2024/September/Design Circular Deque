@@ -1,0 +1,97 @@
+想法：先創造一個固定長度的array , 接著用 l , r 維護front , rear 的下一個元素要插在哪裡
+要注意的只有當deque 裡沒有元素的時候，需要將l , r 對齊
+（如果使用 l , r 是目前元素的位置的話則不用）
+
+Time Complexity : O(1) for per operation 
+Space Complexity : O(k) for the array 
+
+class MyCircularDeque {
+public:
+    vector<int> store ;
+    int l , r ;
+    int maxbound ;
+    int size ;
+    MyCircularDeque(int k) {
+        l = 0 ;
+        r = 0 ;
+        maxbound = k ;
+        size = 0 ;
+        store = vector<int>(k) ;
+    }
+    
+    bool insertFront(int value) {
+        if (isFull())
+            return false ;
+        store[l] = value ;
+        size++ ;
+        if ( size == 1 ) {
+            r = (r + 1) % maxbound ;
+        }
+        l = (l - 1 + maxbound) % maxbound ;
+        return true ;
+    }
+    
+    bool insertLast(int value) {
+        if ( isFull() )
+            return false ;
+        store[r] = value ;
+        size++ ;
+        if (size == 1)
+            l = (l - 1 + maxbound) % maxbound ;
+        r = (r + 1) % maxbound ;
+        return true ;
+    }
+    
+    bool deleteFront() {
+        if (isEmpty())
+            return false ;
+        size-- ;
+        l = (l + 1) % maxbound ;
+        if (isEmpty())
+            r = l ;
+        return true ;
+    }
+    
+    bool deleteLast() {
+        if ( isEmpty() )
+            return false ;
+        size-- ;
+        r = (r - 1 + maxbound) % maxbound ;
+        if (isEmpty())
+            l = r ;
+        return true ;
+    }
+    
+    int getFront() {
+        if (isEmpty())
+            return -1 ;
+        return store[ (l + 1) % maxbound] ;
+    }
+    
+    int getRear() {
+        if (isEmpty())
+            return -1 ;
+        return store[ (r - 1 + maxbound) % maxbound ] ;
+    }
+    
+    bool isEmpty() {
+        return (size == 0) ;
+    }
+    
+    bool isFull() {
+        return (size == maxbound) ;
+    }
+};
+
+/**
+ * Your MyCircularDeque object will be instantiated and called as such:
+ * MyCircularDeque* obj = new MyCircularDeque(k);
+ * bool param_1 = obj->insertFront(value);
+ * bool param_2 = obj->insertLast(value);
+ * bool param_3 = obj->deleteFront();
+ * bool param_4 = obj->deleteLast();
+ * int param_5 = obj->getFront();
+ * int param_6 = obj->getRear();
+ * bool param_7 = obj->isEmpty();
+ * bool param_8 = obj->isFull();
+ */
