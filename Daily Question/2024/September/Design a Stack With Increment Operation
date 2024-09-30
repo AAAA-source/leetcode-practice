@@ -1,0 +1,104 @@
+法一：使用一般array 實作
+
+Time Complexity : O(1) for push operation , O(1) for pop operation , O(k) for increment operation
+Space Complexity : O(maxSize) for the array 
+
+#include<vector>
+class CustomStack {
+public:
+    vector<int> s ;
+    int maxsize ;
+    int top ;
+    CustomStack(int maxSize) {
+        s.resize(maxSize) ;
+        maxsize = maxSize;
+        top = 0 ;
+    }
+    
+    void push(int x) {
+        if ( top < maxsize ) 
+            s[top++] = x ;
+    }
+    
+    int pop() {
+        if (top > 0) {
+            return s[--top] ;
+        }
+        else 
+            return -1 ;
+    }
+    
+    void increment(int k, int val) {
+        for(int i = 0 ; i < min(top , k) ; i++)
+            s[i] += val ;
+    }
+};
+
+/**
+ * Your CustomStack object will be instantiated and called as such:
+ * CustomStack* obj = new CustomStack(maxSize);
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * obj->increment(k,val);
+ */
+
+法二：使用Lazy Propagation，記住兩個array , 一個是真的數值，一個是要被加多少
+因此，我們pop的時候只要將真的數值 + 要被加多少即可
+而每次執行 increment operation 時，只需要更動 increment array 該格的數值即可
+
+注意：pop 時需要更新 increment array 的倒數第二格的數值，需要加上原本尾部的數字
+
+Time Complexity : O(1) for push operation , O(1) for pop operation , O(1) for increment operation
+Space Complexity : O(maxSize) for the arrays 
+
+class CustomStack {
+private:
+    vector<int> stackArray;
+    vector<int> incrementArray;
+    int topIndex;
+    int maxsize ;
+
+public:
+    CustomStack(int maxSize) {
+        stackArray.resize(maxSize);
+        incrementArray.resize(maxSize);
+        topIndex = -1;
+        maxsize = maxSize ;
+    }
+
+    void push(int x) {
+        if (topIndex < maxsize - 1) {
+            stackArray[++topIndex] = x;
+        }
+    }
+
+    int pop() {
+        if (topIndex < 0) {
+            return -1;
+        }
+
+        // Calculate the actual value with increment
+        int result = stackArray[topIndex] + incrementArray[topIndex];
+
+        // Propagate the increment to the element below
+        if (topIndex > 0) {
+            incrementArray[topIndex - 1] += incrementArray[topIndex];
+        }
+
+        // Reset the increment for this position
+        incrementArray[topIndex] = 0;
+
+        topIndex--;
+        return result;
+    }
+
+    void increment(int k, int val) {
+        if (topIndex >= 0) {
+            // Apply increment to the topmost element of the range
+            int incrementIndex = min(topIndex, k - 1);
+            incrementArray[incrementIndex] += val;
+        }
+    }
+};
+
+
