@@ -1,0 +1,49 @@
+想法：用hash map 紀錄每個餘數的出現次數
+而想要所有pair都是 k 的倍數的話，需要
+1. 餘數為0的數字是偶數
+2. 餘數為 i 的數量 ＝ 餘數為 k - i 的數量
+
+Time Complexity : O(n) for constructing mod array and checking
+Space Complexity : O(n) for the hash map
+
+#include<unordered_map>
+class Solution {
+public:
+    bool canArrange(vector<int>& arr, int k) {
+        unordered_map<int , int> appear ;
+        for(auto &i : arr) {
+            appear[ (k + (i % k)) % k ]++ ;
+        }
+        bool success = true ;
+        for(auto &p : appear) {
+            if (!success)
+                break;
+            if ( p.first == 0 )
+                success = (p.second % 2 == 0);
+            else 
+                success = (p.second == appear[k - p.first]) ;
+        } 
+        return success ;
+    }
+};
+
+// 也可以用 array 實作
+#include<vector>
+class Solution {
+public:
+    bool canArrange(vector<int>& arr, int k) {
+        vector<int> mod_count(k) ;
+        for(auto &i : arr) {
+            mod_count[(k + (i % k)) % k]++ ;
+        }
+        bool success = true ;
+        for( int i = 0 ; success && i < k ; i++ ) {
+            cout << i << " : " << mod_count[i] << endl ;
+            if (i == 0)
+                success = (mod_count[i] % 2 == 0) ;
+            else 
+                success = (mod_count[i] == mod_count[k - i]) ;
+        }
+        return success ;
+    }
+};
