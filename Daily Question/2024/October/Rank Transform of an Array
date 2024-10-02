@@ -1,0 +1,36 @@
+想法：用hash map 紀錄數字跟rank 的關係，為了不要破壞原本的陣列
+需要先copy 一份再sorted , 並建立每個數字的rank 
+
+Time Complexity : O(nlogn) for sorting , and only O(n) for finding rank and filling ans array
+Space Complexity : O(n + s) for the copy array( O(n) ) and the hash map (O(s))
+
+#include<vector>
+#include<algorithm>
+class Solution {
+public:
+    vector<int> arrayRankTransform(vector<int>& arr) {
+        if ( arr.size() == 0 )
+            return {} ; 
+        if ( arr.size() == 1 )
+            return {1} ;
+        vector<int> forsortedarray = arr ; 
+        sort( forsortedarray.begin() , forsortedarray.end()  ) ;
+        unordered_map<int , int> rankrelation ;
+        
+        int index = 2 ;
+        rankrelation[ forsortedarray[0] ] = 1 ;
+        for( int i = 1 ; i < forsortedarray.size() ; i++ ) {
+            if ( forsortedarray[i] == forsortedarray[i - 1] )
+                continue ;
+            
+            rankrelation[ forsortedarray[i] ] = index ;
+            index++ ;
+        }
+
+        vector<int> ans ; 
+        for( auto &i : arr ) {
+            ans.push_back( rankrelation[i] ) ;
+        }
+        return ans ;
+    }
+};
