@@ -1,0 +1,39 @@
+想法：因為數字範圍只有1-1000 , 所以只要紀錄每個數字出現的次數就好。
+先算出每個pair 的sum，然後算出pair 是否可行，並算出總共的product 
+
+Time Complexity : O(n + N) for traversing array and the range of numbers(N)
+Space Complexity : O(N) for the arrays 
+
+class Solution {
+public:
+    long long dividePlayers(vector<int>& skill) {
+        int sum = 0 ;
+        vector<int> appear(2005) ;
+        for( auto &i : skill ) {
+            appear[i] += 1 ;
+            sum += i ;
+        }
+        int n = skill.size() ; 
+        if ( sum % (n / 2) != 0 ) {
+            return -1 ;
+        }
+        int target = sum / (n / 2) ;
+        long long int chemistry = 0 ;
+        for(int i = 1 ; i <= target / 2 ; i++) {
+            if ( i + i == target ) {
+                if ( appear[i] % 2 != 0 )
+                    return -1 ;
+                else 
+                    chemistry += static_cast<long long int>(i) * i * appear[i] / 2 ;
+            }
+            else {
+                if ( appear[i] != appear[target - i] ) 
+                    return -1 ;
+                else 
+                    chemistry += static_cast<long long int>(i)*(target-i)*appear[i] ;
+            }
+            cout << chemistry << endl ;
+        }
+        return chemistry ;
+    }
+};
