@@ -21,10 +21,8 @@ public:
             left_stones.pop() ;
 
             
-            if ( x > y )
+            if ( x > y ) // because x always >= y (by heap porperty) , so we only need to check if x > y)
                 left_stones.push(x - y) ;
-            if ( y > x )
-                left_stones.push(y - x) ;
         }
 
         if ( !left_stones.empty() )
