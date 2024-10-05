@@ -1,0 +1,32 @@
+想法：檢查各個字母數量即可
+
+// a is s1.length , b is s2.length
+Time Complexity : O(a + b) for scanning the strings
+Space Complexity : O(1) for the array
+
+class Solution {
+public:
+    bool checkInclusion(string s1, string s2) {
+        if ( s2.length() < s1.length() )
+            return false ;
+
+        vector<int> target(26) ; 
+        for( auto &i : s1 )
+            target[i - 'a']++ ; 
+
+        vector<int> count(26) ; 
+        // compute the first window 
+        for(int i = 0 ; i < s1.length() ; i++)
+            count[ s2[i] - 'a']++ ;
+        
+        bool success = (count == target) ; 
+        for( int end = s1.length() ;!success && end < s2.length() ; end++ ) {
+            count[ s2[end - s1.length()] - 'a'] -- ;
+            count[ s2[end] - 'a' ]++ ;
+
+            success = (count == target) ;
+        }
+        
+        return success ;
+    }
+};
