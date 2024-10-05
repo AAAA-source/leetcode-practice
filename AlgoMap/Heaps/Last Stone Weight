@@ -31,3 +31,43 @@ public:
             return 0 ;
     }
 };
+
+//法二：使用同一個array 轉成 heap 
+
+技巧：
+make_heap : 把vector 轉成heap
+pop_heap : 把最大元素移到vector 尾部（並不會刪除元素），所以要另外pop_back
+push_heap : 在push_back 之後，重新排列元素
+
+如果要變成最小堆的話，一樣使用greater<type> 即可（#include <functional>）
+
+Time Complexity : O(nlogn) for O(n) times taking stones and maintain the heap
+Space Complexity : O(1) for the variables
+
+#include<vector>
+#include<algorithm>
+class Solution {
+public:
+    int lastStoneWeight(vector<int>& stones) {
+        make_heap(stones.begin() , stones.end()) ; 
+        while ( stones.size() > 1 ) {
+            pop_heap( stones.begin() , stones.end() ) ;
+            int x = stones.back() ;
+            stones.pop_back() ;
+
+            pop_heap( stones.begin() , stones.end() ) ;
+            int y = stones.back() ;
+            stones.pop_back() ;
+            
+            if ( x > y ) {
+                stones.push_back(x - y) ;
+                push_heap( stones.begin() , stones.end() ) ;
+            }
+        }
+
+        if ( !stones.empty() )
+            return stones.back() ;
+        else 
+            return 0 ;
+    }
+};
