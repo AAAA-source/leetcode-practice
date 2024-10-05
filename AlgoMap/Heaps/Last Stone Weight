@@ -1,0 +1,35 @@
+想法：照著題目做即可，直到只剩下一顆石頭或是沒有石頭；使用 max heap 快速取得前兩大的元素
+
+技巧：利用C++內建的priority_queue 實現heap；預設是最大堆，如果要使用最小堆需要
+priority_queue<type , vector<type> , greater<type>(或自己實作，使得大元素 > 小元素的函式) >
+
+初始化時直接引入( vector.begin() , vector.end() ) 就不用一個一個引入元素
+
+Time Complexity : O(nlogn) for O(n) times taking stones and maintain the heap
+Space Complexity : O(n) for the heap
+
+#include<queue>
+#include<vector>
+class Solution {
+public:
+    int lastStoneWeight(vector<int>& stones) {
+        priority_queue<int> left_stones(stones.begin() , stones.end()) ; 
+        while ( left_stones.size() > 1 ) {
+            int x = left_stones.top() ;
+            left_stones.pop() ;
+            int y = left_stones.top() ;
+            left_stones.pop() ;
+
+            
+            if ( x > y )
+                left_stones.push(x - y) ;
+            if ( y > x )
+                left_stones.push(y - x) ;
+        }
+
+        if ( !left_stones.empty() )
+            return left_stones.top() ;
+        else 
+            return 0 ;
+    }
+};
