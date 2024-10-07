@@ -38,7 +38,7 @@ public:
     }
 };
 
-法二：用two pointers 模擬 stack 
+法二：用two pointers 模擬 stack (modify in the same string)
 
 Time Complexity : O(n) for traversing array
 Space Complexity : O(1) for variables
