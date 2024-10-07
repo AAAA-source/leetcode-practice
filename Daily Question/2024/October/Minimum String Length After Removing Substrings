@@ -1,0 +1,71 @@
+想法：用stack 紀錄可能匹配到的元素
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(n) for stack
+
+#include<stack>
+#include<unordered_map>
+class Solution {
+public:
+    int minLength(string s) {
+        int n = s.length() ;
+        int count = 0 ;
+        stack<char> candidate ; 
+        unordered_map<char , char> match ;
+        match['A'] = 'B' ;
+        match['C'] = 'D' ;
+
+        for(int i = 0 ; i < n ; i++) {
+            if ( s[i] == 'A' || s[i] == 'C') 
+                candidate.push( s[i] ) ; 
+            else if ( (s[i] == 'B' || s[i] =='D') && !candidate.empty() ) {
+                char topelement = candidate.top() ;
+                if ( match[topelement] == s[i] ) {
+                    count++ ;
+                    candidate.pop() ;
+                }
+                else {
+                    while (!candidate.empty())
+                        candidate.pop() ;
+                }
+            }
+            else {
+                while (!candidate.empty())
+                    candidate.pop() ;
+            }
+        }
+        return n - 2 * count ;
+    }
+};
+
+法二：用two pointers 模擬 stack 
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int minLength(string s) {
+        int writePtr = 0;
+        vector<char> charArray(s.begin(), s.end());
+
+        // Iterate over each character in the string
+        for (int readPtr = 0; readPtr < s.length(); readPtr++) {
+            // Write the current character to the current write position
+            charArray[writePtr] = charArray[readPtr];
+
+            // Check if we have a valid pattern to remove
+            if (writePtr > 0 &&
+                (charArray[writePtr - 1] == 'A' ||
+                 charArray[writePtr - 1] == 'C') &&
+                charArray[writePtr] == charArray[writePtr - 1] + 1) {
+                writePtr--;
+            } else {
+                writePtr++;  // No match, so move the write pointer forward
+            }
+        }
+
+        // The writePtr now represents the length of the remaining string
+        return writePtr;
+    }
+};
