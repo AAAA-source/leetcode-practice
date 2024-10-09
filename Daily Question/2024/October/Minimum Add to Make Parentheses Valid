@@ -1,0 +1,26 @@
+想法：只要紀錄目前是否 '(' >＝ ')'，如果沒有的話就要添加'('，而最後需要檢查是否balance（添加 ')' 以調整）
+
+Time Complexity : O(n) for traversing string
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int minAddToMakeValid(string s) {
+        int count = 0 ;
+        int balance = 0 ;
+        for(int i = 0 ; i < s.length() ; i++) {
+            if ( s[i] == '(' )
+                balance++ ;
+            else 
+                balance-- ;
+            if ( balance < 0 ) {
+                count++ ;
+                balance++ ;
+            }
+        }
+        
+        if ( balance > 0 )
+            count += balance ;
+        return count ;
+    }
+};
