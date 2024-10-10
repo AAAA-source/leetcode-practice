@@ -1,0 +1,43 @@
+想法：利用monotonic queue 實作
+維護兩個queue ，一個是從前往後算越小的元素，另一個是從後往前算越來越大的元素
+而答案只有可能在這些組合中出現
+因為兩queue具有單調性，所以我們可以發現
+如果現在前面的元素（第一個queue）已經小於等於目前比較的第二個queue的元素，那麼之後比較的第一個queue的元素就只需在第二queue該元素之前（包含）中尋找答案
+
+Time Complexity : O(n) for creating monotonic queue and traversing
+Space Complexity : O(n) for the monotonic queues
+
+class Solution {
+public:
+    int maxWidthRamp(vector<int>& nums) {
+        vector< pair<int , int> > low_from_front , high_from_back ;
+        int n = nums.size() ;
+        for(int i = 0 ; i < n ; i++) {
+            if ( low_from_front.empty() || nums[i] < low_from_front.back().first ) {
+                low_from_front.push_back( {nums[i] , i} ) ;
+            }
+        }
+        for(int i = n - 1 ; i >= 0 ; i--) {
+            if ( high_from_back.empty() || nums[i] > high_from_back.back().first ) {
+                high_from_back.push_back( {nums[i] , i} ) ;
+            }
+        }
+
+        int maxval = 0 ;
+        int index = 0 ;
+        while ( index < high_from_back.size() - 1 
+                    && low_from_front[0].first > high_from_back[index].first )
+            index++ ;
+        index--;
+        for(int i = 0 ; i < low_from_front.size() ; i++) {
+            while ( index >= 0
+                        && low_from_front[i].first <= high_from_back[index].first )
+                index-- ;
+            index++ ;
+            if ( high_from_back[index] >= low_from_front[i] )
+                maxval = max(maxval , 
+                        high_from_back[index].second - low_from_front[i].second) ;
+        }
+        return maxval ;
+    }
+};
