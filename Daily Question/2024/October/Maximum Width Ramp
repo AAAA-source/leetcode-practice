@@ -1,8 +1,8 @@
-想法：利用monotonic queue 實作
-維護兩個queue ，一個是從前往後算越小的元素，另一個是從後往前算越來越大的元素
+想法：利用monotonic  stack 實作
+維護兩個stacks ，一個是從前往後算越小的元素，另一個是從後往前算越來越大的元素
 而答案只有可能在這些組合中出現
-因為兩queue具有單調性，所以我們可以發現
-如果現在前面的元素（第一個queue）已經小於等於目前比較的第二個queue的元素，那麼之後比較的第一個queue的元素就只需在第二queue該元素之前（包含）中尋找答案
+因為兩stacks具有單調性，所以我們可以發現
+如果現在前面的元素（第一個stack）已經小於等於目前比較的第二個stack的元素，那麼之後比較的第一個stack的元素就只需在第二stack該元素之前（包含）中尋找答案
 
 Time Complexity : O(n) for creating monotonic queue and traversing
 Space Complexity : O(n) for the monotonic queues
