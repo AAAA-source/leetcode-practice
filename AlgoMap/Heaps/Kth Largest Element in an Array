@@ -1,0 +1,45 @@
+想法：維護一個min heap紀錄前 k 大的元素，如果有元素大於此heap 的最小值（原第 k 大的元素），就更新heap 
+最後輸出top (第 k 大元素)即可
+
+Time Complexity : O(nlogk) for n times heapifying the heap
+Space Complexity : O(k) for the heap
+
+#include<queue>
+#include<vector>
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        priority_queue<int , vector<int> , greater<int> > largest;
+        for( auto &i : nums ) {
+            if ( largest.size() < k ) {
+                largest.push(i) ;
+            }
+            else if ( largest.top() < i ) {
+                largest.pop() ;
+                largest.push(i) ;
+            }
+        }
+        
+        return largest.top() ;
+    }
+};
+
+法二：使用 max heap 實作，先把所有vector 內元素heap sort，再做 k 次 pop 
+Time Complexity : O(n + klogn) for O(n) construct the heap , and k times poping
+Space Complexity : O(1) for in-place algorithm
+
+#include<queue>
+#include<vector>
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        make_heap(nums.begin() , nums.end()) ;
+        for(int i = 0 ; i < k - 1 ; i++) {
+            pop_heap(nums.begin() , nums.end()) ;
+            nums.pop_back() ;
+        }
+
+        pop_heap(nums.begin() , nums.end()) ;
+        return nums.back() ;
+    }
+};
