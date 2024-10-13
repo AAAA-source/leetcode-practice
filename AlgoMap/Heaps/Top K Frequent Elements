@@ -1,0 +1,68 @@
+想法：維護一個 k 個元素的 min heap，代表前 k 大的元素；最後輸出全部即可
+
+Time Complexity : O(nlogk) for n times pushing and poping
+Space Complexity : O(n + k) for count array and the heap 
+
+#include<queue>
+#include<vector>
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int , int> count ;
+        for( auto &i : nums ) {
+            count[i]++ ;
+        }
+        
+        priority_queue< pair<int , int> , vector<pair<int , int>> , 
+                        greater<pair<int , int> > > largest ;
+        for(auto iter = count.begin() ; iter != count.end() ; iter++ ) {
+            if ( largest.size() < k )
+                largest.push( { iter->second ,iter->first  } ) ;
+            else if ( largest.top().first < iter->second ) {
+                largest.pop() ;
+                largest.push( {iter->second ,iter->first}) ;
+            }
+        }
+
+        vector<int> answer ;
+        while ( !largest.empty() ) {
+            answer.push_back( largest.top().second ) ;
+            largest.pop() ;
+        }
+        return answer ;
+    }
+};
+
+法二：紀錄每個數字出現的頻率，因為出現次數只會是 ０..nums.size() 次
+所以只要用 array[ appear times] 列出所有數字；最後再從大的數字找回小的共 k 個，即是答案
+
+Time Complexity : O(n) for traversing array 
+Sapce Complexity : O(n) for the arrays 
+
+#include<vector>
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        unordered_map<int , int> count ;
+        for( auto &i : nums ) {
+            count[i]++ ;
+        }
+
+        vector < vector<int> > result(nums.size() + 5) ; 
+        for( auto &p : count ) 
+            result[p.second].push_back(p.first) ;
+
+        vector<int> ans ;
+        for(int i = nums.size() ;k > 0 && i >= 0 ; i--) {
+            if ( result[i].empty() )
+                continue ;
+            else {
+                for(auto &j : result[i]) {
+                    ans.push_back(j) ;
+                    k-- ;
+                }
+            }
+        }
+        return ans ;
+    }
+};
