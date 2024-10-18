@@ -1,0 +1,59 @@
+想法：因為原先lists 是排序的，所以只要比較每個list 的第一個元素；利用 min heap 實現，並在拿取第一個元素後將 now.next 加入到heap 中以供後續比較
+
+Time Complexity : O(nlogk) for n times poping and pushing the heap
+Space Complexity : O(k) for the heap 
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+ #include<queue>
+class Solution {
+public:
+
+struct Compare {
+    bool operator()( ListNode* a, ListNode* b) {
+        return a->val > b->val ;  
+    }
+};
+
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        priority_queue< ListNode* , vector<ListNode*> , Compare > minheap ;
+        
+        int k = lists.size() ;
+        // init the minheap 
+        for(int i = 0 ; i < k ; i++) {
+            if ( lists[i] != nullptr )
+                minheap.push( lists[i] );
+        }
+
+        ListNode* head = nullptr ;
+        ListNode* tail = nullptr ;
+        while ( !minheap.empty() ) {
+            auto minelement = minheap.top() ;
+            minheap.pop() ;
+            
+            // insert in linked list
+            if ( head == nullptr ) {
+                head = tail = minelement ;
+            }
+            else {
+                tail->next = minelement ;
+                tail = minelement ;
+            }
+
+            // update the heap 
+            if ( minelement->next != nullptr ) {
+                minheap.push( {minelement->next} ) ;
+            }
+        }
+
+        return head ;
+    }
+};
