@@ -3,7 +3,7 @@
 技巧：Backtracking，只要更改同一個陣列去紀錄選取的元素即可（做完要回退到上一步的狀態）
 
 Time Complexity : O(2^n) for n elements and each one have 2 choices
-Space Complexity : O(2^n) for all the subset
+Space Complexity : O(2^n) for all the subset , O(n) for recursion stack
 
 
 class Solution {
