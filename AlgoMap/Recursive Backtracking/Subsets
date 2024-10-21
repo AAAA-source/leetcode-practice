@@ -1,0 +1,28 @@
+想法：暴力法搜索所有可能即可，因為每個元素可以分為拿/不拿的組合，所以用 index 記錄現在考慮到哪個元素，同時用now 紀錄目前選取的元素有哪些
+
+技巧：Backtracking，只要更改同一個陣列去紀錄選取的元素即可（做完要回退到上一步的狀態）
+
+Time Complexity : O(2^n) for n elements and each one have 2 choices
+Space Complexity : O(2^n) for all the subset
+
+
+class Solution {
+public:
+    vector<vector<int>> ans ;
+    vector<int> now ;
+    void find_subset(vector<int>& nums , int index ) {
+        if ( index == nums.size() ) {
+            ans.push_back(now) ;
+        }
+        else {
+            find_subset( nums , index + 1) ;
+            now.push_back( nums[index] ) ;
+            find_subset( nums , index + 1 ) ;
+            now.pop_back() ;
+        }
+    }
+    vector<vector<int>> subsets(vector<int>& nums) {
+        find_subset(nums , 0) ;
+        return ans ;
+    }
+};
