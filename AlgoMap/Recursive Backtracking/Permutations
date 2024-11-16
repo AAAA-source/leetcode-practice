@@ -1,0 +1,64 @@
+想法：使用 recursive backtracking(DFS) 的方法走過一次，紀錄目前已有的答案跟層數；當層數等於數字數量時，就輸出答案到共同的array 上
+
+// n is the number of elements in array
+Time Complexity : O(n!) for the recursion 
+Space Complexity : O(n!) for the output array , and O(n) for other parts
+
+class Solution {
+public:
+    vector<vector<int> > ans ;
+    int n ;
+    void combine(vector<int>& nums,vector<bool> choosed,int index,vector<int> result ) {
+        if ( index == n ) {
+            ans.push_back( result ) ;
+            return ;
+        }
+        for(int i = 0 ; i < n ; i++) {
+            if ( choosed[i] == false ) {
+                choosed[i] = true ;
+                result[index] = nums[i] ;
+                combine( nums , choosed , index + 1 , result ) ;   
+
+                choosed[i] = false ;
+            }
+        }
+        return ;
+    }
+
+    vector<vector<int>> permute(vector<int>& nums) {
+        n = nums.size() ;
+        vector<int> result(n) ;
+        vector<bool> choosed(n , false ) ; 
+        combine( nums , choosed , 0 , result ) ;
+        return ans ;
+    }
+};
+
+//節省空間
+class Solution {
+public:
+    vector<vector<int> > ans ;
+    void combine(vector<int>& nums,int index,vector<int> result ) {
+        if ( index == nums.size() ) {
+            ans.push_back( result ) ;
+            return ;
+        }
+        for(int i = 0 ; i < nums.size() ; i++) {
+            if ( nums[i] != INT_MAX ) {
+                int temp = nums[i] ;
+                result[index] = nums[i] ;
+                nums[i] = INT_MAX ;
+                combine( nums , index + 1 , result ) ;   
+
+                nums[i] = temp ;
+            }
+        }
+        return ;
+    }
+
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<int> result(nums.size()) ;
+        combine( nums , 0 , result ) ;
+        return ans ;
+    }
+};
