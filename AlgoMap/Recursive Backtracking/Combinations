@@ -1,0 +1,27 @@
+想法：直接暴力解出所有的可能性，唯一要注意的是為了節省傳遞的參數，我設計每一個答案一定是 increasing order，這樣就只需考慮比最後一個元素大的可能性即可
+
+Time Complexity : O( C(n , k) )
+Space Complexity : O( C(n , k) )  
+
+class Solution {
+public:
+    static void combinations(int k , vector<int>& result , vector<vector<int>>& ans , int n) {
+        if ( k == 0 ) {
+            ans.push_back(result) ;
+            return ;
+        }
+        for(int i = (result.empty())? 1 : result.back() + 1 ; i < n + 1; i++ ) {
+            result.push_back(i) ;
+            combinations( k - 1 , result , ans , n ) ;
+            result.pop_back() ;
+        }
+        return ;
+    }
+
+    vector<vector<int>> combine(int n, int k) {
+        vector<int> result ;
+        vector<vector<int> > ans ;
+        combinations(k , result , ans , n) ;
+        return ans ;
+    }
+};
