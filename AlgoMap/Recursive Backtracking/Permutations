@@ -2,7 +2,7 @@
 
 // n is the number of elements in array
 Time Complexity : O(n!) for the recursion 
-Space Complexity : O(n!) for the output array , and O(n) for other parts
+Space Complexity : O(n!) for the output array
 
 class Solution {
 public:
