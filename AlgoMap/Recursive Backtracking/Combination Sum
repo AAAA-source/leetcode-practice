@@ -1,0 +1,61 @@
+想法：直接走過所有可能（暴力解）
+
+Time Complexity : O(2^n) for recursion
+Space Complexity : O(2^n) for recursion space
+
+class Solution {
+public:
+    static void findcombinations( vector<vector<int>>& ans , vector<int>& res , int target , int index , vector<int>& candidates ) {
+        if ( target == 0 ) {
+            ans.push_back(res) ;
+            return ;
+        }
+        if ( target < 0 || index >= candidates.size())
+            return ;
+        
+        findcombinations(ans , res , target , index + 1 , candidates) ;
+        res.push_back(candidates[index]) ;
+        findcombinations(ans,res,target - candidates[index] , index  , candidates) ;
+        res.pop_back() ;
+
+        return ;
+    }
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> ans ;
+        vector<int> res ;
+
+        findcombinations(ans , res , target , 0 , candidates) ;
+        return ans ;
+    }
+};
+
+// another way
+Time Complexity : O(n^(target / minimum element + 1) )
+Space Complexity : O(n^(target / minimum element + 1) )
+
+class Solution {
+public:
+    static void findcombinations( vector<vector<int>>& ans , vector<int>& res , int target , int index , vector<int>& candidates ) {
+        if ( target == 0 ) {
+            ans.push_back(res) ;
+            return ;
+        }
+        
+        for(int i = index ; i < candidates.size() ; i++) {
+            if ( target >= candidates[i] ) {
+                res.push_back( candidates[i] ) ;
+                findcombinations(ans , res , target - candidates[i] , i , candidates) ;
+                res.pop_back() ;
+            }
+        }
+
+        return ;
+    }
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> ans ;
+        vector<int> res ;
+
+        findcombinations(ans , res , target , 0 , candidates) ;
+        return ans ;
+    }
+};
