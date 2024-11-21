@@ -115,3 +115,52 @@ public:
         return ans;
     }
 };
+
+
+// use global variable instead several parameter and variable
+#include <string>
+#include <vector>
+#include <unordered_map>
+
+class Solution {
+public:
+    vector<string> match_letter = {
+        "abc" ,
+        "def" ,
+        "ghi" , 
+        "jkl" ,
+        "mno" ,
+        "pqrs" ,
+        "tuv" ,
+        "wxyz" } ;
+    vector<string> ans;
+    string number ;
+    int n ;
+    string res ;
+
+    void findcombinations(int index) {
+        if (index == n) {
+            ans.push_back(res);
+            return;
+        }
+        
+        for (int i = 0; i < match_letter[ number[index] - '2' ].length(); i++) {
+            res += match_letter[ number[index] - '2' ][i] ;
+            findcombinations(index + 1);
+            res.pop_back() ;
+        }
+
+
+    }
+
+    vector<string> letterCombinations(string digits) {
+        if ( digits.empty() )
+            return {} ;
+
+        number = digits ;
+        n = digits.length() ;
+
+        findcombinations(0 );
+        return ans;
+    }
+};
