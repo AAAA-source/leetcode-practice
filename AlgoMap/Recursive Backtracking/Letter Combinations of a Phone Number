@@ -1,0 +1,117 @@
+想法：先用 map 初始化每個數字會對應的字串，接著把每個字串的可能性暴力解，列出所有可能即可
+
+Time Complexity : O(4^n) for recursion
+Space Complexity : O(4^n) for recursion
+
+#include <string>
+#include <vector>
+#include <unordered_map>
+
+class Solution {
+public:
+    unordered_map<char, string> match_letter;
+    vector<string> ans;
+
+    void findcombinations(string digits, string res) {
+        if (digits.empty()) {
+            ans.push_back(res);
+            return;
+        }
+
+        for (int i = 0; i < match_letter[digits[0]].length(); i++) {
+            findcombinations(digits.substr(1), res + match_letter[digits[0]][i]);
+        }
+    }
+
+    vector<string> letterCombinations(string digits) {
+        if ( digits.empty() )
+            return {} ;
+
+        match_letter['2'] = "abc";
+        match_letter['3'] = "def";
+        match_letter['4'] = "ghi";
+        match_letter['5'] = "jkl";
+        match_letter['6'] = "mno";
+        match_letter['7'] = "pqrs";
+        match_letter['8'] = "tuv";
+        match_letter['9'] = "wxyz";
+
+        findcombinations(digits, "" );
+        return ans;
+    }
+};
+
+#include <string>
+#include <vector>
+#include <unordered_map>
+
+class Solution {
+public:
+    unordered_map<char, string> match_letter = {
+        {'2', "abc"} ,
+        {'3', "def" } ,
+        {'4', "ghi"} , 
+        {'5' , "jkl"} ,
+        {'6' , "mno"} ,
+        {'7', "pqrs"} ,
+        {'8', "tuv"} ,
+        {'9', "wxyz"} } ;
+    vector<string> ans;
+
+    void findcombinations(string digits, string res) {
+        if (digits.empty()) {
+            ans.push_back(res);
+            return;
+        }
+
+        for (int i = 0; i < match_letter[digits[0]].length(); i++) {
+            findcombinations(digits.substr(1), res + match_letter[digits[0]][i]);
+        }
+    }
+
+    vector<string> letterCombinations(string digits) {
+        if ( digits.empty() )
+            return {} ;
+
+        findcombinations(digits, "" );
+        return ans;
+    }
+};
+
+// use vector instead of hash map
+#include <string>
+#include <vector>
+#include <unordered_map>
+
+class Solution {
+public:
+    vector<string> match_letter = {
+        "abc" ,
+        "def" ,
+        "ghi" , 
+        "jkl" ,
+        "mno" ,
+        "pqrs" ,
+        "tuv" ,
+        "wxyz" } ;
+    vector<string> ans;
+
+    void findcombinations(string digits, string res) {
+        if (digits.empty()) {
+            ans.push_back(res);
+            return;
+        }
+
+        for (int i = 0; i < match_letter[digits[0] - '2'].length(); i++) {
+            findcombinations(digits.substr(1), res + match_letter[digits[0] - '2'][i]);
+        }
+    }
+
+    vector<string> letterCombinations(string digits) {
+        if ( digits.empty() )
+            return {} ;
+
+        findcombinations(digits, "" );
+        return ans;
+    }
+};
