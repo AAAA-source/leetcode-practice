@@ -2,8 +2,8 @@
 (1) 左括號可在任何時刻加入
 (2) 右括號只能在左括號數量大於右括號才能加入
 
-Time Complexity : O(2^n) for traverse all combinations
-Space Complexity : O(2^n) for the recursion
+Time Complexity : O(2^(2n)) for traverse all combinations
+Space Complexity : O(2^(2n)) for the recursion
 
 class Solution {
 public:
