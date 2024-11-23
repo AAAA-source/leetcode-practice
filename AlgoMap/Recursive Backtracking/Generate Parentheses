@@ -1,0 +1,65 @@
+想法：所有合法的string 一定會有「在任何時刻'(' 數量都大於等於 ')' 的數量」（由左往右填），因此，我們可嘗試所有可能性，也就是
+(1) 左括號可在任何時刻加入
+(2) 右括號只能在左括號數量大於右括號才能加入
+
+Time Complexity : O(2^n) for traverse all combinations
+Space Complexity : O(2^n) for the recursion
+
+class Solution {
+public:
+    vector<string> ans ; 
+    void findways( int left , int right , string& result , int balance) {
+        if ( left == 0 && right == 0 ) {
+                ans.push_back(result) ;
+            return ;
+        }
+
+        if ( left > 0 ) {
+            result += '(' ;
+            findways( left - 1 , right , result , balance + 1) ;
+            result.pop_back() ;
+        }
+        if ( right > 0 && balance > 0) {
+            result += ')' ;
+            findways(left , right - 1 , result , balance - 1) ;
+            result.pop_back() ;
+        }
+        return ;
+    }
+
+    vector<string> generateParenthesis(int n) {
+        string res ;
+        findways(n , n ,res , 0) ;
+        return ans ;
+    }
+};
+
+// delete a redundant parameter
+class Solution {
+public:
+    vector<string> ans ; 
+    void findways( int left , int right , string& result ) {
+        if ( left == 0 && right == 0 ) {
+                ans.push_back(result) ;
+            return ;
+        }
+
+        if ( left > 0 ) {
+            result += '(' ;
+            findways( left - 1 , right , result) ;
+            result.pop_back() ;
+        }
+        if ( right > 0 && right > left) {
+            result += ')' ;
+            findways(left , right - 1 , result ) ;
+            result.pop_back() ;
+        }
+        return ;
+    }
+
+    vector<string> generateParenthesis(int n) {
+        string res ;
+        findways(n , n ,res ) ;
+        return ans ;
+    }
+};
