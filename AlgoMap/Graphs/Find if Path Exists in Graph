@@ -1,0 +1,120 @@
+想法：DFS 一次整個圖（如果visited 過的就不用再看一次）
+
+fact : 因為 vector<bool> 的操作會用到位元的操作(bool 是儲存在一個位元內)，比起vector<int> 慢得多，所以改用 vector<int> , vector<char> 會快很多
+
+Time Complexity : O(m + n) for the recurrsion 
+Space Complexity : O(m + n)  for the recussion
+
+class Solution {
+public:
+    bool DFS(vector<vector<int>>&connect ,vector<int>&visited,int source, int destination){
+        if(source==destination) 
+            return true;
+
+        visited[source]= true ;
+
+        for(auto i: connect[source]){
+            if(!visited[i] && DFS(connect,visited,i,destination)) 
+                return true;
+        }
+        return false;
+    }
+    bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
+        vector<vector<int>>connect(n);
+        int m = edges.size() ;
+        for(int i=0;i<m;i++){
+            connect[edges[i][0]].push_back(edges[i][1]);
+            connect[edges[i][1]].push_back(edges[i][0]);
+        }
+        vector<int>visited(n,0);
+        return DFS(connect,visited,source,destination) ;
+    }
+};
+
+// 用 stack 取代遞迴，減少佔用空間
+最好在新增 (i , destination) 邊進入 stack 時就把 visited[i] 設為 1；以免後面的元素重複新增（在遞迴的實作中影響很小，但迴圈的影響較大）
+
+class Solution {
+public:
+    bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
+        vector<vector<int>> connect(n) ;
+        for( int i = 0 ; i < edges.size() ; ++i ) {
+            connect[ edges[i][0] ].push_back( edges[i][1] ) ;
+            connect[ edges[i][1] ].push_back(edges[i][0]) ;
+        }
+        vector<int> visited(n , 0) ;
+        
+        stack<int> s ;
+        s.push( source ) ;
+        visited[source] = 1 ;
+        while ( !s.empty() ) {
+            int now = s.top() ;
+            s.pop() ;
+            if ( now == destination ) {
+                return true ;
+            }
+            
+            for( auto i : connect[now] ) {
+                if (visited[i] == 0) {
+                    visited[i] = 1 ;
+                    s.push(i) ;
+                }
+            }
+        }
+
+        return false ;
+    }
+};
+
+// use disjoint-set : 用一個set 表示 i 可以走到的所有nodes，故可以把題目改成找 i 有連結的nodes (connect component)
+所以我們只需看到(u , v) edge 時，把set[u] , set[v] 合併即可
+
+Time Complexity : O(m * α(n) ) for find_set m times and union at most n times
+Space Complexity : O(n) for the parent , rank vector
+
+class Solution {
+public:
+    vector<int> parent ;
+    vector<int> rank ;
+
+    int find_set(int i) {
+        if ( parent[i] == i )
+            return i ;
+        parent[i] = find_set( parent[i] ) ;
+        return parent[i] ;
+    }
+
+    void union_set(int i , int j) {
+        int rooti = find_set(i) ;
+        int rootj = find_set(j) ;
+        if ( rooti == rootj )
+            return ;
+
+        if ( rank[rooti] == rank[rootj] ) {
+            rank[rooti]++ ;
+            parent[rootj] = rooti ;
+        }
+        else if ( rank[rooti] > rank[rootj] ) 
+            parent[rootj] = rooti ;
+        else
+            parent[rooti] = rootj ;
+    }
+
+    bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
+        parent.resize(n) ;
+        rank.resize(n) ;
+        for(int i = 0 ; i < n ; i++) {
+            parent[i] = i ;
+            rank[i] = 1 ;
+        }
+
+        for( auto v : edges ) {
+            union_set(v[0] , v[1]) ;
+        }
+        return find_set(source) == find_set(destination) ;
+    }
+};
+
+
+
+
