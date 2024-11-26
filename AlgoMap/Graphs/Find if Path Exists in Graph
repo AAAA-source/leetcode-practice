@@ -2,6 +2,7 @@
 
 fact : 因為 vector<bool> 的操作會用到位元的操作(bool 是儲存在一個位元內)，比起vector<int> 慢得多，所以改用 vector<int> , vector<char> 會快很多
 
+// n nodes , m edges in the graph
 Time Complexity : O(m + n) for the recurrsion 
 Space Complexity : O(m + n)  for the recussion
 
