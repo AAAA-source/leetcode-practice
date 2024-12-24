@@ -1,0 +1,46 @@
+想法：把每個node都分成三種狀態，unvisited , visiting , visited 
+如果今天在DFS中碰到visiting，就代表有環的出現；反之，則沒有（碰到visited , 沒有edge 是邊界條件）
+跑過所有的unvisited nodes 直到都變成 visited nodes 即可
+
+// n nodes , m edges 
+Time Complexity : O( n + m ) for DFS whole graph
+Space Complexity : O(m + n ) for array and recursion 
+
+class Solution {
+public:
+    bool DFS( vector<int>& state , int index  , vector<vector<int>> &link ) {
+        if ( state[index] == 1 ) 
+            return false ;
+        else if ( state[index] == 2 ) 
+            return true ;
+        else {
+            // unvisited node
+            state[index] = 1 ;
+            for( int i = 0 ; i < link[index].size() ; i++ ) {
+                if ( !DFS( state , link[index][i] , link ) )
+                    return false ;
+            }
+            state[index] = 2 ;
+        }
+        return true ;
+    }
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        // state : unvisited(0) , visiting(1) , visited(2) 
+        vector<int> state(numCourses , 0) ;
+
+        // edge 
+        vector<vector<int>> link(numCourses) ;
+        for(auto &v : prerequisites) {
+            link[ v[0] ].push_back( v[1] ) ;
+        }
+
+        for( int startindex = 0 ; startindex < numCourses ; startindex++ ) {
+            if ( state[startindex] == 0 ) {
+                if (!DFS( state , startindex , link ) )
+                    return false ;
+            }
+
+        }
+        return true ;
+    }
+};
