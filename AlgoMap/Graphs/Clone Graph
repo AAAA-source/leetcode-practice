@@ -1,0 +1,99 @@
+想法：DFS一次整個圖，遇到新節點就allocate 並記錄在 total array 中（避免重複allocate）
+
+// assume total n nodes , m edges 
+Time Complexity : O(m + n) for DFS
+Space Complexity : O(m + n) for recursion
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> neighbors;
+    Node() {
+        val = 0;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val) {
+        val = _val;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val, vector<Node*> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+*/
+
+
+class Solution {
+public:
+    Node* clone(Node* oldnode , vector<Node*>& total) {
+        Node* newnode = new Node ;
+        newnode->val = oldnode->val ; 
+       total[newnode->val] = newnode ;
+        for( auto p : oldnode->neighbors ) {
+            if ( total[p->val] != nullptr )
+                newnode->neighbors.push_back(total[p->val]) ;
+            else 
+                newnode->neighbors.push_back( clone(p , total) ) ;
+        }
+
+        return newnode ;
+    }
+    Node* cloneGraph(Node* oldnode) {
+        if ( oldnode == nullptr )
+            return nullptr;
+        vector<Node*> total(105 , nullptr) ;
+        return clone(oldnode , total) ;
+        
+    }
+};
+
+// use unordered map instead of vector to fit if not specified n 
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> neighbors;
+    Node() {
+        val = 0;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val) {
+        val = _val;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val, vector<Node*> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+*/
+
+
+class Solution {
+public:
+    unordered_map<int , Node*> total ;
+    Node* clone(Node* oldnode ) {
+        Node* newnode = new Node ;
+        newnode->val = oldnode->val ; 
+       total[newnode->val] = newnode ;
+        for( auto p : oldnode->neighbors ) {
+            if ( total.find(p->val) != total.end() )
+                newnode->neighbors.push_back(total[p->val]) ;
+            else 
+                newnode->neighbors.push_back( clone(p ) ) ;
+        }
+
+        return newnode ;
+    }
+    Node* cloneGraph(Node* oldnode) {
+        if ( oldnode == nullptr )
+            return nullptr;
+        return clone(oldnode ) ;
+        
+    }
+};
