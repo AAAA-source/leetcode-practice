@@ -104,3 +104,46 @@ public:
         return count ;
     }
 };
+
+法三：Prim's algorithm + array
+Time Complexity : O(n^2)
+Space Complexity : O(n) 
+
+#include <vector>
+#include <cmath>
+#include <climits>
+using namespace std;
+
+class Solution {
+public:
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        int n = points.size();
+        vector<int> minDist(n, INT_MAX);
+        vector<bool> visited(n, false);
+        
+        minDist[0] = 0;
+        long long int totalCost = 0;
+        
+        for (int i = 0; i < n; ++i) {
+            int minPoint = -1;
+            for (int j = 0; j < n; ++j) {
+                if (!visited[j] && (minPoint == -1 || minDist[j] < minDist[minPoint])) {
+                    minPoint = j;
+                }
+            }
+            
+            visited[minPoint] = true;
+            totalCost += minDist[minPoint];
+            
+            for (int j = 0; j < n; ++j) {
+                if (!visited[j]) {
+                    int weight = abs(points[minPoint][0] - points[j][0]) + 
+                                 abs(points[minPoint][1] - points[j][1]);
+                    minDist[j] = min(minDist[j], weight);
+                }
+            }
+        }
+        
+        return totalCost;
+    }
+};
