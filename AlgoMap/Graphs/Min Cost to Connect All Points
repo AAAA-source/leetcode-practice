@@ -1,0 +1,106 @@
+想法：找出minimum spanning tree
+
+法ㄧ：Kruskal's algorithm
+
+Time Complexity : O(n^2logn) for sorting(n^2logn) + find every edge's set(n^2logn)
+Space Complexity : O(n^2) for heap
+
+class Solution {
+public:
+    void makeset(vector<int>& parent , int n) {
+        for(int i = 0 ; i < n ; i++)
+            parent[i] = i ;
+    }
+    int findset(vector<int>& parent , int index) {
+       if ( parent[index] != index ) {
+            parent[index] = findset(parent , parent[index]) ;
+       } 
+        return parent[index] ;
+    }
+    bool unionset( vector<int>& parent , vector<int>& rank , int a , int b ) {
+        int parenta = findset(parent , a) ;
+        int parentb = findset(parent , b) ;
+        if ( parenta == parentb )
+            return false ;
+        
+        if ( rank[parenta] > rank[parentb] )
+            parent[parentb] = parenta ;
+        else if ( rank[parentb] > rank[parenta] )
+            parent[parenta] = parentb ;
+        else {
+            parent[parentb] = parent[parenta] ;
+            rank[parenta]++ ;
+        } 
+        return true ;
+    }
+
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        // create minimum spanning tree 
+        // use kruskal's algorithm 
+
+        vector<pair<int , pair<int , int>>> edges ;
+        int n = points.size() ;
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = i + 1 ; j < n ; j++)
+                edges.push_back( { abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1]) , { i , j } } ) ;
+        }
+
+        sort( edges.begin() , edges.end() ) ;
+        long long int count = 0 ; 
+
+        vector<int> parent(n) ;
+        vector<int> rank(n , 0) ;
+        makeset(parent , n) ;
+        
+        for( auto &e : edges ) {
+            if ( unionset(parent , rank , e.second.first , e.second.second) )
+                count += e.first ;
+        }
+
+
+        return count ;
+    }
+};
+
+法二：Prim's algorithm
+Time Complexity : O(n^2logn) 
+Space Complexity : O(n^2)
+
+class Solution {
+public:
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        // find MST by prim's algorithm
+        int n = points.size() ;
+        priority_queue<pair<int , int> , vector<pair<int , int>> 
+                , greater<pair<int , int>>> distance ;
+
+        vector<int> visited(n) ;
+        visited[0] = 1 ;
+
+        for(int i = 1 ; i < n ; i++) {
+            distance.push( {abs(points[0][0] - points[i][0]) + abs( points[0][1] - points[i][1] ) , i } ) ;
+        }
+
+        long long int count = 0 ;
+        int unvisited = n - 1 ;
+        while ( !distance.empty() ) {
+            auto target = distance.top() ;
+            distance.pop() ;
+
+            if ( visited[target.second] == 1 )
+                continue ;
+            visited[target.second] = 1 ;
+            count += target.first ;
+            unvisited-- ;
+            if ( unvisited == 0 )
+                break ;
+            for(int i = 0 ; i < n ; i++) {
+                if ( visited[i] == 0 )
+                    distance.push( { abs(points[target.second][0] - points[i][0]) + abs( points[target.second][1] - points[i][1] ) , i } );
+            }
+
+        }
+
+        return count ;
+    }
+};
