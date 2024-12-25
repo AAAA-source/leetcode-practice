@@ -1,0 +1,41 @@
+想法：用Dijkstra's algorithm 算出每個點的最短接收時間，並檢查是否有未能到達的點，有的話輸出-1否則輸出最大的最短接收時間
+
+// assume there is n nodes , m edges
+Time Complexity : O((m + n)logn) for the algorithm
+Space Complexity : O(m + n) for all edges in the priority queue and the array
+
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        // use Dijkstra's algorithm 
+        vector<vector<pair<int , int>>> edges( n + 5 ) ;
+        for( auto &v : times ) {
+            edges[ v[0] ].push_back( {v[1] , v[2]} ) ;
+        }
+
+        priority_queue<pair<int , int> , vector<pair<int , int>> , greater<pair<int , int>>> pendingedges ; 
+
+        vector<int> receivetime(n + 5 , -1) ;
+        pendingedges.push( {0 , k} ) ;
+        while ( !pendingedges.empty() ) {
+            auto target = pendingedges.top() ;
+            pendingedges.pop() ;
+            if ( receivetime[target.second] != -1 )
+                continue ;
+            receivetime[target.second] = target.first ;
+            for( int i = 0 ; i < edges[target.second].size() ; i++ ) {
+                pendingedges.push( { target.first + edges[target.second][i].second 
+                    , edges[target.second][i].first } ) ;
+            }
+        }
+
+        int maxdelay = 0 ;
+        for(int i = 1 ; i <= n ; i++) {
+            if ( receivetime[i] == -1 )
+                return -1 ;
+            else if ( receivetime[i] > maxdelay )
+                maxdelay = receivetime[i] ;
+        }
+        return maxdelay ;
+    }
+};
