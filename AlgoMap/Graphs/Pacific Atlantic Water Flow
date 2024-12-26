@@ -85,3 +85,83 @@ public:
         return ans ;
     }
 };
+
+// another implementation : sure that each element enqueue at most one time
+class Solution {
+public:
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        int n = heights.size() , m = heights[0].size() ;
+        vector<vector<int>> reachPacific(n , vector(m , 0)) ;
+        vector<vector<int>> reachAtlantic(n , vector(m , 0)) ;
+
+        queue<pair<int , int>> pending ;
+        for(int i = 0 ; i < n ; i++) {
+            reachPacific[i][0] = 1 ;   
+            pending.push( {i , 0} ) ;
+        }
+        for(int j = 0 ; j < m ; j++) {
+            reachPacific[0][j] = 1 ;   
+            pending.push( {0 , j} ) ;
+        }
+        while ( !pending.empty() ) {
+            auto target = pending.front() ;
+            int r = target.first , c = target.second ;
+            pending.pop() ;
+
+            reachPacific[r][c] = 1 ;   
+            if ( r - 1 >= 0 && reachPacific[r - 1][c] == 0 
+                && heights[r - 1][c] >= heights[r][c] )
+                pending.push( {r - 1 , c} ) ;
+            
+            if ( r + 1 < n && reachPacific[r + 1][c] == 0 
+                && heights[r + 1][c] >= heights[r][c] )
+                pending.push( {r + 1 , c} ) ;
+            if ( c - 1 >= 0 && reachPacific[r][c - 1] == 0 
+                && heights[r][c - 1] >= heights[r][c] )
+                pending.push( {r , c - 1} ) ;
+            
+            if ( c + 1 < m && reachPacific[r][c + 1] == 0 
+                && heights[r][c + 1] >= heights[r][c] )
+                pending.push( {r , c + 1} ) ;
+        }
+
+        for(int i = 0 ; i < n ; i++) {
+            reachAtlantic[i][m - 1] = 1 ;   
+            pending.push( {i , m - 1} ) ;
+        }
+        for(int j = 0 ; j < m ; j++) {
+            reachAtlantic[n - 1][j] = 1 ;   
+            pending.push( {n - 1 , j} ) ;
+        }
+        while ( !pending.empty() ) {
+            auto target = pending.front() ;
+            int r = target.first , c = target.second ;
+            pending.pop() ;
+
+            reachAtlantic[r][c] = 1 ;   
+            if ( r - 1 >= 0 && reachAtlantic[r - 1][c] == 0 
+                && heights[r - 1][c] >= heights[r][c] )
+                pending.push( {r - 1 , c} ) ;
+            
+            if ( r + 1 < n && reachAtlantic[r + 1][c] == 0 
+                && heights[r + 1][c] >= heights[r][c] )
+                pending.push( {r + 1 , c} ) ;
+            if ( c - 1 >= 0 && reachAtlantic[r][c - 1] == 0 
+                && heights[r][c - 1] >= heights[r][c] )
+                pending.push( {r , c - 1} ) ;
+            
+            if ( c + 1 < m && reachAtlantic[r][c + 1] == 0 
+                && heights[r][c + 1] >= heights[r][c] )
+                pending.push( {r , c + 1} ) ;
+        }
+        
+        vector<vector<int>> ans ;
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < m ; j++) {
+                if ( reachAtlantic[i][j] == 1 && reachPacific[i][j] == 1 )
+                    ans.push_back( {i , j} ) ;
+            }
+        }
+        return ans ;
+    }
+};
