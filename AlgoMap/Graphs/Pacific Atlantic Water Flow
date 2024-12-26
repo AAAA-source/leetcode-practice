@@ -1,0 +1,87 @@
+想法：把能留到Pacific 的地點標記，用一次BFS把所有可以流到的都達到一遍
+BFS過程是先把邊角放入queue，然後查看「相鄰元素是否可以留到該格」，可以的話就放入queue供後續BFS
+執行相同過程，把能留到Atlantic 的地點標記，最後輸出能留到兩者的即可
+
+Time Complexity : O(mn) for every element may be insert O(4) = O(1) time to queue , and BFS at most handle every element O(1) times 
+Space Complexity : O(mn) for array and queue
+
+
+
+class Solution {
+public:
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        int n = heights.size() , m = heights[0].size() ;
+        vector<vector<int>> reachPacific(n , vector(m , 0)) ;
+        vector<vector<int>> reachAtlantic(n , vector(m , 0)) ;
+
+        queue<pair<int , int>> pending ;
+        for(int i = 0 ; i < n ; i++) {
+            pending.push( {i , 0} ) ;
+        }
+        for(int j = 0 ; j < m ; j++) {
+            pending.push( {0 , j} ) ;
+        }
+        while ( !pending.empty() ) {
+            auto target = pending.front() ;
+            int r = target.first , c = target.second ;
+            pending.pop() ;
+
+            if ( reachPacific[r][c] == 1 )
+                continue ;
+            reachPacific[r][c] = 1 ;   
+            if ( r - 1 >= 0 && reachPacific[r - 1][c] == 0 
+                && heights[r - 1][c] >= heights[r][c] )
+                pending.push( {r - 1 , c} ) ;
+            
+            if ( r + 1 < n && reachPacific[r + 1][c] == 0 
+                && heights[r + 1][c] >= heights[r][c] )
+                pending.push( {r + 1 , c} ) ;
+            if ( c - 1 >= 0 && reachPacific[r][c - 1] == 0 
+                && heights[r][c - 1] >= heights[r][c] )
+                pending.push( {r , c - 1} ) ;
+            
+            if ( c + 1 < m && reachPacific[r][c + 1] == 0 
+                && heights[r][c + 1] >= heights[r][c] )
+                pending.push( {r , c + 1} ) ;
+        }
+
+        for(int i = 0 ; i < n ; i++) {
+            pending.push( {i , m - 1} ) ;
+        }
+        for(int j = 0 ; j < m ; j++) {
+            pending.push( {n - 1 , j} ) ;
+        }
+        while ( !pending.empty() ) {
+            auto target = pending.front() ;
+            int r = target.first , c = target.second ;
+            pending.pop() ;
+
+            if ( reachAtlantic[r][c] == 1 )
+                continue ;
+            reachAtlantic[r][c] = 1 ;   
+            if ( r - 1 >= 0 && reachAtlantic[r - 1][c] == 0 
+                && heights[r - 1][c] >= heights[r][c] )
+                pending.push( {r - 1 , c} ) ;
+            
+            if ( r + 1 < n && reachAtlantic[r + 1][c] == 0 
+                && heights[r + 1][c] >= heights[r][c] )
+                pending.push( {r + 1 , c} ) ;
+            if ( c - 1 >= 0 && reachAtlantic[r][c - 1] == 0 
+                && heights[r][c - 1] >= heights[r][c] )
+                pending.push( {r , c - 1} ) ;
+            
+            if ( c + 1 < m && reachAtlantic[r][c + 1] == 0 
+                && heights[r][c + 1] >= heights[r][c] )
+                pending.push( {r , c + 1} ) ;
+        }
+        
+        vector<vector<int>> ans ;
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < m ; j++) {
+                if ( reachAtlantic[i][j] == 1 && reachPacific[i][j] == 1 )
+                    ans.push_back( {i , j} ) ;
+            }
+        }
+        return ans ;
+    }
+};
