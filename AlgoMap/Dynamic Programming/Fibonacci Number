@@ -1,5 +1,8 @@
 想法：每次紀錄、更新F(k) , F(k - 1) , F(k - 2) 的值，從k = 1 .. n 即可
 
+Time Complexity : O(n) calculate F(1) .. F(n) 
+Space Complexity : O(1) for variables
+
 class Solution {
 public:
     int fib(int n) {
