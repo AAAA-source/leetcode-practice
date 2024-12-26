@@ -1,0 +1,39 @@
+想法：對於第 k 階台階而言，最小的cost 一定是「到達k - 1 階台階的minimum cost + cost[k - 1]」與「到達 k - 2 階台階的minimum cost + cost[k-2]」 的小者
+
+Time Complexity : O(n) for calculating dp[1] ... dp[n] 
+Space Complexity : O(n) for dp tables 
+
+class Solution {
+public:
+    int minCostClimbingStairs(vector<int>& cost) {
+        // let dp[k] means the minimun cost to go to k-th step
+        // dp[k] = min( dp[k - 1] + k-1 step cost , dp[k - 2] + k-2 step cost )
+        int n = cost.size() ;
+        vector<int> dp( n + 5) ;
+        dp[0] = 0 ;
+        dp[1] = 0 ;
+
+        for(int i = 2 ; i <= n ; i++) {
+            dp[i] = min( dp[i - 1] + cost[i - 1] , dp[i - 2] + cost[i - 2] ) ;
+        }
+        return dp[n] ;
+    }
+};
+
+// O(1) space with variables
+class Solution {
+public:
+    int minCostClimbingStairs(vector<int>& cost) {
+        // let dp[k] means the minimun cost to go to k-th step
+        // dp[k] = min( dp[k - 1] + k-1 step cost , dp[k - 2] + k-2 step cost )
+        int n = cost.size() ;
+        int old1 = 0 , old2 = 0 , now ;
+
+        for(int i = 2 ; i <= n ; i++) {
+            now = min( old2 + cost[i - 1] , old1 + cost[i - 2] ) ;
+            old1 = old2 ;
+            old2 = now ;
+        }
+        return now ;
+    }
+};
