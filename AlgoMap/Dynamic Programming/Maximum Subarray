@@ -1,0 +1,77 @@
+想法：用dp[i] 紀錄array[1..i] 的maximum subarray , 然後用continous[i]紀錄有選nums[i] 的最大array
+那麼可以簡單看出
+continous[i] = max(nums[i] , continous[i - 1] + nums[i] )
+dp[i] = max( dp[i - 1](沒有選nums[i]) , continous[i](有選nums[i]) )
+
+Time Complexity : O(n) for calculating continous[1..n] , dp[1 ..n]
+Space Complexity : O(n) for dp , continous array
+
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int n = nums.size() ;
+        vector<int> continous(n) ;
+        vector<int> dp(n) ; 
+
+        // continous[k] = from array[i...k] 's maximum value(must invlove array[k]) 
+        // dp[k] = maximum subarray 
+
+        continous[0] = nums[0] ;
+        for(int i = 1 ; i < n ; i++) {
+            continous[i] = max( continous[i - 1] + nums[i] , nums[i]) ;
+        }
+
+        dp[0] = nums[0] ;
+        for(int i = 1 ; i < n ; i++) {
+            dp[i] = max( dp[i - 1] , continous[i]) ;
+        }
+
+        return dp[n - 1] ;
+    }
+};
+
+
+// because dp[i] only depends on continous[i] and dp[i - 1] , continous[i] depends on continous[i - 1] and nums[i]
+So , we can use variables to record
+
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int n = nums.size() ;
+
+        // continous[k] = from array[i...k] 's maximum value(must invlove array[k]) 
+        // dp[k] = maximum subarray 
+
+        int continous = nums[0] ;
+        int dp = nums[0] ;
+        int old_dp = nums[0] , old_continous = nums[0] ;
+        for(int i = 1 ; i < n ; i++) {
+            continous = max( old_continous + nums[i] , nums[i]) ;
+            dp = max( old_dp , continous) ;
+
+            old_continous = continous ;
+            old_dp = dp ;
+        }
+
+        return dp ;
+    }
+};
+
+// Kadane's algorithm : 
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int n = nums.size() ;
+        int maxvalue = -10005 , currentvalue ;
+        
+        for(int i = 0 ; i < n ; i++) {
+            currentvalue = max( currentvalue + nums[i] , nums[i] ) ;
+            maxvalue = max( maxvalue , currentvalue ) ;
+        }
+        return maxvalue ;
+    }
+};
+
+
+
+
