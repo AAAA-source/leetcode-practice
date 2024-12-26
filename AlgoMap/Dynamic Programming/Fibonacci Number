@@ -1,0 +1,71 @@
+想法：每次紀錄、更新F(k) , F(k - 1) , F(k - 2) 的值，從k = 1 .. n 即可
+
+class Solution {
+public:
+    int fib(int n) {
+        if (n == 0)
+            return 0 ; 
+        if ( n == 1 )
+            return 1 ;
+        
+        int old1 = 0 , old2 = 1 ;
+        int now ;
+        for(int i = 2 ; i <= n ; i++) {
+            now = old1 + old2 ;
+            old1 = old2 ;
+            old2 = now ;
+        }
+        return old2;
+    }
+};
+
+// 也有O(logn) 的做法，拆解成矩陣並進行快速冪即可
+#include <iostream>
+#include <vector>
+using namespace std;
+
+typedef vector<vector<long long>> Matrix;
+
+Matrix multiply(const Matrix& a, const Matrix& b) {
+    int size = a.size();
+    Matrix result(size, vector<long long>(size, 0));
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            for (int k = 0; k < size; ++k) {
+                result[i][j] += a[i][k] * b[k][j];
+            }
+        }
+    }
+    return result;
+}
+
+Matrix matrixPow(Matrix base, long long exp) {
+    int size = base.size();
+    Matrix result(size, vector<long long>(size, 0));
+    // 初始化為單位矩陣
+    for (int i = 0; i < size; ++i) {
+        result[i][i] = 1;
+    }
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = multiply(result, base);
+        }
+        base = multiply(base, base);
+        exp /= 2;
+    }
+    return result;
+}
+
+long long fibonacci(long long n) {
+    if (n == 0) return 0;
+    if (n == 1) return 1;
+
+    Matrix base = {
+        {1, 1},
+        {1, 0}
+    };
+    Matrix result = matrixPow(base, n - 1);
+
+    return result[0][0];
+}
+
