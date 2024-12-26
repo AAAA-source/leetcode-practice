@@ -1,0 +1,24 @@
+想法：對於要上到 n 階階梯的所有方法，都可拆解成「上到 n - 1 階再走一步」或是「上到 n - 2 階再走 2 步」
+所以ways[n] = ways[n - 1] + way[n - 2]
+
+Time Complexity : O(n) for calculating ways[1] ... ways[n] 
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int climbStairs(int n) {
+        // dp : ways[n] = ways[n - 1] + ways[n - 2]
+        if ( n == 1 )
+            return 1 ;
+        if ( n == 2 )
+            return 2 ;
+        int old1 = 1 , old2 = 2 , now ; 
+        for(int i = 3 ; i <= n ; i++) {
+            now = old1 + old2 ; 
+            old1 = old2 ;
+            old2 = now ;
+        }
+
+        return now ;
+    }
+};
