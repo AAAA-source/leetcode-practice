@@ -1,0 +1,45 @@
+想法：用ways[i][j]紀錄能走到(i , j) 共有幾種方法，因為只能往右或往下走
+所以一定是從(i , j - 1) , (i - 1 , j) 走到(i , j) 
+That is , ways[i][j] = ways[i - 1][j] + ways[i][j - 1]
+
+Time Complexity : O(mn) for calculating all (i , j) ways
+Space Complexity : O(mn) for dp array 
+
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        vector<vector<long long int>> ways(m , vector<long long int>(n)) ;
+        ways[0][0] = 1 ;
+        for(int i = 0 ; i < m ; i++) {
+            for( int j = 0 ; j < n ; j++ ) {
+                if ( i - 1 >= 0 )
+                    ways[i][j] += ways[i - 1][j] ; 
+                if ( j - 1 >= 0 )
+                    ways[i][j] += ways[i][j - 1] ;
+            }
+        } 
+
+        return ways[m - 1][n - 1] ;
+    }
+};
+
+
+// Space Complexity : O(n) 
+因為要計算目前這一列只會用到上一列的資訊，所以只需記住上一列的資訊即可
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        vector<long long int> ways(n , 1) ;
+        vector<long long int> old(n , 1) ;
+        for(int i = 1 ; i < m ; i++) {
+            for(int j = 0 ; j < n ; j++) {
+                ways[j] = old[j] ;
+                if ( j - 1 >= 0 )
+                    ways[j] += ways[j - 1] ;
+            }
+            old = ways ;
+        }
+
+        return ways[n - 1] ;
+    }
+};
