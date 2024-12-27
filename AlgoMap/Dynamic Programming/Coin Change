@@ -1,0 +1,52 @@
+想法：定義dp[i] 為最小可湊出這個數目的硬幣數量（達不到則為1e9），而因為每個dp[i] 一定是比某個dp[ i - coins[j] ] 還要多一
+（在這個 i - coins[j] 時多拿一個coins[j] 就得到 i）
+故轉移式為 dp[i] = min ( for j = 0 .. coins.size , dp[i - coins[j]] + 1 )
+
+Time Complexity : O(amount * coins.size) for every element should check O(coins.size) coins value
+Space Complexity : O(amount) for dp array
+
+class Solution {
+public:
+    int coinChange( vector<int>& coins , int amount ) {
+	    if ( amount == 0 )
+		    return 0 ;
+	
+	    vector<int> dp( amount + 1  ,  1e9) ;
+	    dp[0] = 0 ;
+	    for(int i = 1 ; i <= amount ; i++) {
+		    for( int j = 0 ; j < coins.size() ; j++ ) {
+                if ( i - coins[j] >= 0 )
+                dp[i] = min( dp[i] , dp[i - coins[j]] + 1 ) ;	
+	    	}
+	    }
+
+
+	    return (dp[amount] == 1e9)? -1 : dp[amount] ;
+    }
+
+};
+
+
+// sorted : maybe can faster 
+class Solution {
+public:
+    int coinChange( vector<int>& coins , int amount ) {
+	    if ( amount == 0 )
+		    return 0 ;
+        sort(coins.begin() , coins.end()) ;
+	    vector<int> dp( amount + 1  ,  1e9) ;
+	    dp[0] = 0 ;
+	    for(int i = 1 ; i <= amount ; i++) {
+		    for( int j = 0 ; j < coins.size() ; j++ ) {
+                if ( i - coins[j] >= 0 )
+                    dp[i] = min( dp[i] , dp[i - coins[j]] + 1 ) ;	
+                else 
+                    break ;
+	    	}
+	    }
+
+
+	    return (dp[amount] == 1e9)? -1 : dp[amount] ;
+    }
+
+};
