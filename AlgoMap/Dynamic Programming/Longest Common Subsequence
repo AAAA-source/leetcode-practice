@@ -1,0 +1,88 @@
+想法：用dp[i][j] 紀錄text1[0..i] 與text2[0..j] 的LCS
+那麼，dp[i][j] 只有可能是 d[i - 1][j - 1] + 1 ( text1[i] == text2[j] 的時候)，或是max( dp[i][j - 1] , dp[i - 1][j] ) ( text1[i] != text2[j] 的時候 )
+因此只需循序計算直到輸出dp[text1.length][text2.length]
+
+Time Complexity : O(text1.length * text2.length) for calculating all dp[i][j]
+Space Complexity : O(mn) for dp array
+
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        // let dp[i][j] means the longest common subsequence between text1[0 .. i] and text2[0...j]
+        // the answer is dp[text1.size - 1][text2.size - 1]
+
+        int length1 = text1.length() ;
+        int length2 = text2.length() ;
+        vector<vector<int>> dp(length1 + 1 , vector<int>(length2 + 1 , 0)) ;
+
+        for(int i = 1 ; i <= length1 ; i++) {
+            for(int j = 1 ; j <= length2 ; j++) {
+                dp[i][j] = max( dp[i - 1][j] , dp[i][j - 1] ) ;
+                if (text1[i - 1] == text2[j - 1] )
+                    dp[i][j] = max(dp[i][j] , 1 + dp[i - 1][j - 1]) ;
+            }
+        }
+        return dp[length1][length2] ;
+    }
+};
+
+or
+
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        // let dp[i][j] means the longest common subsequence between text1[0 .. i] and text2[0...j]
+        // the answer is dp[text1.size - 1][text2.size - 1]
+
+        int length1 = text1.length() ;
+        int length2 = text2.length() ;
+        vector<vector<int>> dp(length1 , vector<int>(length2 , 0)) ;
+        for(int i = 0 ; i < length1 ; i++)
+            dp[i][0] = (text1[i] == text2[0])? 1 : 0 ;
+        for(int j = 0 ; j < length2 ; j++)
+            dp[0][j] = (text1[0] == text2[j])? 1 : 0 ;
+
+
+        for(int i = 0 ; i < length1 ; i++) {
+            for(int j = 0 ; j < length2 ; j++) {
+                if ( i - 1 >= 0 )
+                    dp[i][j] = max( dp[i][j] , dp[i - 1][j] ) ;
+                if ( j - 1 >= 0 )
+                    dp[i][j] =  max( dp[i][j] , dp[i][j - 1] ) ;
+                if ( i - 1 >= 0 && j - 1 >= 0 && text1[i] == text2[j] )
+                    dp[i][j] = max(dp[i][j] , 1 + dp[i - 1][j - 1]) ;
+            }
+        }
+        return dp[length1 - 1][length2 - 1] ;
+    }
+};
+
+// another way : 因為每次運算dp[i][j] 只會用到前一列的數值，所以可以只紀錄兩列數值就好
+Space Complexity : O(length2)
+
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        // let dp[i][j] means the longest common subsequence between text1[0 .. i] and text2[0...j]
+        // the answer is dp[text1.size - 1][text2.size - 1]
+
+        int length1 = text1.length() ;
+        int length2 = text2.length() ;
+        vector<int> dp(length2 , 0) ;
+        vector<int> olddp(length2 , 0) ;
+       
+        for(int i = 0 ; i < length1 ; i++) {
+            dp[0] = ( text1[i] == text2[0] )? 1 : olddp[0] ;
+            for(int j = 1 ; j < length2 ; j++ ) {
+                if ( text1[i] == text2[j] )
+                    dp[j] = 1 + olddp[j - 1] ;
+                else 
+                    dp[j] = max( dp[j - 1] , olddp[j] ) ;
+            }
+            olddp = dp ;
+        }
+
+        return dp[length2 - 1] ;
+    }
+};
+
