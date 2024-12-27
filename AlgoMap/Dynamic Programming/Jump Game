@@ -1,0 +1,37 @@
+想法：用一個index 紀錄最大可以到達的位置，如果可以到 n - 1 即成功，否則就失敗
+
+Time Complexity : O(n) for traversing array 
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    bool canJump( vector<int>& nums ) {
+	    int n = nums.size() ;
+        int cursor = 0 ;
+
+        for(int i = 0 ; i < n - 1 ; i++) {
+            if ( cursor < i )
+                return false ;	
+            cursor = max( cursor  , i + nums[i] );	
+        }
+ 
+	    return (cursor >= n - 1) ;
+    }
+
+};
+
+法二：用一個index 紀錄「最小哪個位置可以到達 n - 1」，由 n - 2 做到 0 ，如果index == 0 即代表可以走到；否則則不行
+
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int n = nums.size() ;
+        int goal = n - 1 ;
+        for(int i = n - 2 ; i >= 0 ; i--) {
+            if ( i + nums[i] >= goal )
+                goal = i ;
+        }
+        
+        return (goal == 0) ;
+    }
+};
