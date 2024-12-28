@@ -1,0 +1,46 @@
+想法：用dp[i] 紀錄nums[0 .. i] 的LIS 
+而每個dp[i] = max( dp[i - 1](不選nums[i]) , for j = 0 .. i - 1 dp[j] + 1 if nums[j] < nums[i] )
+最後找出最大者即可
+
+Time Complexity : O(n^2) for O(n) time finding dp[i] for each element
+Space Complexity : O(n) for dp array
+
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int n = nums.size() ;
+        vector<int> dp(n , 1) ; 
+        for(int i = 1 ; i < n ; i++) {
+            for(int j = i - 1 ; j >= 0 ; j--) {
+               if ( nums[j] < nums[i] ) {
+                    dp[i] = max( dp[i] ,dp[j] + 1) ;
+                } 
+            }
+        }
+        return *max_element( dp.begin() , dp.end() ) ;
+    }
+};
+
+
+// another way : 維護一個LIS vector( 但實際上不是真的LIS , 只是長度一樣 ) , LIS 會是一個升序排列
+然後在每個元素被考慮時，都進行一次二分搜，找到該元素可以插入的位置：
+1.可插入在最後：代表目前元素是最大的，直接加入
+2.在中間：替換掉原本元素：使得LIS的該個元素更小（為後續LIS保留更多可能性）
+
+Time Complexity : O(nlogn) for each element need O(logn) time to binary search 
+Space Complexity : O(n) for LIS vector
+
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        vector<int> LIS ; 
+        for(auto value : nums) {
+            auto ptr = lower_bound( LIS.begin() , LIS.end() , value ) ;
+            if ( ptr == LIS.end() )
+                LIS.push_back(value);
+            else 
+                *ptr = value ;
+        }
+        return LIS.size() ;
+    }
+};
