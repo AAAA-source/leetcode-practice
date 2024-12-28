@@ -1,0 +1,28 @@
+想法：每次都把最後一位提取出來（num % 7）並右移一位（num / 7）直到num 為 0
+
+Time Complexity : O(logn) for O(log_7n) bit
+Space Complexity : O(logn) for representation 
+
+
+class Solution {
+public:
+   string convertToBase7(int num) {
+        if ( num == 0 )
+            return "0" ;
+        bool negative = false ;
+        if ( num < 0 ) {
+            negative = true ;
+            num = -num ;
+        }
+        string answer ; 
+        while ( num > 0 ) {
+	        answer += (num % 7) + '0' ;
+	        num /= 7 ;
+        }
+        if ( negative )
+            answer += '-' ;      
+	    reverse( answer.begin() , answer.end() ) ;
+        
+	    return answer ;
+   }
+};
