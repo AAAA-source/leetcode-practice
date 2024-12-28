@@ -1,0 +1,45 @@
+想法：recursive backtracking to find all possible solution
+
+技巧：the two diagonals is x1 - y1 = x 2 - y2 , x1 + y1 = x2 + y2
+
+Time Complexity : O(n!) for O(n) recursion depth and the time complexity of the i-th step is O(n! / (n - i)!) time
+->the first step take O(n) time , and second step tave O(n - 1) for each element , O(n(n - 1)) in total ... and thats on 
+at the last step need O(n!) time , sum all of time is still O(n!) time
+
+Space Cimplexty : O(n!) for recursion , and the recursion depth is O(n)
+
+class Solution {
+public:
+    int answercount ;
+    void DFS( vector<int>& place , int index , int n )
+    {
+		if ( index == n ) {
+			answercount++ ;
+			return ; 
+		}
+		for(int i = 0 ; i < n ; i++) {
+			// check if valid 
+			bool valid = true ;
+			for( int j = 0 ; j < index ; j++ ) {
+				if ( place[j] == i || place[j] - j == i - index 
+                    || place[j] + j == i + index ) {
+					valid = false ;
+					break ;
+				}
+			}
+			if ( valid ) {
+                place.push_back(i) ;
+                DFS(place , index + 1 , n) ;
+                place.pop_back() ;
+            }
+        }	
+        return ;	
+    }
+
+    int totalNQueens (int n) {
+	    vector<int> place ; 
+	    answercount = 0 ;
+	    DFS( place , 0 , n ) ;
+	    return answercount ;
+    }
+};
