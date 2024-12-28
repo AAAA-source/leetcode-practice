@@ -1,0 +1,120 @@
+想法：首先走過一次linked list，並allocate 新的node，並把新的node放到 hash map : old address -> new address 裡
+第二次走過時只需將對應舊位址的新node位址填入新的node即可
+
+Time Complexity : O(n) for traversal all linked list
+Space Complexity : O(n) for hash map and new linked list 
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+    
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* copyRandomList( Node* head ) {
+        Node* cursor = head ;
+        unordered_map<Node* , Node*> mpNode ;
+        mpNode[nullptr] = nullptr ;
+        while ( cursor != nullptr ) {
+	        Node* ptr = new Node(cursor->val) ;
+	        mpNode[cursor] = ptr ;
+	        cursor = cursor->next ;
+        }		
+
+        cursor = head ; 
+        while ( cursor != nullptr ) {
+	        Node* copynode = mpNode[cursor] ;
+	        copynode->next = mpNode[cursor->next] ;
+	        copynode->random = mpNode[cursor->random] ;
+            cursor = cursor->next ;
+        }
+
+        return mpNode[head] ;
+    }
+
+};
+
+
+// 法二：只需將新的node串在原有node的後面，這樣在每次找random link時就是原本的address的下一個，但最後需要把linked list 復原並把next link 連好
+Space Complexity : O(n) just for new linked list 
+
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+    
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* copyRandomList( Node* head ) {
+        if (head == nullptr)
+            return nullptr ;
+        Node* cursor = head ;
+        while ( cursor != nullptr ) {
+	        Node* ptr = new Node(cursor->val) ;
+            ptr->next = cursor->next ;
+            cursor->next = ptr ;
+	        cursor = cursor->next->next ;
+        }		
+
+        cursor = head ; 
+        while ( cursor != nullptr ) {
+	        Node* copynode = cursor->next ;
+            if ( cursor->random != nullptr )
+	            copynode->random = cursor->random->next ;
+            else 
+                copynode->random = nullptr ;
+            cursor = cursor->next->next ;
+        }
+
+        Node* copyhead = nullptr ;
+        Node* copytail ;
+        Node* originalhead = nullptr ; 
+        Node* originaltail ;
+        cursor = head ; 
+        while ( cursor != nullptr ) {
+            Node* nextnode = cursor->next->next ;
+            if ( copyhead == nullptr )
+                copyhead = copytail = cursor->next ;
+            else {
+                copytail->next = cursor->next ; 
+                copytail = cursor->next ;
+            }
+            copytail->next = nullptr ;
+
+            if ( originalhead == nullptr )
+                originalhead = originaltail = cursor ;
+            else {
+                originaltail->next = cursor ;
+                originaltail = cursor ;
+            }
+            originaltail->next = nullptr ;
+            cursor = nextnode ;
+        }
+
+        return copyhead ;
+    }
+
+};
