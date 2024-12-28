@@ -1,0 +1,86 @@
+想法：因為原先兩個矩陣 num1 , num2 都已經是sorted，所以只需比較最小的那個，並將那個直接放入新的矩陣內即可
+重複做直到兩個矩陣所有元素都被看完
+Time Complexity : O(m + n) for traversing two arrays
+Space Complexity : O(1n) for new array
+
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        if ( n == 0 )
+            return ;
+        if ( m == 0 ) {
+            nums1 = nums2 ; 
+            return ;
+        }
+
+        int index1 = 0 , index2 = 0 ;
+        vector<int> sorted ; 
+        while ( index1 < m || index2 < n ) {
+            if ( index1 == m ) {
+                sorted.push_back( nums2[index2] ) ;
+                index2++ ;
+            }
+            else if ( index2 == n ) {
+                sorted.push_back(nums1[index1]) ;
+                index1++ ;
+            }
+            else {
+                if ( nums1[index1] <= nums2[index2] ) {
+                    sorted.push_back(nums1[index1]) ;
+                    index1++ ;
+                }
+                else {
+                    sorted.push_back(nums2[index2]) ;
+                    index2++ ;
+                }
+            }
+        }
+        nums1 = sorted ;
+        return ;
+    }
+};
+
+
+
+//法二：因為nums1 已經被allocate 為 m + n 的大小，所以可以把原先的步驟反著做；改成是將最大的元素擺在最後面
+重複做直到看完即可
+Time Complexity : O(m + n) for traversing two arrays
+Space Complexity : O(1) for variables 
+
+
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        if ( n == 0 )
+            return ;
+        if ( m == 0 ) {
+            nums1 = nums2 ; 
+            return ;
+        }
+        int index1 = m - 1 , index2 = n - 1 ;
+        int totalindex = m + n - 1 ;
+        nums1.resize(m + n) ;
+        while ( index1 >= 0 || index2 >= 0 ) {
+            if ( index1 == -1 ) {
+                nums1[totalindex] = nums2[index2] ;
+                index2-- ;
+            }
+            else if ( index2 == -1 ) {
+                nums1[totalindex] = nums1[index1] ;
+                index1-- ;
+            }
+            else {
+                if ( nums1[index1] >= nums2[index2] ) {
+                    nums1[totalindex] = nums1[index1] ;
+                    index1-- ;
+                }
+                else {
+                    nums1[totalindex] = nums2[index2] ;
+                    index2-- ;
+                }
+            }
+            totalindex-- ;
+        }
+        return ;
+    }
+};
