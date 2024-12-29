@@ -1,0 +1,56 @@
+想法：先找到第一個>=x 的target node（順便紀錄前一個 prev node），接著往後看；把所有 <x 的node都放到 target 之前
+要維護先前一個node是誰，因為要重新連接前一個與後一個的link
+
+Time Complexity : O(n) for traversing linked list one times
+Space Complexity : O(1) for variables
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* partition(ListNode* head, int x) {
+        if ( head == nullptr )
+            return nullptr ;
+        ListNode* cursor = head ; 
+        ListNode* prev = nullptr ;
+        ListNode* target = nullptr ;
+        while ( cursor != nullptr ) {
+            if ( cursor->val >= x ) {
+                target = cursor ;
+                break ;
+            }
+            prev = cursor ;
+            cursor = cursor->next ;
+        }
+        if ( target == nullptr )
+            return head ;
+        cursor = target->next ;
+        ListNode* prevnode = target ;
+        while ( cursor != nullptr ) {
+            if ( cursor->val < x ) {
+                // should be put between prev , target
+                ListNode* temp = cursor ;
+                prevnode->next = cursor->next ; 
+                if ( prev == nullptr ) {
+                    head = temp ;
+                }
+                else {
+                    prev->next = temp ;
+                }
+                temp->next = target ; 
+                prev = temp ;
+            }
+            prevnode = cursor ;
+            cursor = cursor->next ;
+        }
+        return head ;
+    }
+};
