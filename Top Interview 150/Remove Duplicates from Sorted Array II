@@ -1,0 +1,24 @@
+想法：用一個index 維護現在要放入元素的位置，然後從開始檢查有沒有三個重複的；如果有就跳過不插入，否則就放入index
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        if ( nums.size() <= 2 )
+            return nums.size() ;
+        int index = 0 ; 
+        for(int i = 0 ; i < nums.size() - 2  ; i++) {
+            if ( nums[i] == nums[i + 1] && nums[i + 1] == nums[i + 2] )
+                continue ;
+            nums[index] = nums[i] ;
+            index++ ;
+        }
+        nums[index] = nums[nums.size() - 2] ;
+        index++ ;
+        nums[index] = nums[nums.size() - 1] ;
+        index++ ;
+        return index ;
+    }
+};
