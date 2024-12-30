@@ -1,0 +1,60 @@
+想法：照著實作即可，要注意空格數量要盡量均勻；所以用
+ (leftspace % leftspacecount == 0)? leftspace / leftspacecount : leftspace/leftspacecount + 1 ;
+控制盡量均勻且左多右少
+
+Time Complexity : O(n) for traversing all words
+Space Complexity : O(n) for answer array 
+
+class Solution {
+public:
+    vector<string> fullJustify(vector<string>& words, int maxWidth) {
+        vector<string> ans ;
+        int index = 0 ;
+        int n = words.size() ;
+        while ( index < n ) {
+            string temp ;
+            int count = words[index].length() ;
+            int nowspace = 0 ;
+            int start = index ;
+            while ( index + 1 < n 
+                && count + nowspace + words[index+1].length() + 1 <= maxWidth) {
+                nowspace++ ;
+                count += words[index + 1].length() ;
+                index++ ;
+            }
+            if ( index == n - 1 ) {
+                // last justified
+                for(int i = start ; i <= index ; i++) {
+                    if ( i != start )
+                        temp += " " ;
+                    temp += words[i] ;
+                }
+                for(int i = temp.length() ; i < maxWidth ; i++)
+                    temp += " " ;
+            }
+            else {
+                int leftspace = maxWidth - count - nowspace ;
+                int leftspacecount = nowspace ;
+                for(int i = start ; i <= index ; i++) {
+                    if ( i != start ) {
+                        temp += " " ;
+                        if ( leftspacecount > 0 ) {
+                            int target = (leftspace % leftspacecount == 0)?
+                            leftspace / leftspacecount : leftspace/leftspacecount + 1 ;
+                            for(int j = 0 ; j < target ; j++)
+                            temp += " " ;
+                            leftspace -= target ;
+                            leftspacecount-- ;
+                        }
+                    }
+                    temp += words[i] ;
+                }
+                for(int i = temp.length() ; i < maxWidth ; i++)
+                    temp += " " ;
+            }
+            ans.push_back(temp) ;
+            index++ ;
+        }
+        return ans ;
+    }
+};
