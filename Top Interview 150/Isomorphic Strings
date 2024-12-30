@@ -1,0 +1,55 @@
+想法：因為每個字都要對應到一個字母，且每個字母最多只能被對應一次；所以維護兩個陣列
+一個是map(紀錄對應到什麼字母 , 也可以用hash map)、一個是count(紀錄這個字母被對應幾次)
+如果有出現對應超過一次或是對應錯誤的話就輸出false，反之都沒有則輸出true
+
+Time Complexity : O(s) for choosing one string traverse
+Space Complexity : O(2 * 128) = O(1) for two array(vectors)
+
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        vector<char> map(128 , -1) ;
+        vector<char> count(128) ;
+        for(int i = 0 ; i < s.length() ; i++) {
+            if ( map[ t[i] ] == -1 ) {
+                if ( count[ s[i] ] == 0 ) {
+                    map[t[i]] = s[i] ;
+                    count[ s[i] ]++ ;
+                }
+                else 
+                    return false ;
+            }
+            else {
+                if ( map[ t[i] ] != s[i] )
+                    return false ;
+            }
+        }
+
+        return true ;
+    }
+};
+
+// or using hash map
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        unordered_map<char , char> map;
+        vector<char> count(128) ;
+        for(int i = 0 ; i < s.length() ; i++) {
+            if ( map[ t[i] ] == 0 ) {
+                if ( count[ s[i] ] == 0 ) {
+                    map[t[i]] = s[i] ;
+                    count[ s[i] ]++ ;
+                }
+                else 
+                    return false ;
+            }
+            else {
+                if ( map[ t[i] ] != s[i] )
+                    return false ;
+            }
+        }
+
+        return true ;
+    }
+};
