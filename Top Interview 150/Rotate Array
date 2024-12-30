@@ -1,0 +1,33 @@
+想法：先建立一個臨時矩陣，在上面rotate，做完後再複製回原本矩陣
+
+Time Complexity : O(n) for ratating every elements
+Space Complexity : O(n) for array
+
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        vector<int> ans(nums.size()) ; 
+        for(int i = 0 ; i < nums.size() ; i++) {
+            ans[(i + k) % nums.size()] = nums[i] ;
+        }
+        nums = ans ;
+        return ;
+    }
+};
+
+// 法二：先reverse nums[0 ... n - k - 1]，再reverse nums[n - k ... n - 1]，最後從頭reverse到尾
+ex. 1234567 , k = 2 -> 54321 67 -> 54321 76 -> 67 12345
+
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        int n = nums.size() ;
+        k %= n ;
+        if ( k == 0 )
+            return ;
+        reverse( nums.begin() , nums.begin() + n - k ) ;
+        reverse( nums.begin() + (n - k) , nums.end() ) ;
+        reverse(nums.begin() , nums.end()) ;
+        return ;
+    }
+};
