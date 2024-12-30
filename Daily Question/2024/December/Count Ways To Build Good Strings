@@ -1,0 +1,25 @@
+想法：用dp思想，令dp[i] 是length == i 的good string 數量
+那麼dp[i] = dp[i - one] (i - one 長度加上one * '1') + dp[i - zero] ( i - zero 長度加上 zero * '0')
+
+Time Complexity : O(high) for calculating dp[0 .. high]
+Space Complexity : O(high) for dp array
+
+
+class Solution {
+public:
+    int countGoodStrings(int low, int high, int zero, int one) {
+        vector<int> dp(high + 1) ;
+        int mod = 1e9 + 7 ;
+        dp[0] = 1 ;
+        for(int i = 1 ; i <= high ; i++) {
+            if ( i - zero >= 0 )
+                dp[i] = (dp[i] + dp[i - zero]) % mod ;
+            if ( i - one >= 0 )
+                dp[i] = (dp[i] + dp[i - one]) % mod ;
+        }
+        int sum = 0 ;
+        for(int i = low ; i <= high ; i++) 
+            sum = (sum + dp[i]) % mod ;
+        return sum ;
+    }
+};
