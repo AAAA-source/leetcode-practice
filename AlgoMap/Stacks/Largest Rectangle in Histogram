@@ -1,0 +1,33 @@
+想法：維護一個monotonic stack，裡面元素會紀錄（高度、起始位置）
+當現在看到的元素比top 還要高時，直接加入( heights[i] , i )；否則就要不斷pop直到top的高度比現在的元素小
+而每個pop掉的元素都要算一次面積並與最大面積做比較，並且因為這些pop掉的元素起始位置都可以被現在高度所佔據，所以要更新現在高度的起始位置
+最後需將所有元素pop出來算面積並比較
+
+Time Complexity : O(n) for pushing , poping all elements in stack
+Space Complexity : O(n) for the (monotonic) stack
+
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        stack<pair<int, int>> candidates ; 
+        int n = heights.size() ; 
+        int maxarea = 0 ;
+        for(int i = 0 ; i < n ; i++) {
+            int startindex = i ;
+            while ( !candidates.empty() && candidates.top().first >= heights[i] ) {
+                auto p = candidates.top() ; 
+                maxarea = max(maxarea , p.first * (i - p.second)) ;
+                candidates.pop() ;
+                startindex = p.second ;
+            }
+            candidates.push( {heights[i] , startindex} ) ;
+        }
+
+        while ( !candidates.empty() ) {
+            auto p = candidates.top() ; 
+            maxarea = max(maxarea , p.first * (n - p.second) ) ;
+            candidates.pop() ;
+        }
+        return maxarea ;
+    }
+};
