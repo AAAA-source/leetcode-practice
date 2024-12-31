@@ -1,0 +1,49 @@
+想法：用dp[i] 代表走到 i 的最小步數，則dp[i] = min( dp[i - j] + 1 for all j can reach i )
+
+Time Complexity : O(n^2) for O(n) time each element
+Space Complexity : O(n) for dp array
+
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        // dp[i] : number of step that reach i 
+        // dp[i] = min( dp[i - j] + 1 s.t. nums[j] >= i for all j)
+        int n = nums.size() ;
+        vector<int> dp(n , 1e8) ;
+        // initialize
+        dp[0] = 0 ;
+        for(int i = 1 ; i <= min(n - 1 ,nums[0]) ; i++)
+            dp[i] = 1 ;
+
+
+        for(int i = 1 ; i < n ; i++) {
+            for(int j = i + 1 ; j <= min(n - 1 ,i + nums[i]) ; j++ )
+                dp[j] = min(dp[j] , dp[i] + 1) ;
+        }
+        return dp[n - 1] ;
+    }
+};
+
+// 法二:greedy solution 
+令 reach 為最遠可到達的位置，end則是現在步數可到達的位置；那麼我們可以在每個 i 更新 reach， i 碰到 end 時就要多走一步且更新 end = reach 
+走到 n - 1 時輸出步數即可
+
+Time Complexity : O(n) for iteration 1 to n
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        int steps = 0 ;
+        int n = nums.size() ; 
+        int end = 0 , reach = 0 ;
+        for(int i = 0 ; i < n - 1 ; i++) {
+            reach = max(reach , i + nums[i]) ;
+            if ( i == end ) {
+                end = reach ;
+                steps++ ;
+            }
+        }
+        return steps ;
+    }
+};
