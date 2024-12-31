@@ -1,0 +1,51 @@
+想法：排序後找過所有 (i , j) pairs，並在j的右側維護 left = j + 1 , right = n - 1 的 cursor
+如果 nums[i] + nums[j] + nums[left] + nums[right] 比target 大就讓right 往左移，否則left 往右
+相等就會記錄在 ans vector
+注意：因為要避免重複運算，所以需要跳過重複的元素
+
+Time Complexity : O(n^3) for nested loop 
+Space Complexity : O(n^4) for storing possible answer 
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        sort(nums.begin() , nums.end()) ;
+        int n = nums.size() ;
+        vector<vector<int>> ans ;
+        for(int i = 0 ; i < n - 3 ; i++) {
+            if (i > 0 && nums[i] == nums[i - 1])
+                continue ;
+            for(int j = i + 1 ; j < n - 2 ; j++) {
+                if ( j > i + 1 && nums[j] == nums[j - 1] )
+                    continue ;
+
+                int left = j + 1 ;
+                int right = n - 1 ;
+                long long int temptarget = (long long int)target - nums[i] - nums[j] ;
+                while ( left < right ) {
+                    int sum = nums[left] + nums[right] ;
+                    if ( sum == temptarget ) {
+                        ans.push_back( {nums[i],nums[j],nums[left],nums[right]} ) ;
+                        int start = left ;
+                        while ( left < right && nums[left] == nums[start] )
+                            left++ ;
+                        start = right ;
+                        while ( left < right && nums[right] == nums[start] )
+                            right-- ;
+                    }
+                    else if ( sum < temptarget ) {
+                        int start = left ;
+                        while ( left < right && nums[left] == nums[start] )
+                            left++ ;
+                    }
+                    else {
+                        int start = right ;
+                        while ( left < right && nums[right] == nums[start] )
+                            right-- ;
+                    }
+                }
+            }
+        }
+        return ans ;
+    }
+};
