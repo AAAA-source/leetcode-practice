@@ -1,0 +1,51 @@
+想法：令dp[i] = 從1..i 天最少需要花費的錢，那麼dp[i] = dp[i - 1] if i != 任何一個旅遊日期
+否則，dp[i] = min( dp[i - 1] + costs[0] , dp[i - 7] + costs[1] , dp[i - 30] + costs[2] )
+
+Time Complexity : O( maximum date(last traverl day) ) 
+Space Complexity : O(maximum date ) 
+
+class Solution {
+public:
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        vector<int> dp(365 + 1) ; 
+        dp[0] = 0 ;
+        int index = 0 ;
+        for(int i = 1 ; i <= 365 ; i++) {
+            if ( index >= days.size() || i != days[index] ) { 
+                dp[i] = dp[i - 1] ;
+            }
+            else {
+                dp[i] = dp[i - 1] + costs[0] ;
+                dp[i] = min( dp[i] , ((i - 7 >= 0)? dp[i - 7] : 0) + costs[1] ) ;
+                dp[i] = min( dp[i] , ((i - 30 >= 0)? dp[i - 30] : 0) + costs[2] ) ;
+                index++ ;
+            }
+        }
+        return dp[365] ;
+    }
+};
+
+// we can break at the last day
+class Solution {
+public:
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        vector<int> dp(days.back() + 1) ; 
+        dp[0] = 0 ;
+        int index = 0 ;
+        for(int i = 1 ; i <= 365 ; i++) {
+            if ( i != days[index] ) { 
+                dp[i] = dp[i - 1] ;
+            }
+            else {
+                dp[i] = dp[i - 1] + costs[0] ;
+                dp[i] = min( dp[i] , ((i - 7 >= 0)? dp[i - 7] : 0) + costs[1] ) ;
+                dp[i] = min( dp[i] , ((i - 30 >= 0)? dp[i - 30] : 0) + costs[2] ) ;
+                index++ ;
+                if (index == days.size())
+                    break ;
+            }
+            
+        }
+        return dp[days.back()] ;
+    }
+};
