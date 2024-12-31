@@ -1,7 +1,7 @@
 想法：先對nums 排序，針對每個 i 都找 nums[i + 1 ... n- 1] 的pair(紀錄最接近 target - nums[i] 的組合)
 
 Time Complexity : O(n^2)
-Space Complexity : O(1) 
+Space Complexity : O(1) + O(logn) (for std::sort)
 
 class Solution {
 public:
