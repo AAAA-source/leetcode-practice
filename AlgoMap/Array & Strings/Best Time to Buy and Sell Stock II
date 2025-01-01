@@ -1,0 +1,55 @@
+想法：因為同一天可以同時買進賣出，我們可以發現在一個爬坡中（左低右高）從谷底買進山峰賣出的情況跟不斷買進賣出直到山峰是相同的；
+因此我們只需判斷現在是否在爬坡決定是否買入（只要買入必定在明天賣出）
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int profit = 0 ;
+        bool havestock = false ;
+        for(int i = 0 ; i < prices.size() - 1 ; i++) {
+            if ( havestock ) {
+                profit += prices[i] ;
+                havestock = false ;
+            }
+            if ( prices[i] < prices[i + 1] ) {
+                profit -= prices[i] ;
+                havestock = true ;
+            }
+
+        }
+        if ( havestock )
+            profit += prices.back() ;
+        return profit ;
+    }
+};
+
+// 法二：維護一個index，直接找出谷底、山峰的位置再相減即可
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int index = 0 ; 
+        int n = prices.size() ;
+        int profit = 0;
+        while ( index < n ) {
+            int high , low ;
+            while ( index < n - 1 && prices[index] >= prices[index + 1] )
+                index++ ;
+            low = prices[index] ;
+            
+            while ( index < n - 1 && prices[index] <= prices[index + 1])
+                index++ ;
+            high = prices[index] ;
+
+            profit += high - low ;
+            index++ ;
+        }
+        return profit ;
+    }
+};
