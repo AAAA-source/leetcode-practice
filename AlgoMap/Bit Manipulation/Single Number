@@ -1,0 +1,16 @@
+想法：因為對於一個數字 var ^ i ... ^ i 就等於沒有 ^i 
+且只有一個數字只出現一次，所以我們可以用一個變數紀錄出現過的數字，有的話就 ^ i 
+而除了只出現一次的元素外，其餘出現兩次的都已經消去，故最終只留下出現一次的元素
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int left = 0 ;
+        for(auto i : nums)
+            left ^= i ;
+        return left ;
+    }
+};
