@@ -1,0 +1,78 @@
+想法：用leftzeros[i]紀錄包含s[0..i]中0的數量，rightones[i]紀錄s[i .. n - 1]中1的數量，
+那麼答案就是 max i = 0..n - 2 leftzeros[i] + rightones[i + 1]
+
+Time Complexity : O(n) for calculating leftzeros[0 .. n -1] , rightones[0 .. n - 1]
+Space Complexity : O(n) for two arrays
+
+class Solution {
+public:
+    int maxScore(string s) {
+        int n = s.length() ;
+        vector<int> leftzeros(n) ;
+        vector<int> rightones(n) ;
+        leftzeros[0] = (s[0] == '0')? 1 : 0 ;
+        rightones[n - 1] = (s[n - 1] == '1')? 1 : 0 ;
+        for(int i = 1 ; i < n ; i++) {
+            leftzeros[i] = (( s[i] == '0' )? 1 : 0) + leftzeros[i - 1] ;
+        }
+        for(int i = n - 2 ; i >= 0 ; i--) {
+            rightones[i] = ( (s[i] == '1')? 1 : 0 ) + rightones[i + 1] ;
+        }
+
+        int maxvalue = 0;
+        for(int split = 0 ; split < n - 1 ; split++) {
+            maxvalue = max(maxvalue , leftzeros[split] + rightones[split + 1]) ;
+        }
+        return maxvalue ;
+    }
+};
+
+// as the string is only involved '1' , '0' , 我們可以直接用 countones 代表所有 '1'的數量，然後根據現在已經看到的 '1' 推斷右側還有多少 '1' 
+
+Time Complexity : O(n) 
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int maxScore(string s) {
+        int n = s.length() ;
+        int countones = 0 ;
+        for(auto c : s)
+            countones += ((c == '1')? 1 : 0) ;
+
+        int one = countones , zero = 0 ;
+        int maxvalue = 0 ;
+        for(int split = 0 ; split < n - 1 ; split++) {
+            if ( s[split] == '1' )
+                one-- ;
+            else 
+                zero++ ;
+            maxvalue = max( maxvalue , one + zero ) ;
+        }
+
+        return maxvalue ;
+    }
+};
+
+
+// One-path algorithm : 右側的'1' 可表示為 countones - one，但在遍歷每個元素的時候還不知道countones 
+所以一邊算countones，一邊用 zero - one紀錄答案，最後答案再加上countones 即可
+
+class Solution {
+public:
+    int maxScore(string s) {
+        int n = s.length() ; 
+        int one = 0 , zero = 0 ;
+        int maxvalue = -1e8 ;
+        for(int i = 0 ; i < n - 1 ; i++) {
+            if ( s[i] == '1' )
+                one++;
+            else 
+                zero++ ;
+            maxvalue = max(maxvalue , zero - one);
+        }
+        one += (s[n-1] == '1')? 1 : 0 ;
+
+        return maxvalue + one ;
+    }
+};
