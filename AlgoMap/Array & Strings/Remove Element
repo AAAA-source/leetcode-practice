@@ -1,0 +1,37 @@
+想法：紀錄一個要插入的index = 0，每次看到不是val 的元素就插入並往右移 1，如此做直到看完所有元素
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
+        int insertindex = 0 ;
+        for(int i = 0 ; i < nums.size() ; i++) {
+            if ( nums[i] != val ) {
+                nums[insertindex++] = nums[i] ;
+            }
+        }
+        return insertindex ;
+    }
+};
+
+// 也可以紀錄一個 n 代表著要維護的矩陣大小，每次遇到val 都把nums[n - 1] 的元素跟val 對調並把 n 減 1 (根據題目要求，實際上不需改變nums[n - 1]的值)
+直到查看到維護的矩陣的最後一個元素
+
+class Solution {
+public:
+    int removeElement(vector<int>& nums, int val) {
+        int i = 0;
+        int n = nums.size() ;
+        while ( i < n ) {
+            if ( nums[i] == val) {
+                nums[i] = nums[n - 1] ;
+                n-- ;
+            }
+            else 
+                i++ ;
+        }
+        return n ;
+    }
+};
