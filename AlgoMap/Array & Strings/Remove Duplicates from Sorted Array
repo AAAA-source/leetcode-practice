@@ -1,0 +1,35 @@
+想法：維護兩個cursor，一個是現在要插入的，一個是現在查看的；只要查看到重複的（下一個一樣）就跳過不插入
+最後輸出下一個要插入的index(也就是已經插入的size)即可
+
+Time Complexity : O(n) for iterating whole array
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        int n = nums.size() ; 
+        int insertindex = 0 ;
+        for(int i = 0 ; i < n - 1 ; i++) {
+            if (nums[i] == nums[i + 1])
+                continue ;
+            nums[insertindex++] = nums[i] ; 
+        }
+        nums[insertindex++] = nums[n - 1];
+        return insertindex ;
+    }
+};
+
+// another implementation
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        int n = nums.size() ; 
+        int insertindex = 1 ;
+        for(int i = 1 ; i < n  ; i++) {
+            if (nums[i] != nums[i - 1]) {
+                nums[insertindex++] = nums[i] ;
+            } 
+        }
+        return insertindex ;
+    }
+};
