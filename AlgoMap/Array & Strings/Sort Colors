@@ -1,0 +1,54 @@
+想法：用 counting sort 可達成線性時間分類（two-path）
+
+Time Complexity : O(n + k) = O(n + 3) = O(n) for counting sort
+Space Complexity : O(k) = O(1) for count array
+
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        vector<int> count(3) ; 
+        for(auto &i : nums)
+            count[i]++ ;
+        int index = 0 ;
+        for(int i = 0 ; i < 3 ; i++) {
+            while ( count[i] > 0 ) {
+                nums[index] = i ;
+                count[i]-- ;
+                index++ ;
+            }
+        }
+        return ;
+    }
+};
+
+// one-path algorithm : DNF algorithm
+用三個cursor : low , mid , high 分別維護 [0 , 0 , ... , low - 1][1 , 1 , ... , mid - 1][未處理 : mid ... high][high + 1 , 2 , ... , 2]
+因此：
+1.nums[mid] == 0 : swap(nums[low] , nums[mid]) , low++ , mid++ 
+2.nums[mid] == 1 : mid++ 
+3.nums[mid] == 2 : swap(nums[high] , nums[mid]) , high--
+until mid == high
+
+Time Complexity : O(n) for traversing array
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        // Dutch National Flag Algorithm
+        int low = 0 , high = nums.size() - 1 ;
+        int mid = 0 ;
+        while ( mid <= high ) {
+            if ( nums[mid] == 2 ) {
+                swap(nums[mid] , nums[high--]) ;
+            }
+            else if ( nums[mid] == 0 ) {
+                swap(nums[low++] , nums[mid++]) ;
+            } 
+            else 
+                mid++ ;
+        }
+        return ;
+    }
+};
+
