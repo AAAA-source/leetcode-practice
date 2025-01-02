@@ -1,0 +1,65 @@
+想法：先將所有元素進行sorting，排成降序排列；接著查看最後一個nums[i] > i 的即可
+
+Time Complexity : O(nlogn) for sorting
+Space Complexity : O(1) + O(logn) (for std::sort)
+
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        sort(citations.begin() , citations.end() , greater<int>()) ;
+        int n = citations.size() ;
+        for(int i = 0 ; i < n ; i++) {
+            if ( citations[i] < i + 1 )
+                return i ;
+        }
+        return n ;
+    }
+};
+
+// 法二：也可以使用 counting sort 
+Time Complexity : O(n + 1000) = O(n) for counting sort
+Space Complexity : O(n) for count array
+
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        vector<int> count(1005) ;
+        for(auto &i : citations)
+            count[i]++ ;
+
+        int index = 0 ;
+        for(int i = 1000 ; i >= 0 ; i--) {
+            for(int j = 0 ; j < count[i] ; j++)
+                citations[index++] = i ;
+        }
+        
+        for(int i = 0 ; i < citations.size() ; i++) {
+            if ( citations[i] < i + 1 )
+                return i ;
+        }
+        return citations.size() ;
+    }
+};
+
+// 法三：定義 count[i] 為引用次數 = i 的數量，接著改成 count[i] 為引用次數 >= i 的數量，那麼只要找到最小的 i 符合 count[i] >= i 的即可
+
+Time Complexity : O(n) for counting elements
+Space Complexity : O(n) for count array
+
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        int n = citations.size() ;
+        vector<int> count(n + 1) ;
+        for(auto &i : citations) 
+            count[min(n , i)]++ ;
+
+        int sum = 0 ;
+        for(int i = n ; i >= 0 ; i--) {
+            sum += count[i] ;
+            if ( sum >= i )
+                return i ;
+        }
+        return 0 ;
+    }
+};
