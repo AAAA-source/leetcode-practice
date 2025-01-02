@@ -1,0 +1,69 @@
+想法：先創造 numRows個string 分別紀錄每一列的字符，最後串起來即可
+
+Time Complexity : O(n) for filling and  concatenating words
+Space Complexity : O(n + numRows) for the string array 
+
+class Solution {
+public:
+    string convert(string s, int numRows) {
+        if (numRows == 1)
+            return s; 
+        vector<string> rows(numRows) ;
+        int nowrow = 0 ;
+        int delta = -1 ;
+        int index = 0 ;
+        int n = s.length();
+        while ( index < n  ) {
+            rows[nowrow] += s[index] ;
+            index++ ;
+            if ( nowrow == 0 || nowrow == numRows - 1 )
+                delta = -delta ;
+            nowrow += delta ;
+        }
+        string ans ;
+        for(auto &str : rows)
+            ans += str ;
+        return ans ;
+    }
+};
+
+// 法二：直接觀察每個字的出現規律，可發現如下圖
+0                           2 * numRows - 2
+1                              2 * numRows - 1
+2                   ...              ...
+...          numRows 
+numRows - 1 
+
+規律如下：
+第一列、最後一列：每次出現間隔 2 * numRows - 2 
+中間：第 i 列會出現 i , i + 2 (numRows - 1 - i) 在 2 * numRows - 2 循環裡
+
+Time Complexity : O(n) for traversing string
+Space Complexity : O(n) for output string
+
+class Solution {
+public:
+    string convert(string s, int numRows) {
+        if ( numRows == 1 )
+            return s ;
+        int n = s.length() ;
+        string ans ; 
+        // first row 
+        for(int i = 0 ; i < n ; i += (2 * numRows - 2))
+            ans += s[i] ;
+
+        for(int row = 1 ; row < numRows - 1 ; row++) {
+            for(int i = row ; i < n ; i += (2 * numRows - 2)) {
+                ans += s[i] ;
+                if ( i + 2 * (numRows - 1 - row) < n )
+                    ans += s[i + 2 * (numRows - 1 - row) ] ;
+            }
+
+        }
+        // last row 
+        for(int i = numRows - 1 ; i < n ; i += 2 * numRows - 2)
+            ans += s[i] ;
+
+        return ans ;
+    }
+};
