@@ -1,0 +1,44 @@
+想法：用前綴和即可解此題，定義 prefixsum[i] 是 words[0 .. i] 中符合規則的字串數量
+那麼所求的 words[l .. r] 數量即是 prefixsum[r] - prefix[l - 1] 
+
+// m is the size of words , n is the size of queries
+Time Complexity : O(m + n)
+Space Complexity : O(m)
+
+class Solution {
+public:
+    bool check (string s) {
+        if ( (s.front() == 'a' || s.front() == 'e' || s.front() == 'i' || 
+            s.front() =='o' || s.front() == 'u') && 
+            (s.back() == 'a' || s.back() == 'e' || s.back() == 'i' || 
+            s.back() =='o' || s.back() == 'u') )
+            return true ;
+        else 
+            return false ; 
+    }
+
+    vector<int> vowelStrings(vector<string>& words, vector<vector<int>>& queries) {
+        int n = words.size() ;
+        vector<int> prefixsum(n) ;
+        if ( check(words[0]) )
+            prefixsum[0] = 1 ;
+        else 
+            prefixsum[0] = 0;
+
+        for(int i = 1 ; i < n ; i++) {
+            if ( check(words[i]) )
+                prefixsum[i] = 1 + prefixsum[i - 1] ;
+            else 
+                prefixsum[i] = prefixsum[i - 1] ;
+        }
+
+        vector<int> ans ;
+        for( auto v : queries ) {
+            if ( v[0] == 0 )
+                ans.push_back( prefixsum[v[1]] ) ;
+            else 
+                ans.push_back( prefixsum[v[1]] - prefixsum[v[0] - 1] ) ;
+        }
+        return ans ;
+    }
+};
