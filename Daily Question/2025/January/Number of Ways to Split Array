@@ -1,0 +1,22 @@
+想法：利用前綴和去算後半段的總和即可，只需使用一個變數紀錄全部的總和，另一個紀錄左半段的總和；相減即可得右半段的總和
+
+Time Complexity : O(n) for traversing array two times
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int waysToSplitArray(vector<int>& nums) {
+        long long int totalsum = 0 ;
+        for(auto &i : nums)
+            totalsum += i ;
+
+        int ways = 0 ;
+        long long int nowsum = 0 ;
+        for(int i = 0 ; i < nums.size() - 1 ;i++) {
+            nowsum += nums[i] ;
+            if ( nowsum >= totalsum - nowsum)
+                ways++ ;
+        }
+        return ways ;
+    }
+};
