@@ -1,0 +1,83 @@
+想法：用一個hash map 紀錄每個word要對應到什麼字母，同時用一個count array 紀錄每個字母是否有被對應；
+如果現在看的word沒有在hash map 中且count array 也沒有現在的字母；那麼就建立新的(word , character)；
+否則直接回傳 false；如果hash map 中有的話就直接檢查是否與現在字母相等即可
+
+// m is the size of s , n is the size of pattern
+Time Complexity : O(m + n) for traversing two string
+Space Complexity : O(m + n) for the hash map and count array 
+
+
+class Solution {
+public:
+    bool wordPattern(string pattern, string s) {
+        vector<int> count(26) ;
+        unordered_map<string , char> mp ; 
+
+        int index = 0 ; 
+        int cursor = 0 ;
+        while ( index < s.length() ) {
+            if ( cursor >= pattern.length() )
+                return false ;
+            string temp ; 
+            while ( index < s.length() && s[index] != ' ' ) {
+                temp += s[index++] ;
+            }
+
+            if ( mp.find(temp) == mp.end() ) {
+                // this word doesn't match yet 
+                if ( count[ pattern[cursor] - 'a'] != 0)
+                    return false ;
+                else {
+                    mp[temp] = pattern[cursor] ;
+                    count[ pattern[cursor] - 'a' ]++ ;
+                }
+            }
+            else {
+                if ( mp[temp] != pattern[cursor] )
+                    return false ;
+            }
+
+            index++ ;
+            cursor++ ;
+        } 
+        if ( cursor != pattern.length() )
+            return false ;
+
+        return true ;
+    }
+};
+
+// another implementation
+class Solution {
+public:
+    bool wordPattern(string pattern, string s) {
+        vector<int> count(26) ;
+        unordered_map<string , char> mp ; 
+
+        int index = 0 ; 
+        stringstream wordstream(s) ;
+
+        string word;
+        while ( wordstream >> word ) {
+            if ( index == pattern.size() )
+                return false ;
+
+            if ( mp.find(word) == mp.end() ) {
+                if ( count[pattern[index] - 'a'] != 0 ) {
+                        return false ;
+                }
+                else {
+                    count[pattern[index] - 'a']++ ;
+                    mp[word] = pattern[index] ;
+                }
+            }
+            else {
+                if ( mp[word] != pattern[index] )
+                    return false ;
+            }
+
+            index++ ;
+        }
+        return (index == pattern.size()) ;
+    }
+};
