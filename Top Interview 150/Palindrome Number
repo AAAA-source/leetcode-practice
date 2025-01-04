@@ -1,0 +1,54 @@
+想法：先將數字轉換為字串，再檢查字串是否回文
+
+Time Complexity : O(logn) for traversing all digits
+Space Complexity : O(logn) for the string
+
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        string s = to_string(x) ;
+        for(int i = 0 ; i < s.length() / 2 ; i++) {
+            if ( s[i] != s[s.length() - 1 - i] )
+                return false ;
+        }
+        return true ;
+    }
+};
+
+// 法二：紀錄一個數字是原本數字的相反，再比較兩者是否相等
+
+Time Complexity : O(logn) for traverse all digits
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        long long int temp = x ; 
+        long long int reverse = 0 ;
+        while (temp > 0) {
+            reverse *= 10 ;
+            reverse += temp % 10 ;
+            temp /= 10 ;
+        }
+        return reverse == x ;
+    }
+};
+
+// 法三：不須找到全部相反的數字，只須找到一半再跟另外一半的x做比較即可
+
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        if (x == 0)
+            return true ;
+        if (x < 0 || x % 10 == 0)
+            return false ;
+        long long int reverse = 0 ;
+        while (x > reverse) {
+            reverse *= 10 ;
+            reverse += x % 10 ;
+            x /= 10 ;
+        }
+        return reverse == x || x == reverse / 10 ;
+    }
+};
