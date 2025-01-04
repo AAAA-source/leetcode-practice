@@ -1,0 +1,32 @@
+想法：由於只需要找長度為3的回文字串，所以第一個字跟最後一個字一定相同，我們只需考慮共有幾種可能可以放在第二個字符
+因此，我們先紀錄有哪些字母是能被放在第一個及最後一個上的，在把中間所有可能紀錄在hash set裡（因為hash set不會算重複的元素）
+那麼可能的回文字串就是 hash set的大小，對每一個能放在首尾的字母都執行相同程序，最終即可得到答案
+
+Time Complexity : O(26n) = O(n) for at most 26 letters do the O(n) traversal
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int countPalindromicSubsequence(string s) {
+        vector<int> start(26 , -1) , end(26 , -1)  ;
+
+        for(int i = 0 ; i < s.length() ; i++) {
+            if ( start[s[i] - 'a'] == -1 )
+                start[ s[i] - 'a' ] = i ;
+            end[s[i] - 'a'] = i ;
+        }
+
+        int ans = 0 ;
+        for(int i = 0 ; i < 26 ; i++) {
+            if ( end[i] >= start[i] + 2 ) {
+                unordered_set<char> between ;
+                for(int j = start[i] + 1 ; j < end[i] ; j++)
+                    between.insert(s[j]) ;
+
+                ans += between.size() ;
+            }
+        }
+
+        return ans ;
+    }
+};
