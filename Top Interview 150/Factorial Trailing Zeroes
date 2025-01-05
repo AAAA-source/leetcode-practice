@@ -1,0 +1,15 @@
+想法：要看尾數有多少0，只要看 min( 2 的數量  , 5 的數量 )，因為 n! 的 2 數量一定大於 5 的數量，因此只要看有幾個 5 即可
+過程類似找尋5進位的判斷，算出有多少 5 
+
+Time Complexity : O(logn) for find the representation of 5 carry 
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int trailingZeroes(int n) {
+        int count = 0 ;
+        for(int i = 5 ; n >= i ; i *= 5) 
+            count += n / i ;
+        return count ;
+    }
+};
