@@ -1,0 +1,34 @@
+想法：用一個矩陣紀錄哪個位置開始、結束以及偏移量；並對其做一個prefix sum 已得到每個位置的正確偏移量
+接著對原本字符加上偏移量即可
+
+// assume the size of string is n , the size of shifts is m
+Time Complexity : O(m + n) for filling the position and prefix sum 
+Space Complexity : O(n) for the prefix sum array
+
+
+class Solution {
+public:
+    string shiftingLetters(string s, vector<vector<int>>& shifts) {
+        int s_length = s.length() ;
+        vector<int> shiftsum(s_length) ;
+        for( auto &shift : shifts ) {
+            shiftsum[ shift[0] ] += ( shift[2] == 1 )? 1 : -1 ;
+            if ( shift[1] + 1 < s_length )
+                shiftsum[shift[1] + 1] += (shift[2] == 1)? -1 : 1 ;
+        }
+        shiftsum[0] %= 26 ;
+        for(int i = 1 ; i < s_length ; i++) {
+            shiftsum[i] += shiftsum[i - 1] ;
+            shiftsum[i] %= 26 ;
+        }
+
+        for( int i = 0 ; i < s_length ; i++ ) {
+            if ( s[i] + shiftsum[i] < 'a' )
+                s[i] += 26 ;
+            if ( s[i] + shiftsum[i] > 'z' )
+                s[i] -= 26 ;
+            s[i] += shiftsum[i] ;
+        }
+        return s ;
+    }
+};
