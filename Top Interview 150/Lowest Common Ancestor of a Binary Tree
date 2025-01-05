@@ -1,0 +1,110 @@
+想法：先用一個hash set 紀錄 p 的所有祖先，接著以相同方法找q的祖先，由最近祖先開始找到root，只要有出現在hash set的就是最近共同祖先（回傳即可）
+
+Time Complexity : O(n) for traversing the tree
+Space Complexity : O(h) = O(n) for hash set and recursion (recursion depth = O(h) = O(n))
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool findpnode( TreeNode* root , TreeNode* target , 
+        unordered_set<TreeNode*> &path ) {
+        if ( root == nullptr )
+            return false ;
+        if ( root == target ) {
+            path.insert(root) ;
+            return true ;
+        }
+
+        if ( findpnode(root->left , target , path) 
+            || findpnode(root->right , target , path) ) {
+            path.insert(root) ;
+            return true ;
+        }
+        else 
+            return false ;
+    }
+    bool findqnode( TreeNode* root , TreeNode* target , 
+        unordered_set<TreeNode*> &path , TreeNode* &ans ) {
+        if ( root == nullptr )
+            return false ;
+        if ( root == target ) {
+            if ( path.find(root) != path.end() )
+                ans = root ; 
+            return true ;
+        }
+        
+        if ( findqnode(root->left , target , path , ans) || 
+        findqnode(root->right , target , path , ans) ) {
+            if ( ans != nullptr )
+                return true ;
+
+            if ( path.find(root) != path.end() ) 
+                ans = root ;
+            return true ;
+        }
+
+        return false ;
+    }
+
+
+
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        unordered_set<TreeNode*> path ; 
+        findpnode(root , p , path) ;
+
+        TreeNode* ans = nullptr ;
+        findqnode(root , q , path , ans) ;
+
+        return ans ;
+    }
+};
+
+// 法二：觀察到「最近共同祖先代表第一個 p 與 q 在不同子樹（或是root）的節點」，所以只需尋找第一個分岔點即可
+
+Time Complexity : O(n) for traversing the tree
+Space Complexity : O(n) for the recursion
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (root == nullptr)
+            return nullptr ;
+        if ( root == p || root == q )
+            return root ;
+
+        TreeNode* right = lowestCommonAncestor(root->right , p , q) ;
+        TreeNode* left = lowestCommonAncestor(root->left , p , q) ;
+
+        if ( left == nullptr ) {
+            // p , q are in the right subtree 
+            return right ;
+        }
+        else if ( right == nullptr ) {
+            // p , q are in the left subtree
+            return left ;
+        }
+        else {
+            // one of p , q is in the left , another is in right
+            return root ;
+        }
+
+    }
+};
