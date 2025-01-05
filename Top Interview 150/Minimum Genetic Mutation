@@ -1,0 +1,82 @@
+想法：可以把每個string 想像成一個節點，而與其他節點（start , end , bank）只相差一個字母則可形成邊，接著對這個圖做BFS即可找出最短路徑
+
+// asume bank size is n 
+Time Complexity : O(n * O(1)(for checking string distance) ) for BFS
+Space Complexity : O(n) for visited array and BFS queue
+
+class Solution {
+public:
+    bool mutatevalid( string &a , string &b ) {
+        int count = 0 ;
+        for(int i = 0 ; i < 8 ; i++) {
+            if ( a[i] != b[i] )
+                count++ ;
+        }
+        return (count == 1) ;
+    }
+
+    int minMutation(string startGene, string endGene, vector<string>& bank) {
+        if ( startGene == endGene )
+            return 0 ;
+
+        vector<int> state(bank.size()) ;
+        queue< pair<string , int> > store ;
+
+        store.push( {startGene , 0} ) ;
+        while ( !store.empty() ) {
+            auto p = store.front() ;
+            store.pop() ;
+            string nowstring = p.first ; 
+            int distance = p.second ;
+            
+            if ( nowstring == endGene )
+                return distance ;
+
+            for(int i = 0 ; i < bank.size() ; i++) {
+                if ( state[i] == 0 && mutatevalid(nowstring , bank[i]) ) {
+                    state[i] = 1 ;
+                    store.push( {bank[i] , distance + 1} ) ;
+                }
+            }
+        }
+        
+        return -1 ;
+    }
+};
+
+// also can use DFS to find the minimum distance
+class Solution {
+public:
+    bool mutatevalid( string &a , string &b ) {
+        int count = 0 ;
+        for(int i = 0 ; i < 8 ; i++) {
+            if ( a[i] != b[i] )
+                count++ ;
+        }
+        return (count == 1) ;
+    }
+    int DFS( string s , string& endGene , vector<string>& bank,vector<int>& visited) {
+        if ( s == endGene )
+            return 0 ;
+        
+        int mindistance = 1e8 ;
+        for( int i = 0 ; i < visited.size() ;i++) {
+            if ( visited[i] == 0 && mutatevalid(s , bank[i])) {
+                visited[i] = 1 ;
+                mindistance = min(mindistance ,
+                     1 + DFS(bank[i] ,endGene, bank , visited) );
+                visited[i] = 0 ;
+            }
+        }
+        return mindistance ;
+    }
+
+    int minMutation(string startGene, string endGene, vector<string>& bank) {
+        vector<int> visited(bank.size()) ;
+        int result = DFS(startGene , endGene , bank , visited) ;
+        if (result < 1e8)
+            return result ;
+        else 
+            return -1 ;
+    }
+};
