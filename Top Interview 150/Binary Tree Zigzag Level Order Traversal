@@ -1,0 +1,157 @@
+想法：先用一般的BFS進行 level-order traversal，再把奇數層的reverse 
+
+Time Complexity : O(n) for traversing tree and reverse the outputs
+Space Complexity : O(n) for the output array
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        if ( root == nullptr )
+            return {} ;
+
+        vector<vector<int>> ans ; 
+        queue< pair<TreeNode* , int>> candidate ;
+
+        candidate.push({root , 0}) ;
+        while ( !candidate.empty() ) {
+            TreeNode* now = candidate.front().first ;
+            int level = candidate.front().second ;
+            candidate.pop() ;
+
+            if ( ans.size() <= level ) {
+                ans.push_back( {now->val} ) ;
+            }
+            else {
+                ans[level].push_back(now->val) ;
+            }
+
+            if ( now->left != nullptr )
+                candidate.push({now->left , level + 1}) ;
+            if ( now->right != nullptr )
+                candidate.push( {now->right , level + 1} ) ;
+        }
+
+        for(int i = 1 ; i < ans.size() ; i+=2) {
+            reverse(ans[i].begin() , ans[i].end()) ;
+        }
+
+        return ans ;
+    }
+};
+
+// 法二：也可以在 level-order traversal 的時候做修改，奇數層直接在填入值的時候反著填（就不用再做一次reverse）
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        if (root == nullptr)
+            return {} ;
+        
+        vector<vector<int>> ans ;
+        queue<TreeNode*> store ;
+
+        int direction = 0 ;
+        store.push(root) ;
+        while (!store.empty()) {
+            int size = store.size() ;
+            vector<int> result(size) ;
+            for(int i = 0 ; i < size ; i++) {
+                TreeNode* now = store.front() ;
+                store.pop() ;
+                if ( direction == 0 ) 
+                    result[i] = now->val ;
+                else 
+                    result[size - 1 - i] = now->val ;
+
+                if ( now->left )
+                    store.push(now->left) ;
+                if (now->right)
+                    store.push(now->right) ;
+                
+            }
+            direction = (direction == 0)? 1 : 0 ;
+            ans.push_back(result) ;
+        }
+
+        return ans ;
+    }
+};
+
+// 法三：將上述方法修改成使用 deque實作
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        if (root == nullptr)
+            return {} ;
+        
+        vector<vector<int>> ans ;
+        deque<TreeNode*> store ;
+
+        int direction = 0 ;
+        store.push_back(root) ;
+        while (!store.empty()) {
+            int size = store.size() ;
+            vector<int> result(size) ;
+            for(int i = 0 ; i < size ; i++) {
+                TreeNode* now ;
+                if (direction == 0) {
+                    now = store.front() ;
+                    store.pop_front() ;
+                    if ( now->left )
+                        store.push_back(now->left) ;
+                    if (now->right)
+                        store.push_back(now->right) ;
+                }
+                else {
+                    now = store.back() ;
+                    store.pop_back() ;
+                    if ( now->right )
+                        store.push_front(now->right) ;
+                    if (now->left)
+                        store.push_front(now->left) ;
+                }
+                result[i] = now->val ;
+                
+            }
+            direction = (direction == 0)? 1 : 0 ;
+            ans.push_back(result) ;
+        }
+
+        return ans ;
+    }
+};
+
+
