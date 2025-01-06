@@ -1,0 +1,53 @@
+法一：Brute Forces，對每個元素都算一遍需要多少operation 才能使球都到該個箱子
+
+Time Complexity : O(n^2) for nested loop
+Space Complexity : O(n) for the answer array
+
+class Solution {
+public:
+    vector<int> minOperations(string boxes) {
+        vector<int> ans(boxes.size()) ; 
+        for(int i = 0 ; i < boxes.size() ; i++) {
+            for(int j = 0 ; j < boxes.size() ; j++) {
+                if ( j != i && boxes[j] == '1' )
+                    ans[i] += abs(j - i) ;
+            }
+        }
+        return ans ;
+    }
+};
+
+法二：試著找出前一個格子與後一個格子之間的關係，可發現轉移式就是前一個的leftsum = leftsum + leftcount , rightsum = rightsum + rightcount
+並且在s[i] == '1' 就需要更新count
+
+Time Complexity : O(n) for iterating boxes[0.. n - 1]
+Space Complexity : O(n) for the answer array
+
+class Solution {
+public:
+    vector<int> minOperations(string boxes) {
+        if ( boxes.size() == 1 )
+            return {0} ;
+        int leftsum = 0 , rightsum = 0 ;
+        int leftcount = 0 , rightcount = 0 ;
+
+        for(int i = 0 ; i < boxes.size() ; i++) {
+            if ( boxes[i] == '1' ) {
+                rightsum += i ;
+                rightcount++ ;
+            }
+        }
+        vector<int> ans(boxes.size()) ;
+        for(int i = 0 ; i < boxes.size() ; i++) {
+            ans[i] = leftsum + rightsum ;
+            if ( boxes[i] == '1' ) {
+                rightcount-- ;
+                leftcount++ ;
+            }
+
+            rightsum -= rightcount ;
+            leftsum += leftcount ;
+        }
+        return ans ;
+    }
+};
