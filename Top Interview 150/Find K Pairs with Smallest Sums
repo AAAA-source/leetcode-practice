@@ -1,6 +1,9 @@
 想法：利用兩個arrays 都是 sorted 的特性，維護一個大小為 k 的 max-heap（代表前 k 小的組合）
 只要目前看的組合已經超過目前第 k 小的組合，後續就不用看，可進到下個循環執行
 
+Time Complexity : O(klogk) for at most looking 2k elements 
+Space Complexity : O(k) for the heap and the output vector
+
 class Solution {
 public:
     vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
