@@ -1,0 +1,39 @@
+想法：使用 sliding window approach 紀錄每個end 最短的 s[start ... end] 可以滿足要求，再更新答案及end position 即可
+每次比較合法字串是使用一個count紀錄，比較時間O(128) = O(1)
+
+Time Complexity : O(m + n) for counting frequency in t (O(n)) and updating start , end from 0 .. m
+
+class Solution {
+public:
+    bool valid(vector<int> &count) {
+        for(auto &i : count) {
+            if ( i < 0 )
+                return false ;
+        }
+        return true ;
+    }
+    string minWindow(string s, string t) {
+        vector<int> count(128) ;
+        for(auto &c : t) {
+            count[c]-- ;
+        }
+        int start = 0 , end = 0 ;
+        string ans = "" ;
+        while (end < s.length()) {
+            count[ s[end] ]++ ;
+            if ( valid(count) ) {
+                while ( start <= end && valid(count) ) {
+                    count[ s[start] ]-- ;
+                    start++ ;
+                }
+                start-- ;
+                count[ s[start] ]++ ;
+                if ( ans == "" || ans.length() > end - start + 1 )
+                    ans = s.substr(start , end - start + 1) ;
+            }
+            end++ ;
+        }
+
+        return ans ;
+    }
+};
