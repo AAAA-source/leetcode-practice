@@ -1,0 +1,30 @@
+想法：把每個字串放到hash set 以提供O(1) 時間的比較，接著找過所有 substring 即可
+
+// assume there are O(n) strings and every string is O(m) length
+Time Complexity : O(n * m^2) for every string has O(m^2) substrings 
+Space Complexity : O(n) for hash set and the output array
+
+class Solution {
+public:
+    vector<string> stringMatching(vector<string>& words) {
+        vector<string> ans ;
+        unordered_set<string> appear ;
+        for(auto &s : words)
+            appear.insert(s) ;
+
+        for(auto &s : words) {
+            for(int startindex = 0 ; startindex < s.length() ; startindex++) {
+                for(int length = 1 ; startindex + length - 1 < s.length() ; length++) {
+                    if ( startindex == 0 && length == s.length() )
+                        continue ;
+                    string target = s.substr(startindex , length) ; 
+                    if ( appear.find(target) != appear.end() ) {
+                        appear.erase(target) ;
+                        ans.push_back(target) ;
+                    }
+                }
+            }
+        }
+        return ans ;
+    }
+};
