@@ -1,0 +1,38 @@
+想法：先將所有 '/'替換成空格，接著以字串流的方式輸入所有資料夾名稱；
+用一個 vector 紀錄，遇到 '.' 就忽略，'..' 就把最後一層資料夾 pop 掉即可
+最後把所有資料夾依序輸出並在最前面加上 '/' (root directory) 
+
+Time Complexity : O(n) for looking all the directory names in string path
+Space Complexity : O(n) for the output string and the vector which storing directory names
+
+class Solution {
+public:
+    string simplifyPath(string path) {
+        for( auto &c : path ) {
+            if ( c == '/' )
+                c = ' ' ;
+        }
+        cout << path << endl ;
+        stringstream nowpath(path) ;
+        string nowdirectory ;
+        vector<string> names ;
+        while ( nowpath >> nowdirectory ) {
+            if ( nowdirectory == ".." ) {
+                if (!names.empty())
+                    names.pop_back() ;
+            }
+            else if ( nowdirectory != ".") {
+                names.push_back(nowdirectory) ;
+            }
+        }
+
+        string ans ;
+        for(auto &s : names) {
+            ans += "/" + s ;
+        }
+        if ( ans.empty() ) 
+            return "/" ;
+        else 
+            return ans ;
+    }
+};
