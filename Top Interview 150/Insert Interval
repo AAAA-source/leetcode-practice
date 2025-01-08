@@ -1,0 +1,40 @@
+想法：因為原先的序列已經是升序排列，所以排頭一定是最小的，那麼每次只要比較序列排頭以及新插入的節點哪個比較小
+把較小者放入到新的序列中，這樣新的序列也會是升序排列
+接著，需要考慮新加入的節點與最後一個節點融合，融合後取新舊結尾的最大值即可（只需考慮與目前新序列的最後節點即可）
+
+// assume there are n pairs in old interval sequence
+Time Complexity : O(n) for traversing all pairs
+Space Complexity : O(n) for new interval sequence
+
+class Solution {
+public:
+    vector<vector<int>> insert(vector<vector<int>>& intervals,vector<int>& newInterval) {
+        vector<vector<int>> ans ; 
+        bool inserted = false ;
+        for(int i = 0 ; i <  intervals.size() ; i++) {
+            if ( !inserted && newInterval[0] <= intervals[i][0] ) {
+                // insert newInterval
+                
+                if ( !ans.empty() && ans.back()[1] >= newInterval[0] )
+                    ans.back()[1] = max(newInterval[1] , ans.back()[1] );
+                else 
+                    ans.push_back( newInterval ) ;
+                inserted = true ;
+                i-- ;
+            }
+            else {
+                if ( !ans.empty() && ans.back()[1] >= intervals[i][0] )
+                    ans.back()[1] = max(intervals[i][1], ans.back()[1] ) ;
+                else 
+                    ans.push_back( intervals[i] ) ;
+            }
+        }
+        if (!inserted) {
+            if ( !ans.empty() && ans.back()[1] >= newInterval[0] )
+                    ans.back()[1] = max(newInterval[1] , ans.back()[1] ) ;
+                else 
+                    ans.push_back( newInterval ) ;
+        }
+        return ans ;
+    }
+};
