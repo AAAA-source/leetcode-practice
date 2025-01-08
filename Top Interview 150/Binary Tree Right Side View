@@ -1,0 +1,112 @@
+想法：將整個樹進行一次 DFS，使用 inorder traversal，那麼整棵樹就會有左看到右，只要每次更新該層的最右節點即可
+
+Time Complexity : O(n) for traversing the tree
+Space Complexity : O(h) = O(n) for recursion depth and the output array
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    void DFS(TreeNode* root , int level , vector<int>& ans ) {
+        if (!root)
+            return ;
+        if ( ans.size() <= level ) {
+            ans.push_back( root->val ) ;
+        }
+        else 
+            ans[level] = root->val ;
+
+        DFS(root->left , level + 1 , ans) ;
+        DFS(root->right , level + 1 , ans) ;
+        return ;
+    }
+    vector<int> rightSideView(TreeNode* root) {
+        vector<int> ans ;
+        DFS(root , 0 , ans) ;
+        return ans ;
+    }
+};
+
+// 法二：稍微改變順序，先看右邊再看左邊，那麼只需看到有新的層數時才要更新
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    void DFS(TreeNode* root , int level , vector<int>& ans ) {
+        if (!root)
+            return ;
+        if ( ans.size() <= level ) {
+            ans.push_back( root->val ) ;
+        }
+        
+        DFS(root->right , level + 1 , ans) ;
+        DFS(root->left , level + 1 , ans) ;
+        return ;
+    }
+    vector<int> rightSideView(TreeNode* root) {
+        vector<int> ans ;
+        DFS(root , 0 , ans) ;
+        return ans ;
+    }
+};
+
+// 法三：使用 BFS(level-order traversal)，那麼只需將每層最右邊的記錄下來即可
+由於每次 queue在做完上一層時，所儲存的所有元素就是下一層從左到右的元素，因此只需一次 pop 出來並把子節點放入即可
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> rightSideView(TreeNode* root) {
+        if (!root)
+            return {} ;
+        vector<int> ans ;
+        queue<TreeNode*> pending ;
+
+        pending.push(root) ;
+        while ( !pending.empty() ) {
+            int nowsize = pending.size() ;
+            TreeNode* nowfront ;
+            while ( nowsize-- ) {
+                nowfront = pending.front() ;
+                if ( nowfront->left )
+                    pending.push( nowfront->left ) ;
+                if ( nowfront->right )
+                    pending.push( nowfront->right ) ;
+                pending.pop() ;
+            }
+            ans.push_back(nowfront->val) ;
+        }
+        return ans ;
+    }
+};
+
