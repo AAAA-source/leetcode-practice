@@ -1,0 +1,41 @@
+想法：因為原本的矩陣會出現的數值只會有 0 , 1，我們可以用十位數代表 next state 的數值
+所以我們先實作 countneighbors 幫助判斷細胞的存活，並把更新後的數值紀錄在十位數
+最後把所有數值除以十只留下十位數即可
+
+// assume there is a m * n grid
+Time Complexity : O(mn) for update every state
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int countneighbors( vector<vector<int>>& board , int row , int column ) {
+        vector<pair<int , int>> moves = { {-1 , -1} , {-1 , 0} , {-1 , 1} , {0 , 1} ,
+                    {1 , 1} , {1 , 0} , {1 , -1} , {0 , -1} } ;
+        int count = 0 ;
+        for( auto &p : moves ) {
+            int newrow = row + p.first ;
+            int newcolumn = column + p.second ;
+            if ( newrow >= 0 && newrow < board.size() 
+            && newcolumn >= 0 && newcolumn < board[0].size() 
+            && (board[newrow][newcolumn] % 10 == 1) ) 
+                count++ ;
+        }
+        
+        return count ;
+    }
+    void gameOfLife(vector<vector<int>>& board) {
+        for(int row = 0 ; row < board.size() ; row++) {
+            for(int column = 0 ; column < board[0].size() ; column++) {
+                int neighbors = countneighbors(board , row , column) ;
+                if ( neighbors == 3 || (neighbors == 2 && board[row][column] == 1) )
+                    board[row][column] += 10 ;
+            }
+        }
+        for(int row = 0 ; row < board.size() ; row++) {
+            for(int column = 0 ; column < board[0].size() ; column++) {
+                board[row][column] /= 10 ;
+            }
+        }
+        return ;
+    }
+};
