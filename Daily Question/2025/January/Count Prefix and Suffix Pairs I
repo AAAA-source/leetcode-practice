@@ -1,0 +1,28 @@
+想法：暴力解即可，實作一個 isPrefixAndSuffix function 並比較所有組合
+
+// assume there is n strings and the length is O(m) for every string
+Time Complexity : O(n^2 * m) for comparing O(n^2) pair and each compare take O(m) time
+Space Complexity : O(n^2) for the output array
+
+class Solution {
+public:
+    bool isPrefixAndSuffix (string &s1 , string &s2) {
+        if ( s1.length() > s2.length() )
+            return false ;
+        for(int i = 0 ; i < s1.length() ; i++) {
+            if ( s2[i] != s1[i] || s2[s2.length() - s1.length() + i] != s1[i] )
+                return false ;
+        }
+        return true ;
+    }
+    int countPrefixSuffixPairs(vector<string>& words) {
+        int count = 0 ;
+        for(int i = 0 ; i < words.size() - 1 ; i++) {
+            for(int j = i + 1 ; j < words.size() ; j++) {
+                if ( isPrefixAndSuffix(words[i] , words[j]) )
+                    count++ ;
+            }
+        }
+        return count ;
+    }
+};
