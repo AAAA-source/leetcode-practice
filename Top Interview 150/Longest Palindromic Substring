@@ -1,0 +1,68 @@
+想法：使用dp[start][end] 紀錄 s[start ... end] 是否是回文子字串，那麼 dp[start -1][end + 1] 是回文子字串的條件就是
+1. dp[start][end] == true
+2. s[start - 1] == s[end + 1] 
+依序填表並找出最大回文子字串即可
+
+Time Complexity : O(n^2) for filling 2D dp array
+Space Complexity : O(n^2) for the dp array
+
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        vector<vector<bool>> dp( s.length() , vector<bool>(s.length() , false) ) ;
+        int max = 1 ;
+        int maxstart = 0 ;
+        for(int start = s.length() - 1 ; start >= 0 ; start--) {
+            dp[start][start] = true ;
+            for(int end = start + 1 ; end < s.length() ; end++) {
+                if ( end - start + 1 == 2 ) {
+                    dp[start][end] = (s[start] == s[end])? true : false ;
+                }
+                else {
+                    dp[start][end] = ( s[start] == s[end] && dp[start + 1][end - 1] )?
+                        true : false ;
+                }
+                if ( dp[start][end] && end - start + 1 > max ) {
+                    max = end - start + 1 ;
+                    maxstart = start ;
+                }
+            }
+        }
+        return s.substr(maxstart , max) ;
+    }
+};
+
+
+// 法二：馬拉車演算法，透過回文半徑延伸而得
+Time Complexity : O(n) 
+Space Complexity : O(n)
+
+class Solution {
+   public:
+    char ma[2010];
+    int mp[2010];
+    void manacher(string s)
+    {
+        int l = 0;
+        ma[l++] = '$', ma[l++] = '#';
+        for (int i = 0; i < s.size(); i++) ma[l++] = s[i], ma[l++] = '#';
+        ma[l] = 0;
+        int mx = 0, id = 0;
+        for (int i = 0; i < l; i++) {
+            mp[i] = mx > i ? min(mp[2 * id - i], mx - i) : 1;
+            while (ma[i + mp[i]] == ma[i - mp[i] >= 0 ? i - mp[i] : 0]) mp[i]++;
+            if (i + mp[i] > mx) mx = i + mp[i], id = i;
+        }
+    }
+    string longestPalindrome(string s)
+    {
+        string ans;
+        manacher(s);
+        int max_len = 0, max_pos;
+        for (int i = 0; i < 2010; i++) {
+            if (mp[i] > max_len) max_len = mp[i], max_pos = i;
+        }
+        max_len--;
+        return s.substr((max_pos - max_len) / 2, max_len);
+    }
+};
