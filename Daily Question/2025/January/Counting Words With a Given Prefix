@@ -1,0 +1,22 @@
+想法：實作一個isPrefix() 的函式用來檢測pref 是否是目前字串的前綴，對所有字串跑過此函式並紀錄多少字串合法即可
+
+// assume there is n strings and pref.length = m
+Time Complexity : O(mn) for O(m) time checking to each string
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    bool isPrefix(string str , string pref) {
+        if (str.length() < pref.length())
+            return false ;
+        return ( str.compare(0 , pref.length() , pref ) == 0 ) ;
+    }
+    int prefixCount(vector<string>& words, string pref) {
+        int count = 0 ;
+        for(auto &s : words) {
+            if ( isPrefix(s , pref) )
+                count++ ;
+        }
+        return count ;
+    }
+};
