@@ -1,0 +1,93 @@
+想法：為了要支持 Getrandom()，所以我們需要將元素儲存在 vector 裡，但insert , delete 僅使用單純的 vector 無法做到
+因此我們需要用 hash map 紀錄每個元素對應到的 index，在 insert 時直接放到最後面，delete 時則先與最後一個元素對調再 pop_back
+
+Time Complexity : O(1) per operation
+Space Complexity : O(n) for the vector and hash map
+
+// use the default random seed
+class RandomizedSet {
+public:
+    unordered_map<int , int> appear ;
+    vector<int> store ;
+    RandomizedSet() { }
+    
+    bool insert(int val) {
+        if ( appear.find(val) != appear.end() )
+            return false ;
+        else {
+            appear[val] = store.size() ;
+            store.push_back(val) ;
+            return true ;
+        }
+    }
+    
+    bool remove(int val) {
+        if ( appear.find(val) == appear.end() )
+            return false ;
+        else {
+            appear[store.back()] = appear[val] ;
+            swap( store[ appear[val] ] , store.back() ) ;
+            appear.erase( val ) ;
+            store.pop_back() ;
+            return true ;
+        }
+    }
+    
+    int getRandom() {
+        return store[ rand() % store.size()] ;
+    }
+};
+
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * RandomizedSet* obj = new RandomizedSet();
+ * bool param_1 = obj->insert(val);
+ * bool param_2 = obj->remove(val);
+ * int param_3 = obj->getRandom();
+ */
+
+
+// set the random seed as time(nullptr)
+
+class RandomizedSet {
+public:
+    unordered_map<int , int> appear ;
+    vector<int> store ;
+    RandomizedSet() { 
+        srand( time(nullptr) ) ;
+    }
+    
+    bool insert(int val) {
+        if ( appear.find(val) != appear.end() )
+            return false ;
+        else {
+            appear[val] = store.size() ;
+            store.push_back(val) ;
+            return true ;
+        }
+    }
+    
+    bool remove(int val) {
+        if ( appear.find(val) == appear.end() )
+            return false ;
+        else {
+            appear[store.back()] = appear[val] ;
+            swap( store[ appear[val] ] , store.back() ) ;
+            appear.erase( val ) ;
+            store.pop_back() ;
+            return true ;
+        }
+    }
+    
+    int getRandom() {
+        return store[ rand() % store.size() ] ;
+    }
+};
+
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * RandomizedSet* obj = new RandomizedSet();
+ * bool param_1 = obj->insert(val);
+ * bool param_2 = obj->remove(val);
+ * int param_3 = obj->getRandom();
+ */
