@@ -1,0 +1,49 @@
+想法：先將所有節點放到 min heap 中，再重新建立一條由小到大的linked list(每次從heap 取出當前最小值即可)
+
+Time Complexity : O(nlogn) for heap sort
+Space Complexity : O(n) for the heap
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    struct Compare {
+        bool operator() (ListNode* a , ListNode* b){
+            return a->val > b->val ;
+        }
+    } ;
+    ListNode* sortList(ListNode* head) {
+        if ( head == nullptr )
+            return nullptr ;
+        priority_queue< ListNode* , vector<ListNode*> , Compare> candidates ;
+        ListNode* cursor = head ; 
+        while ( cursor != nullptr ) {
+            candidates.push(cursor) ;
+            cursor = cursor->next ;
+        }
+        
+        ListNode* newhead = nullptr ;
+        ListNode* newtail ;
+        while (!candidates.empty()) {
+            if (!newhead) {
+                newtail = candidates.top() ;
+                newhead = newtail ;
+            }
+            else {
+                newtail->next = candidates.top() ;
+                newtail = newtail->next ;
+            }
+            candidates.pop() ;
+        }
+        newtail->next = nullptr ;
+        return newhead ;
+    }
+};
