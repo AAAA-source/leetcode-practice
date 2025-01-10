@@ -1,0 +1,38 @@
+想法：把每個在 words2 中的字串轉換成 alphabet frequency table，接著對每一個字母都取最大值（哪個字串需要最多）
+因為要包含所有在 words2 的所有字串，就必須滿足所有字串對於每個字母的需求，所以取最大值
+接著只需將每個在 words1 中的字串同樣轉成 table 並比較大小即可
+
+// assume the total string's length in words1 is A , in words2 is B 
+Time Complexity : O(A + B) for counting all letter
+Space Complexity : O(1) for two O(26) arrays
+
+class Solution {
+public:
+    bool valid(vector<int> &threshold , vector<int> &frequency ) {
+        for(int i = 0 ; i < 26 ; i++)
+            if ( threshold[i] > frequency[i] )
+                return false ;
+        return true ;
+    }
+
+    vector<string> wordSubsets(vector<string>& words1, vector<string>& words2) {
+        vector<int> threshold(26) ;
+        for(auto &s : words2) {
+            vector<int> count(26) ;
+            for(auto &c : s)
+                count[c - 'a']++ ;
+            for(int i = 0 ; i < 26 ; i++)
+                threshold[i] = max(threshold[i] , count[i]) ;
+        }
+
+        vector<string> ans ;
+        for(auto &str : words1) {
+            vector<int> frequency(26) ;
+            for(auto &c : str)
+                frequency[c - 'a']++ ;
+            if ( valid(threshold , frequency) )
+                ans.push_back( str ) ;
+        }
+        return ans ;
+    }
+};
