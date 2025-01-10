@@ -1,0 +1,65 @@
+想法：使用 hash set 紀錄已經出現過的數字，如果有重複則代表進入無限循環，可直接輸出 false 
+
+出現循環的正確性及大小：假設 n 有 d 位數（2^31 ~ 10^10），則最大的平方數字和就是每個數字被替換成 9，也就是 81 * d，大概是 O(logn) 的大小
+而出現循環最糟糕就是 O(logn) 中的數字都出現一次，循環最大為 O(logn) 個數字
+
+Time Complexity : O(logn) for traversing the cycle 
+Space Complexity : O(logn) for recording the cycle
+
+class Solution {
+public:
+    bool isHappy(int n) {
+        unordered_set<int> appear ;
+        while (1) {
+            if (n == 1)
+                return true ;
+            if ( appear.find(n) != appear.end() )
+                return false ;
+            else {
+                appear.insert(n) ;
+                int sum = 0 ;
+                while (n > 0) {
+                    sum += (n % 10) * (n % 10) ;
+                    n /= 10 ;
+                }
+                n = sum ;
+            }
+        }
+    }
+};
+
+// 因為可以確保一定會出現循環，所以可用雙指針的方法（龜兔賽跑），建立快、慢指針，並在兩者會合時確定已進入循環
+
+Time Complexity : O(logn) for traversing cycle two times 
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int next(int n) {
+        int sum = 0 ;
+        while (n > 0) {
+            sum += (n % 10) * (n % 10) ;
+            n /= 10 ;
+        }
+        return sum ;
+    }
+    bool isHappy(int n) {
+        if (n == 1)
+            return true ;
+
+        int slow , fast ;
+        slow = next(n) ;
+        fast = next(next(n)) ;
+        if ( fast == 1 )
+                return true ;
+        while ( slow != fast ) {
+            if ( fast == 1 )
+                return true ;
+            slow = next(slow) ;
+            fast = next(next(fast)) ;
+            if ( fast == 1 )
+                return true ;
+        }
+        return false ;
+    }
+};
