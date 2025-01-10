@@ -1,0 +1,80 @@
+想法：用兩個矩陣分別紀錄哪行哪列要變成0，再把記錄到的變成 0 即可
+
+// assume the matrix is  m * n size
+Time Complexity : O(mn) for checking zeros and filling zeros 
+Space Complexity : O(m + n) for two arrays 
+
+class Solution {
+public:
+    void setZeroes(vector<vector<int>>& matrix) {
+        vector<bool> zerorow(matrix.size()) , zerocolumn(matrix[0].size()) ;
+        for(int row = 0 ; row < matrix.size() ; row++) {
+            for(int column = 0 ; column < matrix[0].size() ; column++) {
+                if ( matrix[row][column] == 0 ) 
+                    zerorow[row] = true , zerocolumn[column] = true ;
+            }
+        }
+        for(int r = 0 ; r < matrix.size() ; r++) {
+            if ( zerorow[r] ) {
+                for(int c = 0 ; c < matrix[0].size() ; c++)
+                    matrix[r][c] = 0 ;
+            }
+        }
+        for(int c = 0 ; c < matrix[0].size() ; c++) {
+            if ( zerocolumn[c] ) {
+                for(int r = 0 ; r < matrix.size() ; r++)
+                    matrix[r][c] = 0 ;
+            }
+        }
+        return ;
+    }
+};
+
+// 法二：利用第一行跟第一列作為紀錄行列是否為 0 的標誌，因此要先用兩個變數紀錄第一行、第一列是否變成 0，接著針對 matrix[1 ..m - 1][1.. n - 1] 做紀錄及改變
+改變後針對變數紀錄結果改變第一行、第一列即可
+
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    void setZeroes(vector<vector<int>>& matrix) {
+        bool firstrow = true , firstcolumn = true ;
+        for(int i = 0 ; i < matrix.size() ; i++)
+            if ( matrix[i][0] == 0 )
+                firstcolumn = false ;
+        for(int j = 0 ; j < matrix[0].size() ; j++) 
+            if ( matrix[0][j] == 0 )
+                firstrow = false ;
+
+        
+        for(int i = 1 ; i < matrix.size() ; i++) {
+            for(int j = 1 ; j < matrix[0].size() ; j++) {
+                if ( matrix[i][j] == 0 ) {
+                    matrix[i][0] = 0 ;
+                    matrix[0][j] = 0 ;
+                }
+            }
+        }
+        
+        for(int i = 1 ; i < matrix.size() ; i++) {
+            if ( matrix[i][0] == 0 ) {
+                for(int j = 1 ; j < matrix[0].size() ; j++)
+                    matrix[i][j] = 0 ;
+            }
+        }
+        for(int j = 1 ; j < matrix[0].size() ; j++) {
+            if ( matrix[0][j] == 0 ) {
+                for(int i = 1 ; i < matrix.size() ; i++)
+                    matrix[i][j] = 0 ;
+            }
+        }
+        if ( !firstcolumn )
+            for(int i = 0 ; i < matrix.size() ; i++)
+                matrix[i][0] = 0 ;
+        if (!firstrow)
+            for(int j = 0 ; j < matrix[0].size() ; j++)
+                matrix[0][j] = 0 ;
+
+        return ;
+    }
+};
