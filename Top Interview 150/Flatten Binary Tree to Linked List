@@ -1,0 +1,84 @@
+想法：利用遞迴的做法，先整理完左邊的子樹變成 linked list，再整理右邊的子樹；最後將兩條子樹串接在一起即可
+
+Time Complexity : O(n) for traversing all nodes 
+Space Complexity : O(n) for the recursion
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    pair<TreeNode* , TreeNode*> translist( TreeNode* root ) {
+       if ( !root )
+            return { nullptr , nullptr } ;
+        pair<TreeNode* , TreeNode*> leftresult = translist(root->left) ;
+        pair<TreeNode* , TreeNode*> rightresult = translist(root->right) ;
+
+        if ( leftresult.first == nullptr && rightresult.first == nullptr ) {
+            return { root , root } ;
+        }
+        else if ( rightresult.first == nullptr ) {
+            root->right = root->left ;
+            root->left = nullptr ;
+            return {root , leftresult.second} ;
+        }
+        else if ( leftresult.first == nullptr ) {
+            return {root , rightresult.second} ;
+        }
+        else {
+            root->right = root->left ;
+            root->left = nullptr ;
+
+            leftresult.second->right = rightresult.first ;
+            return {root , rightresult.second} ;
+        }
+
+
+    }
+    void flatten(TreeNode* root) {
+        translist(root) ;
+        return ;
+    }
+};
+
+// 法二：每次可以先將左邊的子樹插入到root 與 root->right 之間，接著繼續向 root->right 整理即可
+
+Space Complexity : O(1) for variables
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    void flatten(TreeNode* root) {
+        while ( root != nullptr ) {
+            if ( root->left ) {
+                TreeNode* cursor = root->left ;
+                while (cursor->right)
+                    cursor = cursor->right ;
+                cursor->right = root->right ;
+
+                root->right = root->left ;
+                root->left = nullptr ;
+            }
+            root = root->right ;
+        }
+        return ;
+    }
+};
