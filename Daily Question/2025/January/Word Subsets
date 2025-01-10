@@ -4,7 +4,7 @@
 
 // assume the total string's length in words1 is A , in words2 is B 
 Time Complexity : O(A + B) for counting all letter
-Space Complexity : O(1) for two O(26) arrays
+Space Complexity : O(A) for the output vector + O(1) for two O(26) vectors
 
 class Solution {
 public:
