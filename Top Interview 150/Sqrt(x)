@@ -1,0 +1,27 @@
+想法：因為答案一定在 [0 .. x] 之間且具有單調性，所以可利用 binary search 快速找到答案
+
+注意：需小心 m * m 以及 (l + r) / 2 是否會 overflow，故在 m * m 時 cast，使用 l + (r - l) / 2 代替 (l + r) / 2 
+
+// assume input = x
+Time Complexity : O(logx) for binary search
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int mySqrt(int x) {
+        int l = 0 ;
+        int r = x  ;
+
+        while ( l < r ) {
+            int m = l + (r - l) / 2 + 1;
+            if ( static_cast<long long int>(m) * m == static_cast<long long int>(x) )
+                return m ; 
+            else if ( static_cast<long long int>(m) * m > x )
+                r = m - 1 ; 
+            else 
+                l = m ;
+        }
+        
+        return l ;
+    }
+};
