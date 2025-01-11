@@ -1,0 +1,41 @@
+想法：先算出總共有多少「出現奇數次」的字母；在任一回文字串中，最多只能消除一個出現奇數次的字母
+所以我們只需判斷 k >= oddnumbers 即可
+
+Time Complexity : O(n) for counting letter frequency
+Space Complexity : O(1) for a O(26) array
+
+class Solution {
+public:
+    bool canConstruct(string s, int k) {
+        if ( k > s.length() )
+            return false ;
+        vector<int> count(26) ; 
+        for(auto &c : s)
+            count[c - 'a']++ ;
+        
+        int oddletter = 0;
+        for(int i = 0 ; i < 26 ; i++)
+            if ( count[i] % 2 == 1 )
+                oddletter++ ;
+
+        return k >= oddletter ;
+    }
+};
+
+// 法二：也可以使用一個 bit 來紀錄每個字母出現次數是否為奇數
+
+技巧：__builtin_popcount(num) 可以算出 num 中有幾個 bit 為 1
+
+class Solution {
+public:
+    bool canConstruct(string s, int k) {
+        if ( k > s.length() )
+            return false ;
+        
+        int bitoddcount = 0 ;
+        for(auto &c : s ) {
+            bitoddcount ^= (1 << (c - 'a')) ;
+        }
+        return k >= __builtin_popcount(bitoddcount) ;
+    }
+};
