@@ -78,6 +78,72 @@ public:
     }
 };
 
+// another implementation
+class Solution {
+public:
+    static vector<int> radix_sort(vector<int> &nums) {
+        for(int i = 0 ; i < 31 ; ++i) {
+            vector< vector<int> > count(2) ; // bit 0 and bit 1  
+            for( auto &j : nums ) {
+                if ( j & (1 << i) )
+                    count[1].push_back(j) ; 
+                else 
+                    count[0].push_back(j) ;
+            }
+
+            int cursor = 0 ;
+            for( auto &i : count[0] ) {
+                nums[cursor] = i ;
+                cursor++ ;
+            }
+            for( auto &i : count[1] ) {
+                nums[cursor] = i ;
+                cursor++ ;
+            }
+        }
+
+        
+
+        vector<int> temporate ; 
+        for( int i = 0 ; i  < nums.size() ; i++ ) {
+            if ( nums[i] < 0 )
+                temporate.push_back( nums[i] ) ;
+        }
+        for(int i = 0 ; i != nums.size() ; i++) {
+            if ( nums[i] >= 0 ) {
+                temporate.push_back(nums[i]) ;
+            }
+        }
+
+        
+
+        return temporate ;
+    }
+
+    int longestConsecutive(vector<int>& nums) {
+        if ( nums.empty() )
+            return 0 ;
+
+        // radix sort 
+        nums = radix_sort(nums) ;
+
+        int max_length = 1 , count = 1 ;
+        for(int i = 1 ; i != nums.size() ; i++) {
+            if ( nums[i] == nums[i - 1] )
+                continue ; 
+            else if ( nums[i] == nums[i - 1] + 1 ) {
+                count++ ;
+                max_length = max( max_length , count ) ;
+            }
+            else {
+                count = 1 ;
+            }
+        }
+
+        return max_length ;
+    }
+};
+
 法二：用hash table 紀錄哪個數字出現過，接著看過所有hash table的元素
 持續尋找與該元素連續的數字，找到後就移除，繼續尋找附近元素
 
