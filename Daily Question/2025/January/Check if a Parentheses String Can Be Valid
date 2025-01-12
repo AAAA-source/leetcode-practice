@@ -1,0 +1,48 @@
+想法：分兩次判斷，第一次判斷左括號'(' 是否能被調配至合法，第二次判斷右括號 ')' 是否也能被調配至合法即可
+因為兩者所需調配的未上鎖位置並不相同，因此互不干擾；不會出現同一位置兩次調配的情形
+
+Time Complexity : O(n) for two times traversing
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    bool canBeValid(string s, string locked) {
+        if ( s.length() & 1 )
+            return false ;
+
+        int balanced = 0 ;
+        int unlocked = 0 ;
+        for(int i = 0 ; i < s.length() ; i++) {
+            if ( locked[i] == '1' ) {
+                balanced += (s[i] == ')')? -1 : 1 ;
+                if ( balanced < 0 ) {
+                    if (unlocked > 0)
+                        unlocked-- , balanced++ ;
+                    else 
+                        return false ;
+                }
+            }
+            else {
+                unlocked++ ;
+            }
+        }
+        
+        balanced = 0 ;
+        unlocked = 0 ;
+        for(int i = s.length() - 1 ; i >= 0 ; i--) {
+            if ( locked[i] == '0' )
+                unlocked++ ;
+            else {
+                balanced += (s[i] == ')')? -1 : 1 ;
+                if (balanced > 0) {
+                    if ( unlocked > 0 )
+                        unlocked--  , balanced-- ;
+                    else 
+                        return false ;
+                }
+            }
+        }
+        
+        return true ;
+    }
+};
