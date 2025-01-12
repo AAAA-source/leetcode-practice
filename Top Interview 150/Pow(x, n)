@@ -1,0 +1,34 @@
+想法：使用「快速冪算法」，紀錄兩個變數 now , target 用來表示現在要平方的數值以及剩餘數值
+
+技巧：快速冪算法，可想像成數字 a 要用 now-進位 表示
+1. 如果power % 2 == 0 : 代表沒有 now 的成分
+2. 反之，代表有 now^1 參與，用target 紀錄
+
+// assume the input is a^x
+Time Complexity : O(logx) for the algorithm
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    double myPow(double x, int n) {
+        long long int power = static_cast<long long int> (n) ;
+        if ( power == 0 )
+            return 1 ;
+        bool negativeflag = (power < 0)? true : false ;
+        if ( power < 0 )
+            power = -power ;
+        double target = 1 ; 
+        double now = x ; 
+        while ( power > 1 ) {
+            if ( power & 1 )
+                target *= now ; 
+            now *= now ;
+            power >>= 1 ;
+        } 
+        now = now * target ;
+        if ( negativeflag ) 
+            now = (double)1 / now ;
+        
+        return now ;
+    }
+};
