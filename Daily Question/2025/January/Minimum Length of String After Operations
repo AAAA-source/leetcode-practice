@@ -1,0 +1,25 @@
+想法：觀察 operation 的字串規律，可發現任一字母出現奇數次可經過 operation 而剩下中間那個，偶數次則是剩下中間兩個
+因此我們只需紀錄每個字母的出現次數，判斷會剩下一個還是兩個並加總即可
+
+// assume s.length = n
+Time Complexity : O(n) for counting letter frequency
+Space Complexity : O(1) for variables and a O(26) = O(1) array
+
+class Solution {
+public:
+    int minimumLength(string s) {
+        vector<int> count(26) ;
+        for( auto &c : s ) 
+            count[c - 'a']++ ;
+        int sum = 0 ;
+        for(int i = 0 ; i < 26 ; i++) {
+            if ( count[i] == 0 )
+                continue ;
+            if (count[i] & 1)
+                sum += 1 ;
+            else 
+                sum += 2 ;
+        }
+        return sum ;
+    }
+};
