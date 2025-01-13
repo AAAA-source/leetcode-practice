@@ -1,0 +1,45 @@
+想法：用兩個指針指到現在在看的元素、下一個不同於現在的元素
+只要下一個不同元素不剛好是現在元素的正下一個，就不用把現在的加入新的 linked list 中
+
+Time Complexity : O(n) for traversing linked list
+Space Complexity : O(1) for variables 
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        ListNode* cursor = head ;
+        ListNode* newhead = nullptr , *newtail = nullptr ;
+        while ( cursor != nullptr ) {
+            ListNode* nextdifferent = cursor->next ;
+            while ( nextdifferent != nullptr ) {
+                if ( nextdifferent->val == cursor->val )
+                    nextdifferent = nextdifferent->next ;
+                else 
+                    break ;
+            }
+            if ( nextdifferent == cursor->next ) {
+                if ( newhead == nullptr ) {
+                    newhead = newtail = cursor ;
+                }
+                else {
+                    newtail->next = cursor ;
+                    newtail = newtail->next ;
+                }
+                newtail->next = nullptr ;
+            }
+            
+            cursor = nextdifferent ;
+        }
+        return newhead ;
+    }
+};
