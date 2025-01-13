@@ -1,0 +1,60 @@
+想法：二維 dp 問題，利用 dp[i][j] 紀錄走到 obstacleGrid[i][j] 的路徑數量
+那麼只需要判斷
+1. 該格是障礙：dp[i][j] = 0 
+2. 該格可以走 : dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+
+注意：起始右上角可能是 1 / 0(有障礙)
+
+// assume the grid is m * n size
+Time Complexoty : O(mn) for filling dp array
+Space Complexity : O(mn) for the dp array 
+
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        vector<vector<int>> dp( obstacleGrid.size() 
+                    , vector<int>(obstacleGrid[0].size()) ) ;
+
+        for(int i = 0 ; i < obstacleGrid.size() ; i++) {
+            for(int j = 0 ; j < obstacleGrid[0].size() ; j++) {
+                if ( obstacleGrid[i][j] == 1 )
+                    dp[i][j] = 0 ;
+                else if ( i == 0 && j == 0 )
+                    dp[i][j] = 1 ;
+                else {
+                    dp[i][j] = (( i - 1 >= 0 )? dp[i - 1][j] : 0) + 
+                                ((j - 1 >= 0 )? dp[i][j - 1] : 0 );
+                }
+                
+            }
+        }
+
+        return dp.back().back() ;
+    }
+};
+
+// 可以只用一個 row 紀錄 dp 數值就好
+Space Complexity : O(n) for the dp array
+
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        vector<int> dp( obstacleGrid[0].size() ) ;
+
+        for(int i = 0 ; i < obstacleGrid.size() ; i++) {
+            for(int j = 0 ; j < obstacleGrid[0].size() ; j++) {
+                if ( obstacleGrid[i][j] == 1 )
+                    dp[j] = 0 ;
+                else if ( i == 0 && j == 0 )
+                    dp[j] = 1 ;
+                else {
+                    dp[j] = (( i - 1 >= 0 )? dp[j] : 0) + 
+                                ((j - 1 >= 0 )? dp[j - 1] : 0 );
+                }
+                
+            }
+        }
+
+        return dp.back() ;
+    }
+};
