@@ -1,0 +1,50 @@
+想法：用dp[i][j] 紀錄 從頂點走到 triangle[i][j] 的 minimum path sum，那麼 dp[i][j] = min( dp[i - 1][j - 1] , dp[i - 1][j]) + triangle[i][j] 
+
+Time Complexity : O(n^2) for filling the dp array
+Space Complexity : O(n^2) for the dp array
+
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        vector<vector<int>> dp( triangle.size() ) ;
+
+        dp[0].push_back( triangle[0][0] ) ;
+        for(int level = 1 ; level < triangle.size() ; level++) {
+            for(int index = 0 ; index <= level ; index++) {
+                int minpathsum = 1e8 ;
+                if ( index > 0) {
+                    minpathsum = min( minpathsum , dp[level - 1][index - 1] ) ;
+                }
+                if ( index < level ) {
+                    minpathsum = min( minpathsum , dp[level - 1][index] ) ;
+                }
+                
+                dp[level].push_back( minpathsum + triangle[level][index] ) ;
+            }
+        }
+        return *min_element( dp.back().begin() , dp.back().end() ) ;
+    }
+};
+
+// 也可以直接改動原先的 triangle array 作為 dp array 
+Space Complexiy : O(1) for variables 
+
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        for(int level = 1 ; level < triangle.size() ; level++) {
+            for(int index = 0 ; index <= level ; index++) {
+                int minpathsum = 1e8 ;
+                if ( index > 0) {
+                    minpathsum = min( minpathsum , triangle[level - 1][index - 1] ) ;
+                }
+                if ( index < level ) {
+                    minpathsum = min( minpathsum , triangle[level - 1][index] ) ;
+                }
+                
+                triangle[level][index] = minpathsum + triangle[level][index] ;
+            }
+        }
+        return *min_element( triangle.back().begin() , triangle.back().end() ) ;
+    }
+};
