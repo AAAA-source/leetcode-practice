@@ -1,0 +1,43 @@
+想法：沿著邊界而走，遇到任何一個 'O' 就代表含有這個 'O' 的 region 都不能變成 'X'，所以可以用 DFS 標註該區域為 '!'
+走完所有邊界後再把'!'轉為 'O'，其餘則都是 'X'
+
+// assume there is a m * n board
+Time Complexity : O(mn) for the DFS 
+Space Complexity : O(mn) for the recursion
+
+class Solution {
+public:
+    void unsurround( vector<vector<char>>& board , int row , int column ) {
+        if ( row < 0 || row >= board.size()
+            ||column < 0 || column >= board[0].size()
+            || board[row][column] != 'O' )
+            return ;
+        board[row][column] = '!' ;
+        unsurround(board , row - 1 , column) ;
+        unsurround(board , row + 1 , column) ;
+        unsurround( board , row , column - 1 ) ;
+        unsurround(board , row , column + 1) ;
+        return ;
+    }
+    void solve(vector<vector<char>>& board) {
+        // find the region which can reach the edges 
+        for(int i = 0 ; i < board.size() ; i++) {
+            unsurround(board , i , 0) ;
+            unsurround(board , i , board[0].size() - 1) ;
+        }
+        for(int j = 0 ; j < board[0].size() ; j++) {
+            unsurround(board , 0 , j) ;
+            unsurround(board , board.size() - 1 , j) ;
+        }
+
+        for(int i = 0 ; i < board.size() ; i++) {
+            for(int j = 0 ; j < board[0].size() ; j++) {
+                if ( board[i][j] == '!' )
+                    board[i][j] = 'O' ;
+                else 
+                    board[i][j] = 'X' ;
+            }
+        }
+        return ;
+    }
+};
