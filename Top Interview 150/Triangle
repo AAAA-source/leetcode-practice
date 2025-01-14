@@ -48,3 +48,20 @@ public:
         return *min_element( triangle.back().begin() , triangle.back().end() ) ;
     }
 };
+
+
+// another implementation : from bottom to top
+
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        for(int level = triangle.size() - 2 ; level >= 0 ; level--) {
+            for(int index = 0 ; index <= level ; index++) {
+                triangle[level][index] = 
+                    min ( triangle[level + 1][index],triangle[level+1][index + 1] ) 
+                    + triangle[level][index] ;
+            }
+        }
+        return triangle[0][0] ;
+    }
+};
