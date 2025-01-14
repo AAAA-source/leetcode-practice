@@ -1,0 +1,39 @@
+想法：因為要求在 O(logn) 內完成，所以使用 binary search 實現
+我們維護可能的peak 會出現在 nums[left ... right] 內，而每次考慮 mid = (left + right) / 2 的元素，有三種情況：
+1. 剛好就是 peak : 直接輸出
+2. 右邊比 nums[mid] 大，代表 nums[mid + 1 .. right] 一定會有 peak (至少有一山峰在右)
+3. 左邊比 nums[mid] 大，代表 nums[left ... mid - 1] 會有 peak （至少有一山峰在左）
+
+Time Complexity : O(logn) for binary search 
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    bool ispeak( vector<int>& nums , int index ) {
+        if ( index == 0 && nums[index] > nums[index + 1] )
+            return true ;
+        else if ( index == nums.size() - 1 && nums[index] > nums[index - 1] )
+            return true ;
+        else if ( index > 0 && index < nums.size() - 1 &&
+        nums[index] > nums[index - 1] && nums[index] > nums[index + 1] )
+            return true ;
+        else 
+            return false ;
+    }
+
+    int findPeakElement(vector<int>& nums) {
+        int left = 0 ;
+        int right = nums.size() - 1 ;
+
+        while ( left < right ) {
+            int mid = (left + right ) / 2 ; 
+            if ( ispeak(nums , mid) )
+                return mid ;
+            else if ( mid == 0 || nums[mid] > nums[mid - 1] )
+                left = mid + 1 ;
+            else 
+                right = mid - 1 ;
+        }
+        return left ;
+    }
+};
