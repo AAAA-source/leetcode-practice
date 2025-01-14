@@ -1,0 +1,46 @@
+想法：可以用hash set紀錄兩個陣列分別出現過的元素，而重合元素數量 ans[i] 只會是 ans[i - 1] + A[i] , B[i] 有沒有出現在另一個陣列的情況
+
+Time Complexity : O(n) for traversing two arrays 
+Space Complexity : O(n) for two hash sets 
+
+class Solution {
+public:
+    vector<int> findThePrefixCommonArray(vector<int>& A, vector<int>& B) {
+        unordered_set<int> appearA , appearB ;
+        vector<int> ans ;
+
+        int lastsame = 0 ;
+        for(int i = 0 ; i < A.size() ; i++) {
+            appearA.insert( A[i] ) ;
+            appearB.insert( B[i] ) ;
+            if ( appearB.find(A[i]) != appearB.end() )
+                lastsame++ ;
+            if ( A[i] != B[i] && appearA.find(B[i]) != appearA.end() )
+                lastsame++ ;
+            ans.push_back(lastsame) ;
+        }
+        return ans ;
+    }
+};
+
+// 法二：因為陣列會是 n 的 permutation，所以只會出現 1 .. n 的數值，可以用 count array 代替 hash set 
+
+class Solution {
+public:
+    vector<int> findThePrefixCommonArray(vector<int>& A, vector<int>& B) {
+        vector<int> count(A.size() + 1) ;
+        vector<int> ans ;
+
+        int lastsame = 0 ;
+        for(int i = 0 ; i < A.size() ; i++) {
+            count[A[i]]++ ;
+            count[ B[i] ]++ ;
+            if ( count[A[i]] == 2 )
+                lastsame++ ;
+            if ( A[i] != B[i] && count[B[i]] == 2 )
+                lastsame++ ;
+            ans.push_back(lastsame) ;
+        }
+        return ans ;
+    }
+};
