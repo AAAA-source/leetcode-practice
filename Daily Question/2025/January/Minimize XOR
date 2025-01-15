@@ -1,0 +1,51 @@
+想法：可把 x 想像成三種情況
+1. xbits == num1bits : 直接把 x = num1，x ^ num1 = 0 
+2. xbits < num1bits : 把 num1 高位的 1 bit 優先設成 1 ，留下低位的
+3. xbits > num1bits : 除了把 num1 所有 1 bit 設成 1 之外，也要把低位的bit 額外設成 1 
+
+Time Complexity : O(logn) for the loop (which has O(logn) iteration)
+Space Complexity : O(1) for variables 
+
+
+class Solution {
+public:
+    int bit_count(int num) {
+        int count = 0 ; 
+        for(int i = 0 ; i < 32 ; i++)
+            if ( num & (1 << i) )
+                count++ ;
+        return count ;
+    }
+    int minimizeXor(int num1, int num2) {
+        int num1bits = bit_count(num1) ; // 也可以用 __builtin_popcount(num1) 取代
+        int xbits = bit_count(num2) ;
+
+        if ( num1bits < xbits ) {
+            int record = 0 ;
+            int needbits = xbits - num1bits ;
+            int index = 0 ;
+            while ( needbits > 0 ) {
+                if ( (num1 & (1 << index)) == 0 ) {
+                    needbits-- ;
+                    record |= (1 <<index) ;
+                } 
+                index++ ;
+            }
+            return record | num1 ;
+        }
+        else {
+            int index = 31 ;
+            int record = 0 ;
+            while (xbits > 0) {
+                if ( num1 & (1 << index) ) {
+                    record |= (1 << index) ;
+                    xbits-- ;
+                }
+                index-- ;
+            }
+            return record ;
+        }
+
+
+    }
+};
