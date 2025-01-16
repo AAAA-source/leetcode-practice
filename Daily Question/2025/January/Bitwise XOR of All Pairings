@@ -1,0 +1,25 @@
+想法：因為每一個元素總共會被 XOR 另一個陣列大小的次數（與另一個陣列的所有元素做組合)，所以只需要判斷陣列大小是否為偶數
+是的話就代表另一個陣列的 XOR 結果可被忽略不計，否則等同於另一陣列所有元素XOR的結果
+
+Time Complexity : O(n) for XOR all elements in two arrays
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int xorAllNums(vector<int>& nums1, vector<int>& nums2) {
+        int result1 = 0 , result2 = 0 ;
+        for(auto &i : nums1)
+            result1 ^= i ;
+        for(auto &i : nums2)
+            result2 ^= i ;
+
+        if ( nums1.size() % 2 == 0 && nums2.size() % 2 == 0)
+            return 0 ;
+        else if ( nums1.size() % 2 == 0 )
+            return result1 ; 
+        else if ( nums2.size() % 2 == 0 )
+            return result2 ;
+        else 
+            return result1 ^ result2 ;
+    }
+};
