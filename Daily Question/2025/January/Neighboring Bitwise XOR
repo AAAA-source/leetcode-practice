@@ -1,0 +1,23 @@
+想法:如果是一個合法的derived 陣列，那麼將所有元素 XOR 之後就會是零；而如果今天XOR後的結果會是零
+那麼我們一定可以找到某一種原始陣列去對應 derived 陣列，因為
+derived[0] = original[0] XOR original[1]
+derived[1] = original[1] XOR original[2]
+derived[2] = original[2] XOR original[3]
+derived[3] = original[3] XOR original[4]
+
+...
+
+derived[n-1] = original[n-1] XOR original[0]
+
+Time Complexity :　O(n) for XOR all elements in derived array
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    bool doesValidArrayExist(vector<int>& derived) {
+        int result = 0 ;
+        for( auto &i : derived )
+            result ^= i ;
+        return result == 0 ;
+    }
+};
