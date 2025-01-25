@@ -1,0 +1,40 @@
+想法：可把所有元素分成不同group，每個 group 中所有元素可自由交換；所以我們可以對該個group 排序
+接著只需將原先元素對應的group依序從小填到大即可
+
+Time Complexity : O(nlogn) for sorting
+Space Complexity : O(n) for hash map and groups
+
+class Solution {
+public:
+    vector<int> lexicographicallySmallestArray(vector<int>& nums, int limit) {
+        vector<int> temp = nums ;
+        sort(temp.begin() , temp.end()) ;
+
+        int nowgroup = 0 ;
+        unordered_map<int , int> numstogroup ;
+        numstogroup[temp[0]] = 0 ;
+        vector<vector<int>> group ;
+        group.push_back( { temp[0] } ) ;
+        for(int i = 1 ; i < temp.size() ; i++) {
+            if ( temp[i] <= temp[i - 1] + limit ) {
+                group[nowgroup].push_back(temp[i]) ;
+                numstogroup[ temp[i] ] = nowgroup ;
+            }
+            else {
+                nowgroup++ ;
+                group.push_back( {temp[i]} ) ;
+                numstogroup[ temp[i] ] = nowgroup ;
+            }
+        }
+        for(int i = 0 ; i <= nowgroup ; i++)
+            sort( group[i].begin() , group[i].end() ) ;
+
+        vector<int> index(nowgroup + 1) ;
+        for(int i = 0 ; i < nums.size() ; i++) {
+            int groupnumber = numstogroup[ nums[i] ] ;
+            nums[i] = group[groupnumber][index[groupnumber]] ;
+            index[groupnumber]++ ;
+        }
+        return nums ;
+    }
+};
