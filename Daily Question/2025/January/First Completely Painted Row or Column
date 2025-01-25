@@ -1,0 +1,26 @@
+想法：用 hash map 紀錄每個數字所在的位置，並用兩個矩陣紀錄每行每列還剩多少空格；只要有一行滿了即可輸出
+
+Time Complexity : O(mn) for filling all elements 
+Space Complexity : O(m + n) for record arrays + O(mn) for hash map
+
+class Solution {
+public:
+    int firstCompleteIndex(vector<int>& arr, vector<vector<int>>& mat) {
+        int m = mat.size() , n = mat[0].size() ;
+        vector<int> rowneed(m , n) , columnneed(n , m) ;
+        unordered_map<int , pair<int , int>> location ;
+        for(int i = 0 ; i < m ; i++) {
+            for(int j = 0 ; j < n ; j++)
+                location[mat[i][j]] = {i , j} ;
+        }
+
+        for(int i = 0 ; i < arr.size() ; i++) {
+            auto p = location[arr[i]] ;
+            int row = p.first , column = p.second ;
+            rowneed[row]-- , columnneed[column]-- ;
+            if (rowneed[row] == 0 || columnneed[column] == 0)
+                return i ;
+        }
+        return -1 ;
+    };
+};
