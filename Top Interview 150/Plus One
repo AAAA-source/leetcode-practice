@@ -1,0 +1,28 @@
+想法：從最後一個加一，如果遇到 9 就不斷進位，直到最後新增 1 
+為了方便起見，先將矩陣 reverse 讓可能的新增 1 更方便
+
+Time Complexity : O(n) for traversing array and reversing array
+Space Complexity : O(1) for variables
+
+
+class Solution {
+public:
+    vector<int> plusOne(vector<int>& digits) {
+        reverse(digits.begin() , digits.end()) ;
+        bool add = true ;
+        for(int i = 0 ; add && i < digits.size() ; i++) {
+            if ( digits[i] == 9 ) {
+                digits[i] = 0 ;
+            }
+            else {
+                digits[i]++ ;
+                add = false ;
+            }
+        }
+        if ( add )
+            digits.push_back(1) ;
+        
+        reverse(digits.begin() , digits.end()) ;
+        return digits ;
+    }
+};
