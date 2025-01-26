@@ -1,0 +1,63 @@
+想法：對於每位數字都各自依照規則處理，合成字串即可
+
+Time Complexity : O(1) for at most 4 digits
+Space Complexity : O(1) for the result string
+
+class Solution {
+public:
+    string intToRoman(int num) {
+        int thousand = num / 1000 ;
+        int hundred = (num % 1000) / 100 ;
+        int ten = (num % 100) / 10 ;
+        int one = num % 10 ;
+
+        string ans ;
+        // handle thousand 
+        while ( thousand-- )
+            ans += 'M' ;
+
+        // handle hundred 
+        if ( hundred == 9 )
+            ans += "CM" ;
+        else if ( hundred == 4 )
+            ans += "CD" ;
+        else {
+            if ( hundred >= 5 ) {
+                ans += 'D' ;
+                hundred -= 5 ;
+            }
+            while ( hundred-- )
+                ans += 'C' ;
+        }
+
+        // handle ten 
+        if ( ten == 9 )
+            ans += "XC" ;
+        else if ( ten == 4 )
+            ans += "XL" ;
+        else {
+            if ( ten >= 5 ) {
+                ans += 'L' ;
+                ten -= 5 ;
+            }
+            while ( ten-- )
+                ans += 'X' ;
+        }
+
+        // handle one 
+        if ( one == 9 )
+            ans += "IX" ;
+        else if ( one == 4 )
+            ans += "IV" ;
+        else {
+            if ( one >= 5 ) {
+                ans += 'V' ;
+                one -= 5 ;
+            }
+            while ( one-- )
+                ans += 'I' ;
+        }
+        
+        return ans ;
+    }
+};
