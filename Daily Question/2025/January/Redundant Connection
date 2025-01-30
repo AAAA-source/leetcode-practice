@@ -1,0 +1,42 @@
+想法：因為限制輸出一定要是原有紀錄的邊，因此使用Union-Find 是最簡單的方法
+先將所有節點紀錄為set，遇到邊就合併；直到遇到某條邊的兩個節點同屬於一個set時即可輸出
+
+Time Complexity : O(n * α(n)) for union , find on n nodes
+Space Complexity : O(n) for rank , root arrays 
+
+class Solution {
+public:
+    vector<int> root , rank ;
+    int findset(int index) {
+        if (root[index] != index)
+            root[index] = findset(root[index]) ;
+        return root[index] ;
+    }
+    bool unionset(int i , int j) {
+        int rooti = findset(i) , rootj = findset(j) ;
+        if ( rooti == rootj )
+            return false ;
+        
+        if ( rank[rooti] > rank[rootj] )
+            root[rootj] = rooti ;
+        else if ( rank[rootj] > rank[rooti] ) 
+            root[rooti] = rootj ;
+        else {
+            root[rooti] = rootj ;
+            rank[rootj]++ ;
+        }
+        return true ;
+    }
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        root.resize(1005) ;
+        iota(root.begin() , root.end() , 0) ;
+        rank.resize(1005) ;
+
+        for(auto &e :edges) {
+            if (!unionset(e[0] , e[1])) {
+                return e ;
+            }
+        }
+        return {} ;
+    }
+};
