@@ -1,0 +1,169 @@
+想法：將每個 1 都作為一個 set，使用 disjoint set 的方法合併所有相連島嶼；
+接著對每個位置考慮填平成島嶼，上下左右可連接的島嶼數量即可
+
+// assume there is a n * m grid
+Time Complexity : O( mn * α(mn) ) for union all mn cells
+Space Complexity : O(mn) for arrays
+
+class Solution {
+public:
+    int n , m ;
+    vector<int> root , rank , size ;
+    int findset(int index) {
+        if ( root[index] != index )
+            root[index] = findset(root[index]) ;
+        return root[index] ;
+    }
+    bool unionset( int i , int j ) {
+        int rooti = findset(i) ;
+        int rootj = findset(j) ;
+        if ( rooti == rootj )
+            return false ;
+
+        if ( rank[rooti] > rank[rootj] ) {
+            root[rootj] = rooti ;
+            size[rooti] += size[rootj] ;
+        }
+        else if ( rank[rooti] < rank[rootj] ) {
+            root[rooti] = rootj ;
+            size[rootj] += size[rooti] ;
+        }
+        else {
+            root[rootj] = rooti ;
+            rank[rooti]++ ;
+            size[rooti] += size[rootj] ;
+        }
+        return true ;
+    }
+    int largestIsland(vector<vector<int>>& grid) {
+        n = grid.size() , m = grid[0].size() ;
+        root.resize(n * m) ;
+        rank.resize(n * m) ;
+        size.resize(n * m) ;
+        iota( root.begin() , root.end() , 0 ) ;
+
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < m ; j++) {
+                if ( grid[i][j] == 1 )
+                    size[i * m + j] = 1 ;
+            }
+        }
+
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < m ; j++) {
+                if (grid[i][j] == 0)
+                    continue ;
+                if (i - 1 >= 0 && grid[i - 1][j] == 1)
+                    unionset( i * m + j , (i - 1) * m + j ) ;
+                if ( i + 1 < n && grid[i + 1][j] == 1 )
+                    unionset( i * m + j , (i + 1) * m + j ) ;
+                if ( j - 1 >= 0 && grid[i][j - 1] == 1 )
+                    unionset( i * m + j , i * m + j - 1 ) ;
+                if ( j + 1 < m && grid[i][j + 1] == 1 )
+                    unionset(i * m + j , i * m + j + 1) ;
+            }
+        }
+
+        int maxsize = *max_element(size.begin() , size.end()) ;
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < m ; j++) {
+                if ( grid[i][j] == 1 )
+                    continue ;
+                //cout << i * m + j << endl ;
+                unordered_set<int> appear ;
+                int totalsize = 1 ;
+                if (i - 1 >= 0 && grid[i - 1][j] == 1 &&
+                    appear.find(findset((i - 1) * m + j)) == appear.end() ) {
+                    //cout << "merge top" << endl ;
+                    totalsize += size[ findset((i - 1) * m + j) ] ;
+                    appear.insert( findset((i - 1) * m + j) );
+                }
+                
+                if (i + 1 < n && grid[i + 1][j] == 1 &&
+                    appear.find(findset((i + 1) * m + j)) == appear.end() ) {
+                    //cout << "merge bottom" << endl ;
+                    totalsize += size[ findset((i + 1) * m + j) ] ;
+                    appear.insert( findset((i + 1) * m + j) ) ;
+                }
+                
+                if (j - 1 >= 0 && grid[i][j - 1] == 1 &&
+                    appear.find(findset(i * m + j - 1)) == appear.end() ) {
+                    //cout << "merge left" << endl ;
+                    totalsize += size[ findset(i * m + j - 1)] ;
+                    appear.insert( findset(i * m + j - 1) ) ;
+                }
+                
+                if (j + 1 < m && grid[i][j + 1] == 1 &&
+                    appear.find(findset(i * m + j + 1)) == appear.end() ) {
+                    //cout << "merge right" << endl ;
+                    totalsize += size[ findset(i * m + j + 1) ] ;
+                    appear.insert( findset(i * m + j + 1) ) ;
+                }
+                //cout << totalsize << endl ;
+                maxsize = max(maxsize , totalsize) ;
+            }
+        }
+        return maxsize ;
+    }
+};
+
+// 法二：使用DFS尋找相連島嶼；使用 hash map 紀錄島嶼編號與大小的關係
+接著同樣考慮每個位置填平成島嶼可連接的最大島嶼即可
+
+Time Complexity : O(mn) for DFS
+Space Complexity : O(mn) for the recursion and hash map
+
+class Solution {
+public:
+    int n , m ;
+    int DFS(vector<vector<int>>& grid , int row , int column , int index) {
+        if (row < 0 || row >= n || column < 0 || column >= m || 
+            grid[row][column] != 1 ) 
+            return 0 ;
+        grid[row][column] = index ;
+        return 1 + DFS(grid , row - 1 , column , index) 
+            + DFS(grid , row + 1 , column , index) 
+            + DFS(grid , row , column - 1 , index) 
+            + DFS(grid , row , column + 1 , index) ;
+    }
+    int largestIsland(vector<vector<int>>& grid) {
+        n = grid.size() , m = grid[0].size() ;
+        unordered_map<int , int> islandsize ; 
+        islandsize[0] = 0 ;
+        int index = -1 ;
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < m ; j++) {
+                if ( grid[i][j] == 0 )
+                    continue ;
+                islandsize[index] = DFS(grid , i , j , index) ;
+                index-- ;
+            }
+        }
+
+        int maxvalue = 0 ;
+        for(int i = -1 ; i > index ; i--) 
+            maxvalue = max(maxvalue , islandsize[i]) ;
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < m ; j++) {
+                if (grid[i][j] != 0 )
+                    continue ;
+                set<int> appear ; 
+                if ( i - 1 >= 0 )
+                    appear.insert( grid[i - 1][j] ) ;
+                if (i + 1 < n)
+                    appear.insert( grid[i + 1][j] ) ;
+                if (j - 1 >= 0)
+                    appear.insert( grid[i][j - 1] ) ;
+                if (j + 1 < m)
+                    appear.insert(grid[i][j + 1]) ;
+
+                int totalsize = 1 ;
+                for( auto &cursor : appear )
+                    totalsize += islandsize[cursor] ;
+
+                maxvalue = max(maxvalue , totalsize) ;
+            }
+        }
+        return maxvalue ;
+    }
+};
