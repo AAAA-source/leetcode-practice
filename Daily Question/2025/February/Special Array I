@@ -1,0 +1,15 @@
+想法：直接檢查所有數對即可
+
+Time Complexity : O(n) for traversing the array
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    bool isArraySpecial(vector<int>& nums) {
+        for(int i = 0 ; i < nums.size() - 1 ; i++) {
+            if ( nums[i] % 2 == nums[i + 1] % 2 )
+                return false ;
+        }
+        return true ;
+    }
+};
