@@ -1,0 +1,17 @@
+想法：如果是一個合法的矩陣，只會有一個 0 <= i <= n 出現 nums[i] > nums[(i + 1) % n] 的情況
+所以只需紀錄發生次數並檢查是否小於等於1 即可
+
+Time Complexity : O(n) for traversing the array
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    bool check(vector<int>& nums) {
+        int violation = 0 ;
+        for(int i = 0 ; i < nums.size() ; i++) {
+            if ( nums[i] > nums[(i + 1) % nums.size()] )
+                violation++ ;
+        }
+        return violation <= 1 ;
+    }
+};
