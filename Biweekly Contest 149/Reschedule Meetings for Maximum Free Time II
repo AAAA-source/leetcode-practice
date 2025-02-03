@@ -1,0 +1,60 @@
+Intuition
+Because we can only move one meeting , this mean we only can merge two gaps.
+And there are two situatons :
+(1) there is another gap wich is not smaller than the meeting( which between two gaps ) , then the new gap will be left gap + midle meeting + right gap
+(2) there is no gap which is not smaller than the meeting , so the meeting can only be move to the left most(or right most ) of the new gap. then the new gap will only be left gap + right gap
+
+As we consider all the meetings , we can record the largest gap and retrun it.
+
+Approach
+For meeting i , we considered gap i and gap i+1
+We can first do it from left to right , everytime we record the new gap size and maintain the "havegap" (which record the "another gap" for moving meeting to) size.
+Next , we just need to do it same way from right to left.
+The only thing we should be careful is the havegap is the maximum gap in gap i+1 ... gap n if we consider the meetings from left to right.
+and havegap is gap 0 - gap i if we consider the meetings from right to left.
+
+Complexity
+Time complexity: O(n) for finding all gaps and considering all meetings
+Space complexity: O(n) for the arrays which record all gaps
+
+Code
+class Solution {
+public:
+    int maxFreeTime(int eventTime, vector<int>& startTime, vector<int>& endTime) {
+        vector<int> gap ;
+        int end = 0 ;
+        int n = startTime.size() ;
+        for(int i = 0 ; i < n ; i++) {
+            gap.push_back( startTime[i] - end ) ;
+            end = endTime[i] ;
+        }
+        gap.push_back( eventTime - endTime.back() ) ;
+
+        // approach from back
+        int havegap = 0 ;
+        int ans = 0 ;
+        for(int i = n - 1 ; i >= 0 ; i--) {
+            int nowgap = 0 ;
+            if ( havegap >= endTime[i] - startTime[i] )
+                nowgap = gap[i + 1] + gap[i] + (endTime[i] - startTime[i]) ;
+            else 
+                nowgap = gap[i + 1] + gap[i] ;
+
+            havegap = max(havegap , gap[i + 1]) ;
+            ans = max(ans , nowgap) ;
+        } 
+        havegap = 0 ;
+        for(int i = 0 ; i < n ; i++) {
+            int nowgap = 0 ;
+            if ( havegap >= endTime[i] - startTime[i] )
+                nowgap = gap[i + 1] + gap[i] + (endTime[i] - startTime[i]) ;
+            else 
+                nowgap = gap[i + 1] + gap[i] ;
+
+            havegap = max(havegap , gap[i]) ;
+            ans = max(ans , nowgap) ;
+        }
+        
+        return ans ;
+    }
+};
