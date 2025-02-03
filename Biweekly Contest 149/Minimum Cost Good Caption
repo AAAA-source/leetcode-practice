@@ -1,0 +1,76 @@
+想法：用dp[i][j] 紀錄 caption[i] == j 時需要的修改步數；在用 mindp[i] 紀錄 j = 0 .. 25 中的最小值，step 紀錄往後延長的位置
+minpos[i] 則紀錄 maxdp[i] 中 caption[i]的字母，以便之後構建答案
+找到最小解後再從第一個位置開始構建，填入 step[maxpos[i]] 個 maxpos[i]並更新 i 直到結尾即可
+
+
+class Solution {
+public:
+    string minCostGoodCaption(string caption) {
+        int n = caption.size();
+        if (n < 3) {
+            return "";
+        }
+        vector<vector<int>> dp(n , vector<int>(26)) , step(n , vector<int>(26));
+        vector<int> mindp(n) , minpos(n);
+
+        // initialize maxdp , dp[n - 3]
+        for (int j = 0; j < 26; j++) {
+            step[n - 3][j] = 3;
+            for (int k = n - 3; k < n; k++) {
+                dp[n - 3][j] += abs(caption[k] - 'a' - j);
+            }
+        }
+        mindp[n - 3] = dp[n - 3][0];
+        for (int j = 1; j < 26; j++) {
+            if (dp[n - 3][j] < mindp[n - 3]) {
+                mindp[n - 3] = dp[n - 3][j];
+                minpos[n - 3] = j;
+            }
+        }
+
+        // transition
+        for (int i = n - 4; i > -1; i--) {
+            for (int j = 0; j < 26; j++) {
+                // remain the same 
+                step[i][j] = 1;
+                dp[i][j] = dp[i + 1][j] + abs(caption[i] - 'a' - j);
+
+                // change with 3 alphabets 
+                if (i < n - 5) {
+                    int newdp = mindp[i + 3];
+                    int newpos = minpos[i + 3];
+                    for (int k = i; k < i + 3; k++) {
+                        newdp += abs(caption[k] - 'a' - j);
+                    }
+                    if (newdp < dp[i][j] || newdp == dp[i][j] && newpos < j) {
+                        step[i][j] = 3;
+                        dp[i][j] = newdp;
+                    }
+                }
+            }
+            mindp[i] = dp[i][0];
+            for (int j = 1; j < 26; j++) {
+                if (dp[i][j] < mindp[i]) {
+                    mindp[i] = dp[i][j];
+                    minpos[i] = j;
+                }
+            }
+        }
+        string res;
+        int cur = 0;
+        int curpos = minpos[0];
+        while (cur < n) {
+            if (step[cur][curpos] == 1) {
+                res += curpos + 'a';
+                cur++;
+                continue;
+            }
+            res.append(3, curpos + 'a');
+            cur += 3;
+            if (cur < n) {
+                curpos = minpos[cur];
+            }
+        }
+        return res;
+    }
+};
