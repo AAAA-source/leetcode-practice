@@ -1,0 +1,35 @@
+想法：因為每個元素只會出現在一個合法的subarray 裡面，所以維護一個指針作為subarray 的開頭；並紀錄大小
+接著更新指針直至矩陣結尾即可
+
+Time Complexity : O(n) for traversing the array
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int longestMonotonicSubarray(vector<int>& nums) {
+        int maxlength = 1 ; 
+        int start = 0 ;
+        while ( start < nums.size() ) {
+            // consider with nums[start] as the start of subarray
+            int length = 1 ;
+            if ( start == nums.size() - 1 || nums[start + 1] == nums[start] )
+                start++ ;
+            else {
+                if ( nums[start + 1] > nums[start] ) {
+                    while ( start + 1 < nums.size() && 
+                         nums[start + 1] > nums[start] ) {
+                        start++ , length++ ;
+                    }
+                }
+                else {
+                    while ( start + 1 < nums.size() && 
+                        nums[start + 1] < nums[start] ) {
+                        start++ , length++ ;
+                    }
+                }
+            }
+            maxlength = max(maxlength , length) ;
+        }
+        return maxlength ;
+    }
+};
