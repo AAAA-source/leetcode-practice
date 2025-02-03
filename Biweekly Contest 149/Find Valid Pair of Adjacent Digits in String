@@ -1,0 +1,39 @@
+Intuition
+by the definition , we need to check the number from 0 to 9 and record which number is valid , then check all pairs in the array
+
+Approach
+First record the frequency of every number , then use a boolean array
+to record which number's frequency is equal to itself.
+Next , just checking every pair in array if s[i] != s[i + 1]
+and return the first valid pair.
+
+Complexity
+Time complexity: O(n) for traversing the array
+Space complexity: O(1) for two O(10) = O(1) arrays and variables
+
+Code
+class Solution {
+public:
+    string findValidPair(string s) {
+        vector<int> count(10) ; 
+        for( auto &c : s )
+            count[c - '0']++ ;
+
+        vector<bool> valid(10) ;
+        for(int i = 0 ; i < 10 ; i++) {
+            if ( count[i] == i )
+                valid[i] = true ;
+            else 
+                valid[i] = false ;
+        }
+
+        for(int i = 0 ; i < s.length() - 1 ; i++ ) {
+            if ( s[i] == s[i + 1] )
+                continue ;
+            else if ( valid[ s[i] - '0' ] && valid[ s[i + 1] - '0' ] )
+                return s.substr(i , 2) ;
+            
+        }
+        return "" ;
+    }
+};
