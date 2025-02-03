@@ -1,0 +1,41 @@
+Intuition
+Everytime we move one meeting , it is equivalent to we merge two gap to one large gap. So , we now just consider all gap from 0 - eventTime , and find the largest k-continous gap and return it.
+
+Approach
+First , we use a vector to record all gap from 0 - eventTime (including [0 , startTime[0]] and [endTime[n - 1] , eventTime]).
+Second , we use "Sliding Window" to maintain the k continous gap and use a variable to record the max one
+At the end , we consider all possible answers and return the largest one.
+
+Complexity
+assume there are n meetings
+Time complexity: O(n) for finding gaps and sliding window approach
+Space complexity: O(n) for the array which record all gaps
+
+Code
+class Solution {
+public:
+    int maxFreeTime(int eventTime, int k, vector<int>& startTime, vector<int>& endTime) {
+        // find max k continous gap
+        vector<long long int> gap ;
+        int n = startTime.size() ;
+        int end = 0 ;
+        for(int i = 0 ; i < n ; i++) {
+            gap.push_back( startTime[i] - end ) ;
+            end = endTime[i] ;
+        } 
+        gap.push_back( eventTime - endTime.back() ) ;
+
+        int maxgap , nowgap ;
+        for(int i = 0 ; i <= k ; i++) {
+            nowgap += gap[i] ;
+        }
+        maxgap = nowgap ;
+        for(int i = k + 1 ; i < gap.size() ; i++) {
+            nowgap += gap[i] ;
+            nowgap -= gap[i - k - 1] ;
+            maxgap = max(maxgap , nowgap) ;
+        }
+        
+        return maxgap ;
+    }
+};
