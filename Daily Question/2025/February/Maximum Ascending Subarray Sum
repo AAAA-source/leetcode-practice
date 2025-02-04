@@ -1,0 +1,23 @@
+想法：每個元素只會處在一個 ascending subarray 裡面，所以可以從頭開始計算每個 subarray 的值
+同時紀錄最大值，最後輸出即可
+
+Time Complexity : O(n) for traversing the array
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int maxAscendingSum(vector<int>& nums) {
+        int maxvalue = nums[0] ;
+        int value = nums[0] ;
+        for(int i = 1 ; i < nums.size() ; i++) {
+            if ( nums[i] > nums[i - 1] )
+                value += nums[i] ;
+            else {
+                maxvalue = max(maxvalue , value) ;
+                value = nums[i] ;
+            }
+        }
+        maxvalue = max(maxvalue , value) ;
+        return maxvalue ;
+    }
+};
