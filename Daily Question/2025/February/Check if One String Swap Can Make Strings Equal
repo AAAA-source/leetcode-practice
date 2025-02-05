@@ -1,0 +1,23 @@
+想法：紀錄不一樣的字母位置，確保最多只有兩個不一樣且互相調換的話可以相同
+
+Time Complexity : O(n) for traversing two strings
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    bool areAlmostEqual(string s1, string s2) {
+        int index1 = -1 , index2;
+        int count = 0 ;
+        for(int i = 0 ; i < s1.length() ; i++) {
+            if ( s1[i] != s2[i] ) {
+                count++ ;
+                if ( index1 == -1 )
+                    index1 = i ;
+                else 
+                    index2 = i ;
+            }
+        }
+        return count == 0 || 
+            (count == 2 && s1[index1] == s2[index2] && s1[index2] == s2[index1] ) ;
+    }
+};
