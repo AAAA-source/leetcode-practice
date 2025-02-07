@@ -1,0 +1,28 @@
+想法：首先因為可能會有 limit + 1 個球，數量過大無法全部用矩陣紀錄，而 queries 則最多只有 10^5 個
+所以可以使用 hash map 紀錄被提到的球體是什麼顏色（可能會更換），並用另一個 hash map 紀錄每個顏色目前有幾個球，如果是 0 的話就刪掉
+（有可能原本有球是該顏色，後來變顏色的情況）
+
+// assume the queries size is n
+Time Complexity : O(n) for checking all queries
+Space Complexity : O(n) for two hash maps
+
+class Solution {
+public:
+    vector<int> queryResults(int limit, vector<vector<int>>& queries) {
+        unordered_map<int , int> color ;
+        unordered_map<int , int> count ;
+
+        vector<int> ans ;
+        for( auto &v : queries ) {
+            count[ v[1] ]++ ;
+            if ( color[v[0]] != 0 ) {
+                count[ color[v[0] ]]-- ;
+                if ( count[color[v[0]]] == 0 ) 
+                    count.erase( color[v[0]] ) ;
+            }
+            color[v[0]] = v[1] ;
+            ans.push_back( count.size() ) ;
+        }
+        return ans ;
+    }
+};
