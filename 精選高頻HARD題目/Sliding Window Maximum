@@ -1,0 +1,77 @@
+想法：用單調隊列 (monotonic queue) 維護一個 index 小到大，數值大到小的 deque ，所以這個deque 的最大值會出現在隊首
+如果今天新看到一個元素，可以把所有前面比該元素小的都 pop 掉，因為這個元素比他們大，也更晚被 pop掉，所以前面較小的元素不須考慮
+只要每次看到新元素都維護該 deque ，並輸出隊首作為答案即可
+
+Time Complexity : O(n) for traversing all elements and maintaining the deque (all elements at most got push , pop one time)
+Space Complexity : O(n) for the deque
+
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        deque< pair<int , int> > monoq ;  // record {value , index} 
+        for(int i = 0 ; i < k - 1 ; i++) {
+            while ( !monoq.empty() && monoq.back().first <= nums[i] )
+                monoq.pop_back() ;
+            monoq.push_back( {nums[i] , i} ) ;
+        }
+        vector<int> ans ;
+        for(int i = k - 1 ; i < nums.size() ; i++) {
+            if ( monoq.front().second == i - k )
+                monoq.pop_front() ;
+            while ( !monoq.empty() && monoq.back().first <= nums[i] )
+                monoq.pop_back() ;
+            monoq.push_back( {nums[i] , i} ) ;
+            
+            ans.push_back( monoq.front().first ) ;
+        }
+        return ans ;
+    }
+};
+
+// another implement : 只記錄元素的位置即可 
+
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        deque< int > monoq ; // store the elements's index
+        for(int i = 0 ; i < k - 1 ; i++) {
+            while ( !monoq.empty() && nums[monoq.back()] <= nums[i] )
+                monoq.pop_back() ;
+            monoq.push_back( i ) ;
+        }
+        vector<int> ans ;
+        for(int i = k - 1 ; i < nums.size() ; i++) {
+            if ( monoq.front() == i - k )
+                monoq.pop_front() ;
+            while ( !monoq.empty() && nums[monoq.back()] <= nums[i] )
+                monoq.pop_back() ;
+            monoq.push_back( i ) ;
+            
+            ans.push_back( nums[monoq.front()] ) ;
+        }
+        return ans ;
+    }
+};
+
+// 法二：也可以用自平衡二元樹實作，例如紅黑樹(std::set)，紀錄在 window 內的元素，每次都刪掉最前面的並新增看到的元素
+
+Time Complexity : O(nlogn) for traversing all elements and each one take O(logn) to maintain the tree
+Space Complexity : O(n) for the tree(set)
+
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        map<int , int> inwindow ; // store the elements's index
+        for(int i = 0 ; i < k - 1 ; i++) {
+            inwindow[ nums[i] ]++ ;
+        }
+        vector<int> ans ;
+        for(int i = k - 1 ; i < nums.size() ; i++) {
+            inwindow[ nums[i] ]++ ;
+            if ( i - k >= 0  &&  --inwindow[ nums[i - k] ] == 0 )
+                inwindow.erase( nums[i - k] ) ;
+            ans.push_back( inwindow.rbegin()->first ) ;
+        }
+        return ans ;
+    }
+};
