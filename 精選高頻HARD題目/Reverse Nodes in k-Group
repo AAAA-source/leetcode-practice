@@ -1,0 +1,60 @@
+想法：先遍歷一次計算 list 的長度，接著對於每組 k 個都先臨時建立一組 reverse list，再接在新的 list 後即可
+
+Time Complexity : O(n) for traversing list two times
+Space Complexity : O(1) for variables 
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        ListNode* cursor = head ;
+        int size = 0 ;
+        while ( cursor != nullptr ) {
+            size++ ;
+            cursor = cursor->next ;
+        }
+            
+        cursor = head ;
+        ListNode* newhead = nullptr , *newtail = nullptr ;
+        for(int i = 0 ; i < size / k ; i++) {
+            ListNode* reversehead = nullptr , *reversetail ;
+
+            for(int j = 0 ; j < k ; j++) {
+                ListNode* next = cursor->next ;
+                if ( !reversehead ) {
+                    reversehead = cursor ;
+                    reversetail = cursor;
+                }
+                else {
+                    cursor->next = reversehead ;
+                    reversehead = cursor ;
+                }
+                cursor = next ;
+            }
+
+            if ( !newhead ) {
+                newhead = reversehead ;
+            }
+            else {
+                newtail->next = reversehead ;
+            }
+            newtail = reversetail ;
+            newtail->next = nullptr;
+        }
+
+        if (size % k != 0)
+            newtail->next = cursor ;
+
+        return newhead ;
+    }
+};
