@@ -1,0 +1,39 @@
+想法：維護兩個 hash map 如下
+(1) indexrecord : 紀錄任一 index 對應的數字是多少
+(2) numberrecord : 此處每一 number 會對應到一個 set，紀錄哪些 index 對應到這個 number
+
+接著，在每次 change() 時，我們只需要更新 indexrecord[index] 的值，並把舊的值從原本 numberrecord[ indexrecord[index] ] 中刪掉
+加入到新的 numberrecord[number] 即可； find() 則只需要回傳 set.begin() 就是被紀錄的最小值
+
+// assume there are n operations
+Time Complexity : O(logn) for change() and O(1) for find() 
+Space Complexity : o(n) for at most n nodes in all trees/sets 
+
+class NumberContainers {
+public:
+    unordered_map<int , set<int>> numberrecord ;
+    unordered_map<int , int> indexrecord ;
+    NumberContainers() { }
+    
+    void change(int index, int number) {
+        if ( indexrecord[index] != 0 ) {
+            numberrecord[ indexrecord[index] ].erase(index) ;
+        }
+        indexrecord[index] = number ;
+        numberrecord[number].insert(index) ;
+    }
+    
+    int find(int number) {
+        if ( numberrecord[number].empty() )
+            return -1 ;
+        else
+            return *numberrecord[number].begin() ;
+    }
+};
+
+/**
+ * Your NumberContainers object will be instantiated and called as such:
+ * NumberContainers* obj = new NumberContainers();
+ * obj->change(index,number);
+ * int param_2 = obj->find(number);
+ */
