@@ -1,9 +1,9 @@
-想法：此題最直接的想法是使用 hash set 紀錄哪些數字出現過，但因為有要求用 O(1) space complexity 
+想法：此題最直接的想法是使用 hash set 紀錄哪些數字出現過，但因為有要求用 O(1) 的額外空間
 所以我們要直接使用原本的 array 紀錄，紀錄方法為 如果 i 出現過就紀錄在 num[i - 1] 的格子上
 然後跟原先該位置的元素交換，繼續檢查直到看完所有元素；最後看哪個元素沒有被紀錄即可
 
 Time Complexity : O(n) for traversing the array
-Space Complexity : O(1) for variables 
+Space Complexity : O(n) for the input array
 
 class Solution {
 public:
