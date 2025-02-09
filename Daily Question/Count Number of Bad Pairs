@@ -1,0 +1,23 @@
+想法： nums[i] - nums[j] != i - j => nums[i] - i != nums[j] - j 
+可以用一個 hash map 紀錄每個 index 的 nums[index] - index 是多少，以前出現過幾個
+接著答案只需加上 index - 之間出現過幾個相同 nums[index] - index 的位置即可
+
+Time Complexity : O(n) for traversing the array
+Space Complexity : O(n) for the hash map (at most n different nums[i] - i)
+
+class Solution {
+public:
+    long long countBadPairs(vector<int>& nums) {
+        // nums[i] - i != nums[j] - j
+        unordered_map<int , int> count ;
+        long long int ans = 0 ;
+        for(int i = 0 ; i < nums.size() ; i++) {
+            // there are i elements in front of nums[i]
+            ans += i - count[ nums[i] - i ] ;
+
+            count[ nums[i] - i ]++ ;
+        }      
+        
+        return ans ;
+    }
+};
