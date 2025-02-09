@@ -1,0 +1,54 @@
+想法：此題最直接的想法是使用 hash set 紀錄哪些數字出現過，但因為有要求用 O(1) space complexity 
+所以我們要直接使用原本的 array 紀錄，紀錄方法為 如果 i 出現過就紀錄在 num[i - 1] 的格子上
+然後跟原先該位置的元素交換，繼續檢查直到看完所有元素；最後看哪個元素沒有被紀錄即可
+
+Time Complexity : O(n) for traversing the array
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        int n = nums.size() ;
+        
+        int index = 0 ;
+        while (index < n ) {
+            if (nums[index] == index + 1) {
+                index++ ;
+                continue ;
+            }
+            if ( nums[index] > 0 && nums[index] <= n 
+                && nums[ nums[index] - 1 ] != nums[index]) {
+                swap( nums[index] , nums[nums[index] - 1] ) ;
+            }
+            else 
+                index++ ;
+        }
+
+        for(int i = 0;i < n ; i++) {
+            if ( nums[i] != i + 1 )
+                return i + 1 ;
+        }
+        return n + 1 ;
+    }
+};
+
+// another implementation
+
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        int n = nums.size() ;
+        
+        for(int i = 0 ; i < n ; i++) {
+            while ( nums[i] > 0 && nums[i] <= n && nums[ nums[i] - 1 ] != nums[i] )
+                swap(nums[i] , nums[ nums[i] - 1 ]) ;
+        }
+        
+
+        for(int i = 0;i < n ; i++) {
+            if ( nums[i] != i + 1 )
+                return i + 1 ;
+        }
+        return n + 1 ;
+    }
+};
