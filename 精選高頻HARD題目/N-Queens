@@ -1,0 +1,56 @@
+想法：利用 Recursive Backtracking 的技巧，嘗試每一行中的所有可能
+
+Time Complexity : O(n^n) for n rows and each row has O(n) ways to put the queen
+Space Complexity : O(n^2) for the O(n^2) board
+
+class Solution {
+public:
+    vector<vector<string>> ans ;
+    vector<string> board ;
+    
+    bool valid(int row , int column , int n ) {
+        // check column
+        for(int i = 0 ; i < row ; i++) {
+            if ( board[i][column] == 'Q' )
+                return false ;
+        }
+        // check diagonal
+        for(int r = 0 ; r < row ; r++) {
+            int c1 = row + column - r  ;
+            int c2 = r - row + column ;
+            if ( c1 < n && board[r][c1] == 'Q')
+                return false ;
+            if (c2 >= 0 && board[r][c2] == 'Q')
+                return false ;
+        }
+        return true ;
+    }
+
+    void findsolution( int n , int row) {
+        if (row == n) {
+            ans.push_back(board) ;
+            return ;
+        }
+
+        for(int i = 0 ; i < n ; i++) {
+            if ( valid(row ,i , n) ) {
+                board[row][i] = 'Q' ;
+                findsolution(n , row + 1) ;
+                board[row][i] = '.' ;
+            }
+        }
+        return ;
+    }
+
+    vector<vector<string>> solveNQueens(int n) {
+        string s ;
+        for(int i = 0 ; i < n ; i++)
+            s += '.' ;
+        for(int i = 0 ; i < n ; i++) {
+            board.push_back(s) ;
+        }
+        
+        findsolution(n , 0) ;
+        return ans ;
+    }
+};
