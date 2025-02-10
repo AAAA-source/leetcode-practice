@@ -1,0 +1,40 @@
+想法：紀錄目前出現的字母是什麼，只要出現數字就把尾端字母去掉；最後輸出剩餘字母即可
+
+Time Complexity : O(n) for traversing the string 
+Space Complexity : O(n) for the answer string 
+
+class Solution {
+public:
+    string clearDigits(string s) {
+        string letter ;
+        
+        for(auto &c : s) {
+            if ( isdigit(c) && !letter.empty() )
+                letter.pop_back() ;
+            else 
+                letter.push_back(c) ;
+        }
+        return letter ;
+    }   
+};
+
+// 法二：直接用原本的字串紀錄剩餘的字母，用一個變數紀錄目前已紀錄的長度即可
+
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    string clearDigits(string s) {
+        int index = 0 ;
+        for( auto &c : s ) {
+            if ( isdigit(c) )
+                index = max(index - 1 , 0) ;
+            else {
+                s[index++] = c ;
+            }
+        }
+        
+        s.resize(index) ;
+        return s ;
+    }   
+};
