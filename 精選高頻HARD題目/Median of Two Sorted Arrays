@@ -1,0 +1,42 @@
+想法：先選定較小的矩陣，然後用 binary search 找到合適的 partitionA 以及 partitionB
+使之符合 partitionA + partitionB = (m + n + 1) / 2 
+切出 nums1[0 .. partitionA - 1] , nums2[0 .. partitionB - 1] 以及 nums1[partitionA .. m] , nums2[partitionB .. n]
+且 nums1[partitionA - 1] <= nums2[partitionB] and nums2[partitionB - 1] <= nums1[partitionA] 
+這樣就代表剛好切到中線上，反之則依照大小關係向左向右推進
+
+Time Complexity : O( log(min(m , n))) for binary searching on the smaller array
+Space Complexity : O(1) for variables
+ 
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        if ( nums1.size() > nums2.size() )
+            swap(nums1 , nums2 ) ;
+
+        int m = nums1.size() , n = nums2.size() ;
+        int l = 0 , r = m ;
+        while (l <= r) {
+            int partitionA = (l + r) / 2 ; 
+            int partitionB = (m + n + 1) / 2 - partitionA ;
+
+            int maxleftA = (partitionA == 0)? INT_MIN : nums1[partitionA - 1] ;
+            int minrightA = (partitionA == m)? INT_MAX : nums1[partitionA] ;
+            int maxleftB = (partitionB == 0)? INT_MIN : nums2[partitionB - 1] ;
+            int minrightB = (partitionB == n)? INT_MAX : nums2[partitionB] ;
+
+            if ( maxleftA <= minrightB && maxleftB <= minrightA ) {
+                // the cut is right
+                if ( (m + n) % 2 == 0 ) {
+                    return (max(maxleftA,maxleftB)+min(minrightA,minrightB)) / 2.0;
+                }
+                else 
+                    return max(maxleftA , maxleftB) ;
+            }
+            else if ( maxleftA > minrightB )
+                r = partitionA - 1 ;
+            else 
+                l = partitionA + 1 ;
+        }
+        return 0 ;
+    }
+};
