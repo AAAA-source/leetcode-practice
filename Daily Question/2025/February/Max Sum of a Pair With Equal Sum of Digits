@@ -1,0 +1,33 @@
+想法：因為可能的 digitsum 介於 1-81 之間，所以可以用一個矩陣紀錄每個 digitsum 目前看到的最大數值
+如果前面有出現過的話則考慮更新答案，或是出現比之前更大的數值的時候更新最大數值
+
+// assume there are n elements , the max element value is m
+Time Complexity : O(n * logm) for traversing all elements and each element takes O(logm) to find out its digit sum
+Space Complexity : O(logm) for there are O(logm) possible digit sums  
+
+class Solution {
+public:
+    int calculatedigitsum(int num) {
+        int sum = 0 ;
+        while (num > 0) {
+            sum += num % 10 ;
+            num /= 10 ;
+        }
+        return sum ;
+    }
+    int maximumSum(vector<int>& nums) {
+        int ans = -1 ;
+        vector<int> digitmax(82) ;
+
+        for(auto &i : nums) {
+            int digitsum = calculatedigitsum(i) ;
+
+            if (digitmax[digitsum] != 0)
+                ans = max(ans , digitmax[digitsum] + i) ;
+            digitmax[digitsum] = max(digitmax[digitsum] , i) ;
+        }
+
+
+        return ans ;
+    }
+};
