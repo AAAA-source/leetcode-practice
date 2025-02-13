@@ -1,0 +1,76 @@
+想法：用一個 stack 紀錄左括號的位置，當出現右括號時一定是與最右邊的左括號抵銷，也就是 stack 的頂部元素
+所以抵銷後的合法 substring 必然是從第二個元素到目前位置為子字串長度。
+只需注意如果 stack 抵銷後已經空了的話，代表從 s[startvalidindex ... i] 都是合法子字串
+startvalidindex 會因為 右括號多於左括號（代表不可能出現合法字串）而向後更動
+
+Time Complexity : O(n) for traversing all elements
+Space Complexity : O(n) for the stack (which store all '(' elements)
+
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        stack<int> leftindex ;
+        int ans = 0 ;
+        int startvalidindex = 0 ;
+
+        for(int i = 0 ; i < s.length() ; i++) {
+            if ( s[i] == '(' ) 
+                leftindex.push(i) ;
+            else {
+                // s[i] == ')'
+                if ( leftindex.empty() ) {
+                    startvalidindex = i + 1 ;
+                    continue ;
+                }
+
+                leftindex.pop() ;
+                int startindex = (leftindex.empty())? 
+                    startvalidindex -1 : leftindex.top() ;
+                ans = max(ans , i - startindex) ;
+            }
+        }
+
+        return ans ;
+    }
+};
+
+// 法二：由於字串中只會出現 '(' 以及 ')'，所以我們可以由左向右看過所有字串，當 '('數量等於 ')'時，合法子字串長度就是 '(' + ')' 的數量
+因此，我們只需紀錄出現的數量，並在 ')' 多於 '(' 時重設為 0 即可（出現該情況代表往前元素不會形成合法子字串）
+同時，我們也須由右向左看並執行相同程序，只需注意重設條件為 '(' 多於 ')' 
+
+Time Complexity : O(n) for traversing all elements
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        int left = 0 , right = 0 ;
+        int ans = 0;
+        for(int i = 0 ; i < s.length() ; i++) {
+            if (s[i] == ')')
+                right++ ;
+            else 
+                left++ ;
+            
+            if ( right == left )
+                ans = max(ans , right * 2) ;
+            else if (right > left)
+                left = right = 0 ;
+        }
+        left = right = 0 ;
+        for(int i = s.length() - 1 ; i >= 0 ; i--) {
+            if (s[i] == ')')
+                right++ ;
+            else 
+                left++ ;
+            
+            if ( right == left )
+                ans = max(ans , right * 2) ;
+            else if (left > right)
+                left = right = 0 ;
+        }
+
+
+        return ans ;
+    }
+};
