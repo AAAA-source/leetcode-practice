@@ -1,0 +1,27 @@
+想法：利用一個 heap 把所有元素放入，這樣可以用 O(1) 時間找到兩個最小的元素，插入也僅需 O(logn)時間
+由於每次執行 operation 都會使元素少一個，所以最多只會做 O(n) 次
+
+注意：因為 nums[i] <= 10^9 , 兩個元素相加時可能會超過 int 的範圍，所以要用 long long int 儲存
+
+Time Complexity : O(nlogn) for at most O(n) operations and each operation takes O(logn) time 
+Space Complexity : O(n) for the heap(priority queue)
+
+class Solution {
+public:
+    int minOperations(vector<int>& nums, int k) {
+        priority_queue<long long int,vector<long long int>,greater<long long int>> 
+        candidate(nums.begin(),nums.end()) ;
+        
+        int count = 0 ;
+        while ( candidate.size() >= 2 && candidate.top() < k ) {
+            long long int x = candidate.top() ;
+            candidate.pop() ;
+            long long int y = candidate.top() ;
+            candidate.pop() ;
+
+            candidate.push( x * 2 + y ) ;
+            count++ ;
+        }
+        return count ;
+    }
+};
