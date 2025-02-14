@@ -1,0 +1,67 @@
+想法：定義 ways[i][j] 是 s[0 .. i - 1] 可以組成 t[0 .. j - 1] 的種類；那麼
+ways[i][j] = ways[i - 1][j - 1](用到 s[i - 1] == t[j - 1]) + ways[i - 1][j](不使用最後元素) when s[i - 1] == t[j - 1] ;
+ways[i][j] = ways[i - 1][j] otherwise
+edgecase : ways[i][0] = appearance of t[0] in s[0 .. i - 1] (t[0] 的出現次數代表 s[0 ..i] 可組成 t[0] 的方式)
+因此我們只需依序填表即可，最後輸出 ways[n][m]
+
+Time Complexity : O(mn) for filling table and each grid takes O(1) time
+Space Complexity : O(mn) for the dp(ways) table
+
+class Solution {
+public:
+    int numDistinct(string s, string t) {
+        int n = s.length() , m = t.length() ;
+        vector<vector<double>> ways(n + 1 , vector<double>(m + 1)) ; // both unsigned long long int and double won't overflow
+
+        // initialize edge cases
+        ways[1][1] = (s[0] == t[0])? 1 : 0 ;
+        for(int i = 2 ; i <= n ; i++) 
+            ways[i][1] = ways[i - 1][1] + ((s[i - 1] == t[0])? 1 : 0) ;
+
+
+        for(int i = 1 ; i <= n ; i++) {
+            // now consider s[i - 1] letter
+            for(int j = 2 ; j <= min(i , m) ; j++) {
+                // ways[i][j] means the ways that s[0 .. i-1] can make t[0 .. j-1]
+                if ( s[i - 1] == t[j - 1] ) {
+                    ways[i][j] = ways[i - 1][j - 1] + ways[i - 1][j];
+                }
+                else 
+                    ways[i][j] = ways[i - 1][j] ;
+            }
+        }
+
+
+        return ways[n][m] ;
+    }
+};
+
+// 由於我們先前的填表其實僅用到上一列的數據，因此我們可以僅儲存一列數據即可（空間優化）
+
+Time Complexity : O(n) for storing only one row record 
+
+class Solution {
+public:
+    int numDistinct(string s, string t) {
+        int n = s.length() , m = t.length() ;
+        vector<double> ways(m + 1) ;
+
+        // initialize edge cases
+        ways[1] = (s[0] == t[0])? 1 : 0 ;
+
+        for(int i = 2 ; i <= n ; i++) {
+            // now consider s[i - 1] letter
+            cout << "1 : " << ways[1] << endl ;
+            for(int j = min(i , m) ; j > 1 ; j--) {
+                if ( s[i - 1] == t[j - 1] ) {
+                    ways[j] += ways[j - 1] ;
+                }
+            }
+            if ( s[i - 1] == t[0] )
+                ways[1]++ ;
+        }
+
+
+        return ways[m] ;
+    }
+};
