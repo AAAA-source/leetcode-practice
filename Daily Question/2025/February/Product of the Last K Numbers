@@ -1,0 +1,89 @@
+想法：因為只會出現 0 - 100 的數字，所以我們可以用一個二維矩陣紀錄到目前為止看過每個數字的次數；而最後 k 個數字可以利用
+每個數字出現次數減掉每個數字在 k 個數字前的出現次數而得到最後 k 個數字是什麼
+接著用快速冪平方法 / pow() 的運算求出最後 k 元素的乘積
+
+// assume there are n add() operations and m getProduct() operations
+Time Complexity : O( n + mlogk ) for each add() need O(1) time and getProduct() need O(logk) time
+Space Complexity : O(n) for storing n arrays , each one has O(100) = O(1) elements
+
+class ProductOfNumbers {
+public:
+    vector<vector<int>> numbercount ; 
+    ProductOfNumbers() {
+        vector<int> init(101) ;
+        numbercount.push_back(init) ;
+    }
+    
+    void add(int num) {
+        vector<int> lastcount = numbercount.back() ;
+        lastcount[num]++ ;
+        numbercount.push_back(lastcount) ;
+    }
+    
+    int getProduct(int k) {
+        vector<int> lastelements = numbercount.back() ;
+        int zeros = lastelements[0] - numbercount[numbercount.size() - 1 -k][0] ;
+        if (zeros > 0)
+            return 0 ;
+
+        for(int i = 1 ;  i < 101 ; i++) 
+            lastelements[i] -= numbercount[ numbercount.size() - 1 - k ][i] ;
+
+        int product = 1 ;
+        for(int i = 1 ; i < 101 ; i++)
+            product *= pow(i , lastelements[i]) ;
+        return product ;
+    }
+};
+
+/**
+ * Your ProductOfNumbers object will be instantiated and called as such:
+ * ProductOfNumbers* obj = new ProductOfNumbers();
+ * obj->add(num);
+ * int param_2 = obj->getProduct(k);
+ */
+
+// 法二：由於 0 的出現，只要最後 k 個元素中有包含 0，最後乘積必然是 0；所以實際上我們只需要紀錄末尾不為 0 的數字有哪些即可
+如果 k > 末尾不為 0 的數字長度，即可直接輸出 0
+接著，為了方便快速運算，我們可以使用 prefix product 紀錄前面已獲得的乘積
+那麼最後 k 個元素的乘機就是 prefixproduct[size] - prefixproduct[size- k] 
+
+Time Complexity : O(n + m) for each operation need O(1) time
+Space Complexity : O(n) for record the non-zero elements
+
+class ProductOfNumbers {
+public:
+    vector<int> prefixproduct ;
+    int size = 0 ; // size == prefixproduct.size() - 1 
+    ProductOfNumbers() {
+        prefixproduct.push_back(1) ;
+    }
+    
+    void add(int num) {
+        if (num == 0) {
+            prefixproduct = {1} ;
+            size = 0 ;
+        }
+        else {
+            prefixproduct.push_back( prefixproduct.back() * num ) ;
+            size++ ;
+        }
+    }
+    
+    int getProduct(int k) {
+        // prefixproduct record last size elements products
+        if ( k > size)
+            return 0 ;
+        else 
+            return prefixproduct[size] / prefixproduct[size - k] ;
+
+    }
+};
+
+/**
+ * Your ProductOfNumbers object will be instantiated and called as such:
+ * ProductOfNumbers* obj = new ProductOfNumbers();
+ * obj->add(num);
+ * int param_2 = obj->getProduct(k);
+ */
+
