@@ -2,7 +2,9 @@
 對每個數字都檢查並把最後答案相加即可
 
 Time Complexity : O(n * 2^(log_10n)) for every number needs O(2^(log_10 n) ) time to check and there are n numbers need to check
-Space Complexity : O(2^(log_10n)) for the recursion (recursion depth = O(logn))
+(each digit can break a partitioin or add in the partition , and there are O(log_10n) digits)
+
+Space Complexity : O(2^(log_10n)) for the recursion (recursion depth = O(logn)) 
 
 class Solution {
 public:
