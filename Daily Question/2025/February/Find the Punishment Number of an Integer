@@ -1,0 +1,29 @@
+想法：對每個 1 <= i <= n 都測試是否是 punushment number，使用一個遞迴找過所有可能組合；如果任一組合符合條件就輸出 true，否則輸出 false 
+對每個數字都檢查並把最後答案相加即可
+
+Time Complexity : O(n * 2^(log_10n)) for every number needs O(2^(log_10 n) ) time to check and there are n numbers need to check
+Space Complexity : O(2^(log_10n)) for the recursion (recursion depth = O(logn))
+
+class Solution {
+public:
+    bool valid(int num , int target) {
+        if (target == num )
+            return true ;
+        if ( target <= 0 || num == 0 )
+            return false ;
+        for(int power = 10 ; power < num ; power *= 10) {
+            if ( valid(num / power , target - (num % power)) )
+                return true ;
+        } 
+        return false ;
+    }
+    int punishmentNumber(int n) {
+        int ans = 0 ;
+        for(int i = 1 ; i <= n ; i++) {
+            if ( valid(i * i , i) )
+                ans += i * i ;
+
+        }
+        return ans ;
+    }
+};
