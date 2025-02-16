@@ -1,0 +1,22 @@
+想法：由後往前找，看到的第一個非空白的字母就開始紀錄往前連續幾個並回傳
+如果都沒有找到代表字串全部都是空白，回傳 0
+
+Time Complexity : O(n) for traversing the string
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int lengthOfLastWord(string s) {
+        for(int i = s.length() - 1 ; i >= 0 ; i--) {
+            if ( s[i] == ' ' )
+                continue ;
+            int count = 0 ;
+            while ( i >= 0 && s[i] != ' ') {
+                count++ ;
+                i-- ;
+            }
+            return count ;
+        }
+        return 0 ;
+    }
+};
