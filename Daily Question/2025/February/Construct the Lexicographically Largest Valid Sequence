@@ -4,7 +4,7 @@
 Time Complexity : O(n!) for there are n! possible sequence 
 (or you can think as the first digit has n candidates , second digit has n - 1 ... to the last digit , total complexity is 
 n * (n - 1) * (n - 2) ... * 1 = O(n!) )
-Space Complexity : O(n! for the recursion (recursion depth = O(n))
+Space Complexity : O(n!) for the recursion (recursion depth = O(n))
 
 實務上運算找到解的速度會比複雜度快上許多，因為設定上只要一找到解就可以回傳（題目保證一定有解）；同時因為有許多不可能的狀態已經被剪枝，進一步加快速度
 
