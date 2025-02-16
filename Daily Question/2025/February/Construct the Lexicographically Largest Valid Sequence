@@ -1,0 +1,44 @@
+想法：利用 Recursive Backtracking 的技巧，找過所有的可能序列，並輸出最大者。
+由於題目要求要回傳字典序最大者；所以我們從數字大填到小，只要一找到解即可停止遞迴並回傳
+
+Time Complexity : O(n!) for there are n! possible sequence 
+(or you can think as the first digit has n candidates , second digit has n - 1 ... to the last digit , total complexity is 
+n * (n - 1) * (n - 2) ... * 1 = O(n!) )
+Space Complexity : O(n! for the recursion (recursion depth = O(n))
+
+class Solution {
+public:
+    vector<int> ans , appear ;
+    bool construct(int n , int index) {
+        if (index == 2 * n - 1)
+            return true ;
+        if ( ans[index] != 0 ) 
+            return construct(n , index + 1) ;
+        
+        for(int num = n ; num > 0 ; num--) {
+            if ( appear[num] == 0 && ans[index] == 0 
+            && (num == 1 || (index + num < 2 * n - 1 && ans[index + num] == 0)) ) {
+                appear[num] = 1 ;
+                if (num == 1)
+                    ans[index] = 1 ;
+                else 
+                    ans[index] = ans[index + num] = num ;
+                if ( construct(n , index + 1) )
+                    return true ;
+
+                appear[num] = 0;
+                if (num == 1)
+                    ans[index] = 0 ;
+                else 
+                    ans[index] = ans[index + num] = 0;
+            }
+        }
+        return false ;
+    }
+    vector<int> constructDistancedSequence(int n) {
+        ans.resize(2 * n - 1) ;
+        appear.resize(n + 1) ;
+        construct(n , 0) ;
+        return ans ;
+    }
+};
