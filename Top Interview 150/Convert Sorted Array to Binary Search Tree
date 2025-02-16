@@ -1,0 +1,33 @@
+想法：用 Divide and Conquer 的技巧，把目前考慮的矩陣中間作為 root，其餘左右再分別構建子樹即可
+終止條件是如果現在已經沒有矩陣需考慮就回傳 nullptr
+
+Time Complexity : O(n) for constructing n nodes
+Space Complexity : O(n) for the binary tree
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+private: 
+    TreeNode* constructTree(vector<int>& nums , int startindex , int size) {
+        if (size == 0)
+            return nullptr ;
+
+        int middle = startindex + size / 2 ;
+        return new TreeNode(nums[middle] , 
+            constructTree(nums , startindex , middle - startindex) ,
+            constructTree(nums , middle + 1 , startindex + size - middle - 1)) ;
+    }
+public:
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        return constructTree(nums , 0 , nums.size()) ;
+    }
+};
