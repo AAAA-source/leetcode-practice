@@ -1,0 +1,41 @@
+想法：用 binary search 找出第一個出現的位置跟最後一個出現的位置即可，沒有找到則輸出 {-1 , -1}
+第一個出現的位置：相等時維護右界相同（代表第一個出現的元素是包含現在看的以前）
+最後一個出現的位置：相等時維護左界相同（代表最後一個出現的元素是包含現在看的以後）
+
+Time Complexity : O(logn) for binary search two times
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    vector<int> searchRange(vector<int>& nums, int target) {
+        // find the start position
+        int l = 0 , r = nums.size() - 1 ;
+        int start ;
+        while (l < r) {
+            int m = (l + r) / 2 ; 
+            if ( nums[m] > target )
+                r = m - 1 ;
+            else if ( nums[m] == target)
+                r = m ;
+            else 
+                l = m + 1 ;
+        }
+        if (nums.empty() || nums[l] != target)
+            return {-1 , -1} ;
+        else 
+            start = l ;
+
+        // find the end position 
+        l = 0 , r = nums.size() - 1 ;
+        while (l < r) {
+            int m = (l + r + 1) / 2 ;
+            if (nums[m] > target)
+                r = m - 1 ;
+            else if (nums[m] == target)
+                l = m ;
+            else 
+                l = m + 1 ;
+        }
+        return {start , l} ;
+    }
+};
