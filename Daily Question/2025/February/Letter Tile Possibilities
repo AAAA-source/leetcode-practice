@@ -1,0 +1,66 @@
+想法：用 hash set紀錄已經出現過的字串，嘗試所有字串組合並檢查是否已經出現過，未出現過則加入字串
+最後輸出 hash set 大小即可
+
+Time Complexity : O(n!) for there are O(n!) possible strings 
+Space Complexity : O(n!) for the hash set and the recursion
+
+class Solution {
+public:
+    unordered_set<string> appear ;
+    void constructTiles (vector<int>& frequency , string now) {
+        for(int i = 0 ; i < 26 ; i++) {
+            if ( frequency[i] > 0 ) {
+                frequency[i]-- ;
+                for(int insertindex = 0 ; insertindex <= now.size();insertindex++) {
+                    string newstr ;
+                    if (insertindex > 0)
+                        newstr += now.substr(0 , insertindex) ;
+                    newstr += ('A' + i) ;
+                    if (insertindex < now.size())
+                        newstr += now.substr(insertindex) ;
+                    
+                    if ( appear.find(newstr) == appear.end() ) {
+                        appear.insert(newstr) ;
+                        constructTiles(frequency , newstr) ;
+                    }
+                }
+                frequency[i]++ ;
+            }
+        }
+    }
+    int numTilePossibilities(string tiles) {
+        vector<int> frequency(26) ;
+        for(auto &c : tiles)
+            frequency[ c - 'A']++ ;
+        constructTiles(frequency , "") ;
+        return appear.size() ;
+    }
+};
+
+// 法二：只需考慮剩餘字母即可，用遞迴決定第 i 個字母填什麼，接著考慮 i + 1 ... n 
+回傳剩餘字母可組成的種類數量 + 單獨該字母組成的一種字串
+
+Time Complexity : O(n!) for the recursion
+Space Complexity : O(n!) for the recursion
+
+class Solution {
+public:
+    int constructTiles (vector<int>& frequency , int size ) {
+        int count = 0 ;
+        for(int i = 0 ; i < 26 ; i++) {
+            if ( frequency[i] > 0 ) {
+                frequency[i]-- ;
+                count += constructTiles(frequency , size + 1) + 1 ;
+                frequency[i]++ ;
+            }
+        }
+        return count ;
+    }
+    int numTilePossibilities(string tiles) {
+        vector<int> frequency(26) ;
+        for(auto &c : tiles)
+            frequency[ c - 'A']++ ;
+        return constructTiles(frequency , 0) ;
+    }
+};
+
