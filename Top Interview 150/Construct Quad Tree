@@ -1,0 +1,75 @@
+想法：Divide and Conquer 的問題，我們可以先用每個 size 為 1 的格子作為葉節點；接著往上回傳時，
+如果上層節點的所有子節點都是葉節點且數值皆相同的話，我們就 free 掉原本記憶體並新增一個合併後的葉節點即可
+
+Time Complexity : O(n^2) for T(n) = 4 * T(n / 2) + O(1) , by Master Theorem , T(n) = O(n^(log_2(4))) = O(n^2)
+(or you can see that every grids only been visited one times)
+Space Complexity : O(n^2) for the tree (recursion depth = O(logn))
+
+/*
+// Definition for a QuadTree node.
+class Node {
+public:
+    bool val;
+    bool isLeaf;
+    Node* topLeft;
+    Node* topRight;
+    Node* bottomLeft;
+    Node* bottomRight;
+    
+    Node() {
+        val = false;
+        isLeaf = false;
+        topLeft = NULL;
+        topRight = NULL;
+        bottomLeft = NULL;
+        bottomRight = NULL;
+    }
+    
+    Node(bool _val, bool _isLeaf) {
+        val = _val;
+        isLeaf = _isLeaf;
+        topLeft = NULL;
+        topRight = NULL;
+        bottomLeft = NULL;
+        bottomRight = NULL;
+    }
+    
+    Node(bool _val, bool _isLeaf, Node* _topLeft, Node* _topRight, Node* _bottomLeft, Node* _bottomRight) {
+        val = _val;
+        isLeaf = _isLeaf;
+        topLeft = _topLeft;
+        topRight = _topRight;
+        bottomLeft = _bottomLeft;
+        bottomRight = _bottomRight;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* constructnode(vector<vector<int>>& grid,int size , int top , int left){
+        if (size == 1)
+            return new Node( grid[top][left] ,true) ;
+
+        Node* topleft = constructnode(grid , size / 2 , top , left) ;
+        Node* topright = constructnode(grid , size / 2 , top , left + size/2) ;
+        Node* bottomleft = constructnode(grid , size / 2 , top + size/2 , left);
+        Node* bottomright = constructnode(grid , size/2, top+size/2,left + size/2);
+
+        if (topleft->isLeaf && topright->isLeaf && 
+            bottomleft->isLeaf && bottomright->isLeaf &&
+            topleft->val == topright->val && 
+            topleft->val == bottomleft->val && 
+            topleft->val == bottomright->val) {
+            delete(topleft) ;
+            delete(topright) ;
+            delete(bottomright) ;
+            delete(bottomleft) ;
+            return new Node(grid[top][left] , true) ;
+        }
+        return new Node(true , false , topleft,topright,bottomleft,bottomright) ;
+    }
+    Node* construct(vector<vector<int>>& grid) {
+        return constructnode(grid , grid.size() , 0 , 0) ;
+    }
+};
