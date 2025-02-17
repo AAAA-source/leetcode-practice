@@ -2,7 +2,7 @@
 如果上層節點的所有子節點都是葉節點且數值皆相同的話，我們就 free 掉原本記憶體並新增一個合併後的葉節點即可
 
 Time Complexity : O(n^2) for T(n) = 4 * T(n / 2) + O(1) , by Master Theorem , T(n) = O(n^(log_2(4))) = O(n^2)
-(or you can see that every grids only been visited one times)
+(or you can see that every grid only been visited one times)
 Space Complexity : O(n^2) for the tree (recursion depth = O(logn))
 
 /*
