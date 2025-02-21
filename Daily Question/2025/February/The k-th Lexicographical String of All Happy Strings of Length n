@@ -1,0 +1,95 @@
+想法：用 Recursiving Backtracking 的方法，找到所有可能的字串，並在找到第 k 個時停止並回傳
+
+Time Complexity : O(n * 2^n) for the fist letter has 3 options , after that , each letter have two options 
+So there are n * 2^(n - 1) possible strings = O(n * 2^n)
+Space Complexity : O(2^n) for the recursion (recursion depth = O(n))
+
+class Solution {
+public:
+    string ans ;
+    int count = 0 ;
+    void constructHappyString(int n , int k , string& result , int index) {
+        if (count >= k)
+            return ;
+        if (index == n) {
+            if (++count == k)
+                ans = result ;
+            return ;
+        }
+
+        for(char c = 'a' ; c <= 'c' ; c++) {
+            if (index == 0 || result[index - 1] != c) {
+                result[index] = c ;
+                constructHappyString(n , k , result , index + 1) ;
+            }
+        }
+        return ;
+    }
+    string getHappyString(int n, int k) {
+        string result ;
+        result.resize(n) ;
+        constructHappyString(n , k , result , 0 ) ; 
+        return ans ;
+    }
+};
+
+// 法二：我們可以知道前 2^(n - 1) 個的第一個字母一定是 a , 2^(n - 1) + 1 ~ 2 * 2^(n - 1)的第一個字母是 b , 接著是 c 
+因此，我們可以從 k 得知各個位置是什麼字母並輸出
+
+Time Complexity : O(n) for constructing the string
+Space Complexity : O(n) for the answer string 
+
+class Solution {
+public:
+    string getHappyString(int n, int k) {
+        // Calculate the total number of happy strings of length n
+        int total = 3 * (1 << (n - 1));
+
+        // If k is greater than the total number of happy strings, return an
+        // empty string
+        if (k > total) return "";
+
+        string result(n, 'a');
+
+        // Define mappings for the next smallest and greatest valid characters
+        unordered_map<char, char> nextSmallest = {
+            {'a', 'b'}, {'b', 'a'}, {'c', 'a'}};
+        unordered_map<char, char> nextGreatest = {
+            {'a', 'c'}, {'b', 'c'}, {'c', 'b'}};
+
+        // Calculate the starting indices for strings beginning with 'a', 'b',
+        // and 'c'
+        int startA = 1;
+        int startB = startA + (1 << (n - 1));
+        int startC = startB + (1 << (n - 1));
+
+        // Determine the first character based on the value of k
+        if (k < startB) {
+            result[0] = 'a';
+            k -= startA;
+        } else if (k < startC) {
+            result[0] = 'b';
+            k -= startB;
+        } else {
+            result[0] = 'c';
+            k -= startC;
+        }
+
+        // Iterate through the remaining positions in the result string
+        for (int charIndex = 1; charIndex < n; charIndex++) {
+            // Calculate the midpoint of the group for the current character
+            // position
+            int midpoint = (1 << (n - charIndex - 1));
+
+            // Determine the next character based on the value of k
+            if (k < midpoint) {
+                result[charIndex] = nextSmallest[result[charIndex - 1]];
+            } else {
+                result[charIndex] = nextGreatest[result[charIndex - 1]];
+                k -= midpoint;
+            }
+        }
+
+        return result;
+    }
+};
