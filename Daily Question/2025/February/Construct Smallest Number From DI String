@@ -1,0 +1,73 @@
+想法：直接使用暴力解，找過所有可能的字串直到符合規則
+
+Time Complexity : O(n^2 * n!) for there are O(n * n!) possible strings , and each one take O(n) to check
+Space Complexity : O(n!) for the recursion
+
+
+class Solution {
+public:
+    long long int ans = 0 ;
+    bool is_appeared(long long int now , int i) {
+        while (now > 0) {
+            if (now % 10 == i)
+                return true ;
+            now /= 10 ;
+        }
+        return false ;
+    }
+    bool constructnumber(string& pattern , int index ,long long int now) {
+        if (index == pattern.length()) {
+            ans = now ;
+            return true ;
+        }
+        for(int i = 1 ; i < 10 ; i++) {
+            if ( (( pattern[index] == 'I' && now % 10 < i ) || 
+                (pattern[index] == 'D' && now % 10 > i)) && !is_appeared(now , i)) {
+                if ( constructnumber(pattern , index + 1 , now * 10 + i) )
+                    return true ;
+            }
+        }
+        return false ;
+    }
+    string smallestNumber(string pattern) {
+        for(int startnumber = 1 ; startnumber < 10 ; startnumber++) {
+            if ( constructnumber(pattern , 0 , startnumber) )
+                break ;
+        }
+        return to_string(ans) ;
+    }
+};
+
+// 法二：我們可以利用一個stack 紀錄我們將要加入的元素
+(1)遇到 'D' : 加入現在的元素到 stack 
+(2)遇到 'I' : 把所有元素都依序 pop 出並紀錄
+可以想像成，當遇到 'I' 的時候，就可以確定前面的元素是必定符合規則且最小的，所以要 pop 出來
+
+Time Complexity : O(n) for traversing the array and each number has been push , pop one times
+Space Complexity : O(n) for the stack to store n elements
+
+class Solution {
+public:
+    string smallestNumber(string pattern) {
+        string result;
+        stack<int> numStack;
+
+        // Iterate through the pattern
+        for (int index = 0; index <= pattern.size(); index++) {
+            // Push the next number onto the stack
+            numStack.push(index + 1);
+
+            // If 'I' is encountered or we reach the end, pop all stack elements
+            if (index == pattern.size() || pattern[index] == 'I') {
+                while (!numStack.empty()) {
+                    result += to_string(numStack.top());
+                    numStack.pop();
+                }
+            }
+        }
+
+        return result;
+    }
+};
+
+
