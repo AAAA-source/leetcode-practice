@@ -1,0 +1,65 @@
+想法：因為是一個preorder 的序列，所以我們可以用一個 array 紀錄每一層上一個插入的節點
+接著，在字串中把每個數字提取出來，同時紀錄中間相隔了多少 '-' (代表這個數字要被插入的深度)
+只需將 array 中上一層的節點下新增子節點即可
+
+Time Complexity : O(n) for traversing the string 
+Space Complexity : O(h) = O(n) for the array to store the last insert node of each height
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* recoverFromPreorder(string traversal) {
+        vector<TreeNode*> lastinserted ;
+        int i = 0 ;
+        int rootnumber = traversal[i] - '0' ;
+        while ( i + 1 < traversal.length() && traversal[i + 1] != '-' ) {
+            rootnumber *= 10 ; 
+            rootnumber += traversal[i + 1] - '0' ;
+            i++ ;
+        }
+
+        lastinserted.push_back( new TreeNode(rootnumber) ) ;
+
+        int height = 0;
+        for(i = i + 1; i < traversal.length() ; i++) {
+            if (traversal[i] != '-') {
+                //cout << height << " " << i << endl ;
+                int number = traversal[i] - '0' ;
+                while ( i + 1 < traversal.length() &&traversal[i + 1] != '-' ) {
+                    number *= 10 ;
+                    number += traversal[i + 1] - '0' ;
+                    i++;
+                }
+
+
+                TreeNode* nownode = new TreeNode(number);
+                if ( lastinserted[height - 1]->left == nullptr ) {
+                    lastinserted[height - 1]->left = nownode ;
+                }
+                else 
+                    lastinserted[height - 1]->right = nownode ;
+                    
+                if ( height >= lastinserted.size() )
+                    lastinserted.push_back( nownode ) ;
+                else 
+                    lastinserted[height] = nownode ;
+                height = 0 ;
+            }
+            else {
+                height++ ;
+            }
+
+        }
+        return lastinserted[0];
+    }
+};
