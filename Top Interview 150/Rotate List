@@ -1,0 +1,89 @@
+想法：先走過一次 list 算出總共長度 size , 實際上 k 等價於 k % size 的 rotate 次數；
+因為每次 rotate 是把最後一個元素放到最前面，所以 k 次 rotate 等價於 n - k 次把最前面的元素放到最後
+因此，我們只需執行 n - k 次將頭部放到尾部的操作即可
+
+// assume there are n nodes in list
+Time Complexity : O(n) for traversing the list 
+Space Complexity : O(1) for variables
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* rotateRight(ListNode* head, int k) {
+        if ( !head )
+            return nullptr ; 
+
+        ListNode* cursor = head , *tail ;
+        int size = 0 ;
+        
+        while (cursor) {
+            size++ ;
+            tail = cursor ;
+            cursor = cursor->next;
+        }
+
+        k %= size ;
+        if (k == 0)
+            return head ;
+        k = size - k ;
+        while ( k-- ) {
+            ListNode* newtail = head , *newhead = head->next ;
+            tail->next = newtail ;
+            newtail->next = nullptr ;
+            tail = newtail ;
+            head = newhead ;
+        }
+        return head;
+    }
+};
+
+// 法二：一樣先找出等價的 k <= n ，接著把尾部與頭部相連，再把第 n - k - 1 個(0-index)元素設成尾部
+輸出第n - k 個元素即可
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* rotateRight(ListNode* head, int k) {
+        if ( !head )
+            return nullptr ; 
+        
+        ListNode* cursor = head , *tail ;
+        int size = 0 ;
+        
+        while (cursor) {
+            size++ ;
+            tail = cursor ;
+            cursor = cursor->next;
+        }
+
+        k %= size ;
+        if (k == 0)
+            return head ;
+        tail->next = head ;
+        cursor = head ;
+        k = size - k ;
+        while (--k) {
+            cursor = cursor->next ;
+        }
+        ListNode* newhead = cursor->next ;
+        cursor->next = nullptr;
+        return newhead ;
+    }
+};
