@@ -1,0 +1,42 @@
+想法：left ... right 的 AND 值一定小於等於 left，且我們只需考慮 left ... right 之間是否有任何一個元素在第 i 個 bit 上為零即可
+因此只需看過每個 bit 並構造下一個該 bit 為零的元素（需大於left），紀錄答案並輸出
+
+注意：構造時可能會超出整數範圍，所以要用 long long int 儲存
+
+Time Complexity : O(log(right)) for using O(log(right)) bits to store right and left 
+Space Complexity : O(1) for variables
+
+class Solution {
+public:
+    int rangeBitwiseAnd(int left, int right) {
+        int ans = left ;
+        for(int i = 0 ; i < 31 ; i++) {
+            if ( ans & (1 << i) ) {
+                long long int nexthavezero 
+                    = (long long int)left + (1 << i) - (left % (1 << i));
+                if ( nexthavezero <= right )
+                    ans &= nexthavezero ;
+            }
+        }
+        return ans ;
+    }
+};
+
+// 法二：我們可想成要在 left ... right 中找出共同前綴，而所有數字的共同前綴就等於left , right 的共同前綴
+找出兩者的共同前綴並輸出即可
+
+Time Complexity : O(log(right)) for there are O(log(right)) bits
+Space Complexity : O(1) for variables 
+
+class Solution {
+public:
+    int rangeBitwiseAnd(int left, int right) {
+        int shift = 0 ;
+        while (left < right) {
+            left >>= 1 ;
+            right >>= 1 ;
+            shift++ ;
+        }
+        return left << shift ;
+    }
+};
