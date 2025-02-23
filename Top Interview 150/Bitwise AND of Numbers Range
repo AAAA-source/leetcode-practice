@@ -32,7 +32,7 @@ class Solution {
 public:
     int rangeBitwiseAnd(int left, int right) {
         int shift = 0 ;
-        while (left < right) {
+        while (left < right) { // also can use right & (right - 1) to discard the rightmost '1' bit
             left >>= 1 ;
             right >>= 1 ;
             shift++ ;
