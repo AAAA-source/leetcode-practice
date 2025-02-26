@@ -45,30 +45,30 @@ Space Complexity : O(n) for the answer string
 class Solution {
 public:
     string reverseWords(string s) {
-        stack<string> store ;
+        string ans ;
         string temp ;
-        for(auto &i : s) {
-            if ( i == ' ' ) {
+        for(auto &c : s) {
+            if ( c == ' ' ) {
                 if ( !temp.empty() ) {
-                    store.push(temp) ;
-                    temp = "";
+                    if ( ans.empty() )
+                        ans = temp ;
+                    else 
+                        ans = temp + " " + ans ;
+                    
+                    temp = "" ;
                 }
             }
             else 
-                temp += i ;
-        }
-        if (!temp.empty())
-            store.push(temp);
+                temp += c ;
 
-        string ans ;
-        while ( !store.empty() ) {
-            if ( ans.empty() ) {
-                ans += store.top() ;
-            }
-            else {
-                ans += " " + store.top() ;
-            }
-            store.pop() ;
+        } 
+        if ( !temp.empty() ) {
+            if ( ans.empty() )
+                ans = temp ;
+            else 
+                ans = temp + " " + ans ;
+                    
+            temp = "" ;
         }
         return ans ;
     }
