@@ -73,3 +73,37 @@ public:
         return ans ;
     }
 };
+
+
+// 法三：先用 reverse 的技巧，並在 reverse 的過程中挑掉連續的空格，這樣就會得到一個單字內被 reverse，但順序正確的字串
+接著再把每個單字 reverse 回來即可
+
+Time Complexity : O(n) for each character at most reverses two times
+Space Complexity : O(n) for the output string (沒有使用額外空間)
+
+class Solution {
+public:
+    string reverseWords(string s) {
+        string ans ; 
+        int first = 0 ; 
+        while ( s[first] == ' ' )
+            first++ ;
+
+        for(int i = s.length() - 1 ; i >= first ; i--) {
+            if ( s[i] == ' ' && (i == s.length() - 1 || i == 0 || s[i + 1] == ' ') )
+                continue ;
+            ans += s[i] ;
+        }
+        
+        int start = 0 ;
+        for(int i = 0 ; i < ans.length() ; i++) {
+            if ( ans[i] == ' ' ) {
+                reverse( ans.begin() + start , ans.begin() + i ) ;
+                start = i + 1 ;
+            }
+        }
+        reverse( ans.begin() + start , ans.end() ) ;
+        
+        return ans ;
+    }
+};
