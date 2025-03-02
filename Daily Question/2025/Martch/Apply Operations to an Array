@@ -1,0 +1,26 @@
+想法：用一個 index 紀錄非0的值的末尾位置，每次只要有要加入的值就加在末尾並更新位置即可
+因為 index 永遠落後於 i , 所以不需擔心更新到前面的問題
+
+Time Complexity : O(n) for traversing the array
+Space Complexity : O(n) for the answer array 
+
+class Solution {
+public:
+    vector<int> applyOperations(vector<int>& nums) {
+        int index = 0 ;
+        for(int i = 0 ; i < nums.size()  ; i++) {
+            if ( nums[i] != 0 && i < nums.size() - 1 && nums[i] == nums[i + 1] ) {
+                nums[index++] = nums[i] * 2 ;
+                nums[i + 1] = 0 ;
+            }
+            else if ( nums[i] != 0 ) {
+                nums[index++] = nums[i] ;
+            }
+        }
+
+        for(int i = index ; i < nums.size() ; i++)
+            nums[i] = 0 ;
+        
+        return nums ;
+    }
+};
