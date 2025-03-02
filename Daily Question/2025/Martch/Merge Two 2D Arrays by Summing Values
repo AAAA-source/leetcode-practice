@@ -1,0 +1,37 @@
+想法：因為兩者都是 ascending order，所以最小者只會出現在前面，我們只需每次將最小者 pop 掉並寫到新的 array 即可
+如果遇到兩個頭部一樣小就合併後再寫入 array 
+
+// assume there is n element in nums1 , m elements in nums2 
+Time Complexity : O(n + m) for traversing two arrays
+Space Complexity : O(n + m) for the output array 
+
+class Solution {
+public:
+    vector<vector<int>> mergeArrays(vector<vector<int>>& nums1, vector<vector<int>>& nums2) {
+        vector<vector<int>> ans ;
+        int index1 = 0 , index2 = 0 ;
+        while ( index1 < nums1.size() || index2 < nums2.size() ) {
+            if ( index1 == nums1.size() ) {
+                ans.push_back( nums2[index2++] ) ;
+            }
+            else if ( index2 == nums2.size() ) {
+                ans.push_back( nums1[index1++] ) ;
+            }
+            else {
+                // compare num1[index1] and nums2[index2] 
+                if ( nums1[index1][0] < nums2[index2][0] ) {
+                    ans.push_back( nums1[index1++] ) ;
+                }
+                else if ( nums1[index1][0] > nums2[index2][0] ) {
+                    ans.push_back( nums2[index2++] ) ;
+                }
+                else {
+                    ans.push_back( 
+                    {nums1[index1][0] , nums1[index1][1] + nums2[index2][1]} ) ;
+                    index1++ , index2++ ;
+                }
+            }
+        }
+        return ans ;
+    }
+};
